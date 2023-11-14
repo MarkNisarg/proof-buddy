@@ -42,12 +42,12 @@ npm -v
 2. Run the installer and follow the setup process.
 3. After installation, start the MySQL server.
 4. Create a database (schema) for the application and make a note of the credentials. You'll need them to set up the backend connection. Like so:
-    4a. ![Click the local Instance MySQL80 to open the your local instance.](<MySql Client.png>)
-    4b. ![Click the Schema's tab on the lower left side of the Local instance "navigator" window.](Schema_Tab-1.png)
-    4c. ![Right click the white space of the Schema Window, and select "Create Schema".](Create_Schema.png)
-    4d. ![Type in the your Schema name in the new window. Name it something easy to remember, and press apply. **Note** it is a good idea to name this Schema "proof_buddy_development".](Create_Schema_1.png)
-    4e. ![You can confirm your Schema was created, by looking under the Navigator Tab of Schemas, you should see your named Schema.](Create_Schema_2.png)
-    4d. Congratulations! You have succesfully created a Schema to for your database. Make note of any password you may have used, and the name of your Schema.
+4a. ![Click the local Instance MySQL80 to open the your local instance.](<MySql Client.png>)
+4b. ![Click the Schema's tab on the lower left side of the Local instance "navigator" window.](Schema_Tab-1.png)
+4c. ![Right click the white space of the Schema Window, and select "Create Schema".](Create_Schema.png)
+4d. ![Type in the your Schema name in the new window. Name it something easy to remember, and press apply. **Note** it is a good idea to name this Schema "proof_buddy_development".](Create_Schema_1.png)
+4e. ![You can confirm your Schema was created, by looking under the Navigator Tab of Schemas, you should see your named Schema.](Create_Schema_2.png)
+4d. Congratulations! You have succesfully created a Schema to for your database. Make note of any password you may have used, and the name of your Schema.
     
 
 *Note: It's recommended to use a client tool like MySQL Workbench for easier database management.*
