@@ -1,4 +1,4 @@
-from proofs.Expression import Expression
+from Expression import Expression
 
 class LineNumber(list):
     def __init__(self, iterable=None):

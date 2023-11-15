@@ -1,9 +1,11 @@
-from proofs.ExpressionList import ExpressionList
-from proofs.Rule import Rule
-from proofs.ProofLine import ProofLine
-from proofs.Expression import Expression
-from proofs.RuleList import RuleList
-from proofs.TList import TList
+from ExpressionList import ExpressionList
+# from Rule import Rule
+# from RuleList import RuleName
+from ProofLine import ProofLine
+from Expression import Expression
+from RuleList import RuleList
+from TList import TList
+from GUID import GUID
 
 class Proof:
     def __init__(self):
@@ -14,17 +16,19 @@ class Proof:
         self.isValid = False
         self.isComplete = False
         self.title = ''
+        self.id = GUID('proof')
     
-    def setRules(self, rule_list=[]):
-        rl = []
-        for r in rule_list:
-            if isinstance(r,Rule):
-                self.allowed_rules += r
-        self.allowed_rules = rl
+    def setRules(self, rule_list:RuleList):
+        if isinstance(rule_list,RuleList):
+            self.allowed_rules = rule_list
+        else:
+            print('Error')
 
-    def addLine(self, proofLine=ProofLine()):
+    def addLine(self, proofLine:ProofLine):
         if isinstance(proofLine, ProofLine):
             self.content += proofLine
+        else:
+            print('Error')
 
     def checkValidity(self):
         pass
@@ -36,15 +40,26 @@ class Proof:
         pass
 
     def checkConclusion(self):
-        pass
+        return self.conclusion == self.content[-1].argument
 
-    def setConclusion(self, conclusion=None):
+    def setConclusion(self, conclusion:Expression):
         if isinstance(conclusion, Expression):
             self.conclusion = conclusion
+        else:
+            print('Error')
     
-    def setPremises(self, premises=[]):
-        prem_list = ExpressionList()
-        for prem in premises:
-            if isinstance(prem,Expression):
-                prem_list += prem
-        self.premises = prem_list
+    def setPremises(self, premises:TList[Expression]):
+        if isinstance(premises,TList) and premises.T==Expression:
+            self.premises = premises
+        else:
+            print('Error')
+
+    # For testing the iterative structure of subproofs
+    def print(self):
+        print(f'{self}')
+
+    def __str__(self):
+        s = ''
+        for line in self.content:
+            s += f'{line}'
+        return s

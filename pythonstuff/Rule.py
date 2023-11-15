@@ -1,9 +1,16 @@
-from proofs.Proof import Proof
+from Proof import Proof
+from GUID import GUID
 
-# Extended/Instantiated for known rules?
 class Rule(Proof):
-    def __init__(self):
-        pass
-
-    def __str__(self):
-        pass
+    def __init__(self, proof:Proof):
+        if isinstance(proof,Proof):
+            if proof.isValid() & proof.isComplete():
+                self.premises = proof.premises
+                self.conclusion = proof.conclusion
+                self.content = proof.content
+                self.title = proof.title
+                self.id = GUID('Rule',proof.id)
+            else:
+                print('Error')
+        else:
+            print('Error')

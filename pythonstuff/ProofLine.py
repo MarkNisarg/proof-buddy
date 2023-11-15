@@ -1,31 +1,38 @@
-from proofs.LineNumber import LineNumber
-from proofs.Expression import Expression
-from proofs.Justification import Justification
+from LineNumber import LineNumber
+from Expression import Expression
+from Justification import Justification
+from Proof import Proof
 
 class ProofLine:
-    def __init__(self, line_no=None, argument=None, justification=None):
-        if isinstance(line_no,LineNumber):
+    def __init__(self, line_no:LineNumber=LineNumber(), argument:Expression=Expression(), justification:Justification=Justification()):
+        if line_no and not isinstance(line_no,LineNumber):
+            print('error')
+        else:
             self.line_number = line_no
-        else:
-            print('error')
 
-        if isinstance(argument,Expression):
+        if argument and not (isinstance(argument,Expression) or isinstance(argument,'Proof')):
+            print('error')
+        else:
             self.argument = argument
-        else:
-            print('error')
 
-        if isinstance(justification,Justification):
-            self.justification = justification
-        else:
+        if justification and not isinstance(justification,Justification):
             print('error')
+        else:
+            self.justification = justification
 
     # Should not be set explicitly, but rather this method be called when indented
     #  or otherwise out of sync. It should be valid from creation
     def updateLineNo(self):
         pass
 
-    def setArgument(self, argument=None):
-        pass
+    def setArgument(self, argument:Expression):
+        if isinstance(argument,Expression):
+            self.argument = argument
+        else:
+            print('Error')
 
-    def setJustification(self, justification=None):
-        pass
+    def setJustification(self, justification:Justification):
+        if isinstance(justification,Justification):
+            self.justification = justification
+        else:
+            print('Error')

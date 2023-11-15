@@ -1,12 +1,18 @@
-import Rule, LineNumber
+import LineNumber
+from Rule import Rule
+from TList import TList
 
 class Justification:
-    def __init__(self, rule=Rule(), references=[]):
-        self.rule = rule
-        self.references = []
-        for r in references:
-            if isinstance(r, LineNumber):
-                self.references.append(r)
+    def __init__(self, rule:Rule=Rule(), references:TList=TList(LineNumber,[])):
+        if rule and not isinstance(rule,Rule):
+            print('error')
+        else:
+            self.rule = rule
+
+        if references and (not isinstance(references,TList) or not references.T==LineNumber):
+            print('Error')
+        else:
+            self.references = references
     
     def __repr__(self):
         class_name = type(self).__name__
