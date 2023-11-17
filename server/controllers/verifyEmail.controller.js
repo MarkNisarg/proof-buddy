@@ -7,27 +7,30 @@ const User = db.user;
 export const verifyEmail = async (req, res) => {
   const { token } = req.query;
 
+  if (!token) {
+    return res.status(400).send({ message: 'No token provided.' });
+  }
+
   try {
     const decoded = verifyEmailToken(token);
-    const user = await User.findOne({ where: { username: decoded.username } });
-
     if (!decoded) {
       return res.status(400).send({ message: 'Invalid or expired token.' });
     }
 
+    const user = await User.findOne({ where: { username: decoded.username } });
     if (!user) {
-      return res.status(404).send({ message: "User Not found." });
+      return res.status(404).send({ message: 'User Not found.' });
     }
 
     if (user.is_active) {
-      return res.status(400).send({ message: "User has already been verified." });
+      return res.status(400).send({ message: 'User has already been verified. Please Log In.' });
     }
 
     user.is_active = true;
     await user.save();
 
-    res.send({ message: "Account verified successfully!" });
+    res.send({ message: 'Account verified successfully!' });
   } catch (error) {
-    res.status(500).send({ message: "Failed to verify account." });
+    res.status(500).send({ message: 'Failed to verify account.' });
   }
 };

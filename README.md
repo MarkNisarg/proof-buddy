@@ -48,7 +48,7 @@ npm -v
     4d. ![Type in the your Schema name in the new window. Name it something easy to remember, and press apply. **Note** it is a good idea to name this Schema "proof_buddy_development".](Create_Schema_1.png)
     4e. ![You can confirm your Schema was created, by looking under the Navigator Tab of Schemas, you should see your named Schema.](Create_Schema_2.png)
     4d. Congratulations! You have succesfully created a Schema to for your database. Make note of any password you may have used, and the name of your Schema.
-    
+
 
 *Note: It's recommended to use a client tool like MySQL Workbench for easier database management.*
 
@@ -104,7 +104,7 @@ npm install
 7. Make sure JWT_SECRET equals a secret key that you will not share on GitHub
 8. JWT_EXPIRATION equals "86400"
 9. EMAIL_USERNAME equals a email address that you wish to you. I strongly suggest creating a seperate email address, which is not linked to any other email you own for security.
-10. EMAIL_PASSWORD equals the target email address you have provided. 
+10. EMAIL_PASSWORD equals the target email address you have provided.
 11. Final note: Never push your .env file to Github or share it on any public forum. This will cause a security risk for yourself. Presently, the .gitignore is set up to ignore these files.
 
 ```
@@ -149,10 +149,10 @@ A list of the User API endpoints and their functions.
 
 * `POST` : Sign in an existing user.
 
-### `/api/v1/auth/profile`
-
-* `GET` : Get profile of the logged-in user (authentication required).
-
 ### `/api/v1/auth/verify-email`
 
 * `GET` : Verify user email (query parameter: `token`).
+
+### `/api/v1/users/profile`
+
+* `GET` : Get profile of the logged-in user (authentication required).
