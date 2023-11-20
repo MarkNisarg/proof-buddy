@@ -1,22 +1,13 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import AppRoutes from './routes'
+import ErrorBoundary from './hoc/ErrorBoundary'
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        
-        <div class="navbar"> 
-          test nav bar
-        </div>
-        
-      </header>
-      <div>
-        
-      </div>
-      
-    </div>
+    <ErrorBoundary>
+      <AppRoutes />
+    </ErrorBoundary>
   );
-}
+};
 
 export default App;

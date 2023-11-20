@@ -1,14 +1,28 @@
-import db from "../models/index.js";
-import config from "../config/auth.config.js";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
-import { sendVerificationEmail } from "../services/email.service.js";
-import { generateVerificationToken } from "../utils/emailToken.util.js";
+import db from '../models/index.js';
+import authConfig from '../config/auth.config.js';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
+import { sendVerificationEmail } from '../services/email.service.js';
+import { generateVerificationToken } from '../utils/emailToken.util.js';
 
 const User = db.user;
 
+// Helper function for validating user input.
+const validateUserInput = ({ username, email, password }) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const isValidEmail = emailRegex.test(email);
+  const isValidUsername = username && username.trim() !== '';
+  const isValidPassword = password && password.length >= 8;
+
+  return isValidEmail && isValidUsername && isValidPassword;
+};
+
 // Create user and send verification email.
 const createUser = async (req, res) => {
+  if (!validateUserInput(req.body)) {
+    return res.status(400).send({ message: 'Invalid input data' });
+  }
+
   try {
     const user = await User.create({
       username: req.body.username,
@@ -25,24 +39,27 @@ const createUser = async (req, res) => {
     // Send verification email.
     await sendVerificationEmail(user, verificationToken);
 
-    res.send({ message: "User registered successfully! Please check your email to verify your account." });
+    res.send({ message: 'User registered successfully! Please check your email to verify your account.' });
   } catch (err) {
-    res.status(500).send({ message: err.message });
+    res.status(500).send({ message: 'Error creating user.' });
   }
 };
 
 // User sign-in handler.
-// TODO: Do not allow user to login if user has not verified email.
 const signin = async (req, res) => {
   try {
     const user = await User.findOne({
       where: {
-        username: req.body.username,
-      },
+        username: req.body.username
+      }
     });
 
     if (!user) {
-      return res.status(404).send({ message: "User Not found." });
+      return res.status(404).send({ message: 'User Not found.' });
+    }
+
+    if (!user.is_active) {
+      return res.status(404).send({ message: 'Email not verified. Please verify email first then proceed with login.' });
     }
 
     const passwordIsValid = bcrypt.compareSync(
@@ -53,21 +70,21 @@ const signin = async (req, res) => {
     if (!passwordIsValid) {
       return res.status(401).send({
         accessToken: null,
-        message: "Invalid Password!",
+        message: 'Invalid Password!'
       });
     }
 
-    const token = jwt.sign({ username: user.username }, config.secret, {
-      expiresIn: config.jwtExpiration,
+    const token = jwt.sign({ username: user.username }, authConfig.secret, {
+      expiresIn: authConfig.jwtExpiration
     });
 
     res.status(200).send({
       username: user.username,
       email: user.email,
-      accessToken: token,
+      accessToken: token
     });
   } catch (err) {
-    res.status(500).send({ message: err.message });
+    res.status(500).send({ message: 'Error logining user.' });
   }
 };
 
@@ -76,7 +93,7 @@ const profile = async (req, res) => {
   try {
     const user = await User.findOne({ where: { username: req.body.username } });
     if (!user) {
-      return res.status(404).send({ message: "User Not found." });
+      return res.status(404).send({ message: 'User Not found.' });
     }
     res.status(200).send({
       username: user.username,
@@ -87,7 +104,7 @@ const profile = async (req, res) => {
       is_instructor: user.is_instructor,
       is_superuser: user.is_superuser,
       is_staff: user.is_staff,
-      is_active: user.is_active,
+      is_active: user.is_active
     });
   } catch (err) {
     res.status(500).send({ message: err.message });
