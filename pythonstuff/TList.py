@@ -1,10 +1,14 @@
-class TList(list):
-    def __init__(self, T:type, iterable=None):
-        self.T = T
+from typing import TypeVar
+
+_T = TypeVar("_T")
+
+class TList(list[_T]):
+    def __init__(self, type:_T, iterable=None):
+        self.T = type
         super().__init__()
         if iterable:
             for item in iterable:
-                if isinstance(item, T):
+                if isinstance(item, self.T):
                     self.append(item)
 
     def append(self, item):
@@ -46,3 +50,21 @@ class TList(list):
                 return self
             except TypeError:
                 raise TypeError(f'This list only accepts {self.T}')
+    
+    def __str__(self):
+        s = '['
+        if self.__len__() > 0:
+            s += f'{self.__getitem__(0)!s}'
+        for i in range(1,self.__len__()):
+            s += f', {self.__getitem__(i)!s}'
+        s += ']'
+        return s
+    
+    def __repr__(self):
+        s = f'{type(self).__name__}('
+        if self.__len__() > 0:
+            s += f'{self.__getitem__(0)!r}'
+        for i in range(1,self.__len__()):
+            s += f', {self.__getitem__(i)!r}'
+        s += ']'
+        return s
