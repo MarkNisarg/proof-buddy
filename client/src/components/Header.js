@@ -4,11 +4,12 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import { Link } from 'react-router-dom';
+import '../scss/Header.scss';
 
 const Header = () => {
   return (
-    <header className="header nav-container">
-      <Navbar collapseOnSelect expand="lg" className="bg-body-tertiary">
+    <header className={`header nav-container`}>
+      <Navbar collapseOnSelect expand="lg" fixed="top">
         <Container>
           <Navbar.Brand as={Link} to="/">Proof Buddy</Navbar.Brand>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" aria-label="Toggle navigation" />
@@ -21,9 +22,13 @@ const Header = () => {
                 <NavDropdown.Item as={Link} to="#">About</NavDropdown.Item>
               </NavDropdown>
             </Nav>
-            <Nav>
-              <Nav.Link as={Link} to="/login">Log In</Nav.Link>
-              <Nav.Link as={Link} to="/signup">Sign Up</Nav.Link>
+            <Nav as={'ul'}>
+              <Nav.Item as={'li'}>
+                <Nav.Link as={Link} to="/login" className="login">Log In</Nav.Link>
+              </Nav.Item>
+              <Nav.Item as={'li'}>
+                <Nav.Link as={Link} to="/signup" className="signup">Sign Up</Nav.Link>
+              </Nav.Item>
             </Nav>
           </Navbar.Collapse>
         </Container>

@@ -13,7 +13,7 @@ const checkDuplicateUsernameOrEmail = async (req, res, next) => {
 
     if (userWithUsername) {
       return res.status(400).send({
-        message: 'Username is already in use!'
+        message: 'Username is already exists. Try another?'
       });
     }
 
@@ -26,7 +26,7 @@ const checkDuplicateUsernameOrEmail = async (req, res, next) => {
 
     if (userWithEmail) {
       return res.status(400).send({
-        message: 'Email is already in use!'
+        message: 'Email is already exists. Try another? '
       });
     }
 

@@ -5,7 +5,7 @@ const User = db.user;
 
 // Verify email using token verification.
 export const verifyEmail = async (req, res) => {
-  const { token } = req.query;
+  const { token } = req.body;
 
   if (!token) {
     return res.status(400).send({ message: 'No token provided.' });
