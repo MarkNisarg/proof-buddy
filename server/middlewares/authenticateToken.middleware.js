@@ -7,21 +7,21 @@ const verifyToken = (req, res, next) => {
 
   if (!bearerHeader) {
     return res.status(403).send({
-      message: 'A token is required for authentication!'
+      message: 'A token is required for authentication.'
     });
   }
 
   const bearerToken = bearerHeader.split(' ')[1];
   if (!bearerToken) {
     return res.status(403).send({
-      message: 'No token provided!'
+      message: 'No token provided.'
     });
   }
 
   jwt.verify(bearerToken, authConfig.secret, (err, decoded) => {
     if (err) {
       return res.status(401).send({
-        message: 'Unauthorized!'
+        message: 'Unauthorized token provided.'
       });
     }
     req.username = decoded.username;

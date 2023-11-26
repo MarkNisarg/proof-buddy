@@ -1,82 +1,100 @@
 import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
+import Alert from 'react-bootstrap/Alert';
 import MainLayout from '../layouts/MainLayout';
-import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
 import AuthService from '../services/AuthService';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [serverError, setServerError] = useState('');
+  const [validated, setValidated] = useState(false);
   const navigate = useNavigate();
 
   // Function to handle the login submission.
   const handleLogin = async (event) => {
     event.preventDefault();
+    const form = event.currentTarget;
 
-    try {
-      const credentials = {
-        username,
-        password
-      };
+    if (form.checkValidity()) {
+      try {
+        const credentials = {
+          username,
+          password
+        };
 
-      const response = await AuthService.login(credentials);
-      if (response.token) {
-        // Store the token received from the server.
-        localStorage.setItem('token', response.token);
-        console.log('Login successful!');
+        const response = await AuthService.login(credentials);
+        console.log(response)
+        if (response.accessToken) {
+          // Store the token received from the server.
+          Cookies.set('accessToken', response.accessToken, { expires: 1/24, secure: true });
 
-        // TODO: Redirect to dashboard after successful login.
-        navigate('/dashboard');
+          // TODO: Redirect to dashboard after successful login.
+          navigate('/dashboard');
+        }
+        // TODO: Handle cases where login is unsuccessful.
+      } catch (error) {
+        setServerError(error.response.data.message || 'An error occurred during login.');
       }
-      // TODO: Handle cases where login is unsuccessful.
-    } catch (error) {
-      console.error('Login failed:', error);
-      // TODO: Implement error handling logic here.
+    } else {
+      event.stopPropagation();
     }
+
+    setValidated(true);
   };
 
   return (
     <MainLayout>
       <Container>
         <Row className="justify-content-md-center">
-          <Col xs={12} md={6}>
+          <Col xs={12} md={9} lg={5}>
             <h2 className="text-center">Log In</h2>
-            <Form onSubmit={handleLogin}>
-              <Form.Group controlId="formBasicUsername">
-                <Form.Label>Username*</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  required
-                />
+            {serverError && <Alert variant={'danger'}>{serverError}</Alert>}
+            <Form noValidate validated={validated} onSubmit={handleLogin}>
+              <Form.Group className='login-username'>
+                <Form.Floating className="mb-3">
+                  <Form.Control
+                    id="loginUsername"
+                    type="text"
+                    placeholder="Enter username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
+                  />
+                  <label htmlFor="loginUsername">Username</label>
+                  <Form.Control.Feedback type="invalid">
+                    Please provide a username.
+                  </Form.Control.Feedback>
+                </Form.Floating>
               </Form.Group>
 
-              <Form.Group controlId="formBasicPassword">
-                <Form.Label>Password*</Form.Label>
+              <Form.Floating className="mb-3">
                 <Form.Control
+                  id="loginPassword"
                   type="password"
-                  placeholder="Password"
+                  placeholder="Enter password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                 />
-              </Form.Group>
+                <label htmlFor="loginPassword">Password</label>
+                <Form.Control.Feedback type="invalid">
+                    Please provide a password.
+                </Form.Control.Feedback>
+              </Form.Floating>
 
-              <Button variant="primary" type="submit">
-            Login
-              </Button>
+              <Button variant="primary" type="submit">Login</Button>
               <div className="mt-3">
                 <Link as={Link} to="/forgot-password">Forgot Password?</Link>
               </div>
               <div>
-            Need an account? <Link as={Link} to="/signup">Sign Up</Link>
+                Need an account? <Link as={Link} to="/signup">Sign Up</Link>
               </div>
             </Form>
           </Col>

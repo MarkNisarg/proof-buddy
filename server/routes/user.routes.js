@@ -20,10 +20,16 @@ const userRoutes = (app) => {
   );
 
   // Email veification endpoint.
-  app.get('/api/v1/auth/verify-email', verifyEmail);
+  app.post('/api/v1/auth/verify-email', verifyEmail);
+
+  // Resend email veification endpoint.
+  app.post('/api/v1/auth/resend-verification', userController.resendVerificationEmail);
 
   // Signin endpoint.
   app.post('/api/v1/auth/signin', userController.signin);
+
+  // Signout endpoint.
+  app.post('/api/v1/auth/signout', userController.signout);
 
   // Get user data endpoint.
   app.get(

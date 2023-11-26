@@ -1,3 +1,4 @@
+import Cookies from 'js-cookie';
 import axiosInstance from '../utils/axiosInstance';
 
 const API_GATEWAY = '/api/v1/auth';
@@ -26,9 +27,7 @@ const login = async (credentials) => {
 
 const verifyEmail = async (token) => {
   try {
-    const response = await axiosInstance.get(`${API_GATEWAY}/verify-email`, {
-      params: { token }
-    });
+    const response = await axiosInstance.post(`${API_GATEWAY}/verify-email`, { token });
     return response.data;
   } catch (error) {
     console.error('Error during email verification:', error);
@@ -38,7 +37,7 @@ const verifyEmail = async (token) => {
 
 const resendVerificationEmail = async () => {
   try {
-    const email = localStorage.getItem('userEmail');
+    const email = Cookies.get('email');
     if (!email) {
       throw new Error('User email is not available.');
     }
