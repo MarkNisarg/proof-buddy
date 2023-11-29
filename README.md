@@ -239,55 +239,116 @@ npm start
 
 1. Congratulation you in the previous section you created a "consent" for your google cloud project. Please remain in the same project for the following steps:
 
-2. ![Navigate to the "Credentials" tab and press its button. Here you press "Create Credentials", and then press "OAuth Client ID". You will need to create this Credential to gather you  authorization tokens in a future step.](documentation/readme_resources/OAuth_Consent_Credentials_Client_ID.png)
+<br>
 
-3. ![Under "Application Type" select "Web Application" and under the "Name" field give the name "Web Application 1" or any other name you desire. ](documentation/readme_resources/OAuth_Consent_Credentials_Client_ID_1.png)
+2. Navigate to the "Credentials" tab and press its button. Here you press "Create Credentials", and then press "OAuth Client ID". You will need to create this Credential to gather you  authorization tokens in a future step.
 
-4. ![Scroll down to the heading "Authorized redirect URIs" and press the "ADD URI" Button. In the new "URIs 1" field, type in 'http://localhost:3001/oauth2callback' and press the "Create" button promptly after.](documentation/readme_resources/OAuth_Consent_Credentials_Client_ID_2.png)
+<br>
 
-5. ![Review your created "Web Client" Client. Take note of "Client ID" and "Client Secret". NOTE: Keep these fields private AND never share them with anyone. "Keep it secret, Keep it safe"](documentation/readme_resources/OAuth_Consent_Credentials_Client_ID_3.png)
+![Navigate to the "Credentials" tab and press its button. Here you press "Create Credentials", and then press "OAuth Client ID". You will need to create this Credential to gather you  authorization tokens in a future step.](documentation/readme_resources/OAuth_Consent_Credentials_Client_ID.png)
+
+3. Under "Application Type" select "Web Application" and under the "Name" field give the name "Web Application 1" or any other name you desire.
+
+<br>
+
+![Under "Application Type" select "Web Application" and under the "Name" field give the name "Web Application 1" or any other name you desire.](documentation/readme_resources/OAuth_Consent_Credentials_Client_ID_1.png)
+
+4. Scroll down to the heading "Authorized redirect URIs" and press the "ADD URI" Button. In the new "URIs 1" field, type in 'http://localhost:3001/oauth2callback' and press the "Create" button promptly after.
+
+<br>
+
+![Scroll down to the heading "Authorized redirect URIs" and press the "ADD URI" Button. In the new "URIs 1" field, type in 'http://localhost:3001/oauth2callback' and press the "Create" button promptly after.](documentation/readme_resources/OAuth_Consent_Credentials_Client_ID_2.png)
+
+5. Review your created "Web Client" Client. Take note of "Client ID" and "Client Secret". NOTE: Keep these fields private AND never share them with anyone. "Keep it secret, Keep it safe"
+
+<br>
+
+![Review your created "Web Client" Client. Take note of "Client ID" and "Client Secret". NOTE: Keep these fields private AND never share them with anyone. "Keep it secret, Keep it safe."](documentation/readme_resources/OAuth_Consent_Credentials_Client_ID_3.png)
 
 6. The next few steps will detail how to create an "authorization URL", which is the essential piece to "Obtaining a Authorization Code". The next few steps are a bit tricky, I suggest you have a notepad open to take notes and save data.
 
-6a. To create an authorization URL, you will need to follow the below format. Dont worry we will do a step by step instruction on how to acomplish this:
+7. To create an authorization URL, you will need to follow the below format. Dont worry we will do a step by step instruction on how to acomplish this. The URL format is as follows:
 
-The URL format is as follows:
+```
+https://accounts.google.com/o/oauth2/v2/auth?
+scope=[SCOPES]&
+access_type=offline&
+include_granted_scopes=true&
+response_type=code&
+state=[STATE]&
+redirect_uri=[REDIRECT_URI]&
+client_id=[CLIENT_ID]
 
-     https://accounts.google.com/o/oauth2/v2/auth?
-       scope=[SCOPES]&
-       access_type=offline&
-       include_granted_scopes=true&
-       response_type=code&
-       state=[STATE]&
-       redirect_uri=[REDIRECT_URI]&
-       client_id=[CLIENT_ID]
+```
+8. Set 'scope' equal to 'https://mail.google.com/' like this screen shot.
 
-6b. ![Set 'scope' equal to 'https://mail.google.com/' like so.](documentation/readme_resources/Authorization_URL_Scope.png)
-6c. ![Set 'state' equal to your current state code like so.](documentation/readme_resources/Authorization_URL_State.png)
-6d. ![Set 'redirect_uri' equal to 'http://localhost:3001/oauth2callback' like so.](documentation/readme_resources/Authorization_URL_Redirect_URI.png)
-6e. ![Set 'client_id' equal to your Client ID, which you can find under your web client you created in Step 5. See Step 6e1 for more assitance. Note: Remember to not share your 'Client ID' with anyone!](documentation/readme_resources/Authorization_URL_Client_ID.png)
-6e1. ![In case you forgot how to find your Client ID - Naviate to your Google Cloud Consol and click 'APIs & Services' then 'credentials' then select your 'web client'. The information will be on the right hand side. Note: Do NOT share your 'Client ID' or 'Client Secret' with anyone. "Keep it secret, Keep it safe". ](documentation/readme_resources/Authorization_URL_Client_ID_1.png)
-6f. ![Your URL will look something like this now. Note: I have blocked out my client ID for security reasons.](documentation/readme_resources/Authorization_URL_Finished_Example.png)
+<br>
 
-7. ![Enter your new 'Authorization URL' into a internet browser of your choice like so.](documentation/readme_resources/Authorization_URL_Browser_Insertion.png)
+![Set 'scope' equal to 'https://mail.google.com/' like so.](documentation/readme_resources/Authorization_URL_Scope.png)
 
-8. ![You will be prompted to log into your gmail account for google cloud. Make sure to use the email you are logged into your google cloud for. You may be warned thast the app is not verified, press "Continue" and ignore this prompt. ](documentation/readme_resources/Authorization_URL_Browser_Log_In.png)
+9. Set 'state' equal to your current state code like so:
 
-9. ![Now you will be greeted with a new web page, with a 'Message' that equals 'This is OAuth Callback endpoint'. Look at the URL, and take note of the code. This is important to save or write down in a notepad, because this is the 'authorization code' for your web client. Note: DO NOT LOSE THIS AUTHORIZATION CODE](documentation/readme_resources/Authorization_URL_Browser_Code_Acquisition.png)
+<br>
+  
+![Set 'state' equal to your current state code like so:](documentation/readme_resources/Authorization_URL_State.png)
 
-10. Now that we have our 'authorization' code its time to focus on generating our 'refresh token'. The next few steps will detail how to generate a refresh token.
+10. Set 'redirect_uri' equal to 'http://localhost:3001/oauth2callback' like so:
 
-10a. ![In your IDE, install the 'Thunder Client' extension. NOTE: you can use Postman as well, but this tutorial will focus on Thunder Client.](documentation/readme_resources/Thunder_Client_Extension_Installation.png)
+<br>
 
-10b. ![Open the 'Thunder Client' application in your IDE, this can be found on the left handside of your IDE. Press 'New Request', and toggle the type of request to 'POST'. Navigate to the 'Body' section of this request.](documentation/readme_resources/Thunder_Client_Extension_Post.png)
+![Set 'redirect_uri' equal to 'http://localhost:3001/oauth2callback' like so:](documentation/readme_resources/Authorization_URL_Redirect_URI.png)
 
-10c. ![Fill in the JSON based 'POST' Request like the screenshot and the below format](documentation/readme_resources/Thunder_Client_Extension_Post_1.png)
+11. Set 'client_id' equal to your Client ID, which you can find under your web client you created in Step 5. See Step 6 in the previoussection for more assitance. Note: Remember to not share your 'Client ID' with anyone!
 
-Your 'POST' Request should follow this format.
+<br>
+
+![Set 'client_id' equal to your Client ID, which you can find under your web client you created in Step 5. See Step 6 in the previoussection for more assitance. Note: Remember to not share your 'Client ID' with anyone!](documentation/readme_resources/Authorization_URL_Client_ID.png)
+
+12. Your URL will look something like this now. Note: I have blocked out my client ID for security reasons.
+
+<br>
+
+![Your URL will look something like this now. Note: I have blocked out my client ID for security reasons.](documentation/readme_resources/Authorization_URL_Finished_Example.png)
+
+13. Enter your new 'Authorization URL' into a internet browser of your choice like so:
+
+<br>
+
+![Enter your new 'Authorization URL' into a internet browser of your choice like so.](documentation/readme_resources/Authorization_URL_Browser_Insertion.png)
+
+14. You will be prompted to log into your gmail account for google cloud. Make sure to use the email you are logged into your google cloud for. You may be warned thast the app is not verified, press "Continue" and ignore this prompt.
+
+<br>
+
+![You will be prompted to log into your gmail account for google cloud. Make sure to use the email you are logged into your google cloud for. You may be warned thast the app is not verified, press "Continue" and ignore this prompt. ](documentation/readme_resources/Authorization_URL_Browser_Log_In.png)
+
+15. Now you will be greeted with a new web page, with a 'Message' that equals 'This is OAuth Callback endpoint'. Look at the URL, and take note of the code. This is important to save or write down in a notepad, because this is the 'authorization code' for your web client. Note: DO NOT LOSE THIS AUTHORIZATION CODE
+
+<br>
+
+![Now you will be greeted with a new web page, with a 'Message' that equals 'This is OAuth Callback endpoint'. Look at the URL, and take note of the code. This is important to save or write down in a notepad, because this is the 'authorization code' for your web client. Note: DO NOT LOSE THIS AUTHORIZATION CODE](documentation/readme_resources/Authorization_URL_Browser_Code_Acquisition.png)
+
+16. Now that we have our 'authorization' code its time to focus on generating our 'refresh token'. The next few steps will detail how to generate a refresh token.
+
+17. In your IDE, install the 'Thunder Client' extension. NOTE: you can use Postman as well, but this tutorial will focus on Thunder Client.
+
+<br>
+
+![In your IDE, install the 'Thunder Client' extension. NOTE: you can use Postman as well, but this tutorial will focus on Thunder Client.](documentation/readme_resources/Thunder_Client_Extension_Installation.png)
+
+18. Open the 'Thunder Client' application in your IDE, this can be found on the left handside of your IDE. Press 'New Request', and toggle the type of request to 'POST'. Navigate to the 'Body' section of this request.
+
+<br>
+
+![Open the 'Thunder Client' application in your IDE, this can be found on the left handside of your IDE. Press 'New Request', and toggle the type of request to 'POST'. Navigate to the 'Body' section of this request.](documentation/readme_resources/Thunder_Client_Extension_Post.png)
+
+19. Fill in the JSON based 'POST' Request like the screenshot and the below format. Your 'POST' Request should follow this format:
+
+<br>
+
 ```
 
 {
-
     "code": your_authorization_code_here_from_step_9,
     "client_id": your_client_id_here_from_step_5,
     "client_secret": your_client_secret_here_from_step_5,
@@ -296,9 +357,21 @@ Your 'POST' Request should follow this format.
 }
 
 ```
-10d. ![Replace the current link inside the 'POST' request, and instead enter 'http:localhost:3001/oauth2callback' and press 'Send'](documentation/readme_resources/Thunder_Client_Extension_Post_2.png)
+<br>
 
-10e. ![You will Receive a message back with the fields "access_token", "expires_in", "refresh_token","scope", and "token_type". Below is an explanation:](documentation/readme_resources/Thunder_Client_Extension_Post_3.png)
+![Fill in the JSON based 'POST' Request like the screenshot and the below format](documentation/readme_resources/Thunder_Client_Extension_Post_1.png)
+
+20. Replace the current link inside the 'POST' request, and instead enter 'http:localhost:3001/oauth2callback' and press 'Send':
+
+<br>
+
+![Replace the current link inside the 'POST' request, and instead enter 'http:localhost:3001/oauth2callback' and press 'Send'](documentation/readme_resources/Thunder_Client_Extension_Post_2.png)
+
+21. You will Receive a message back with the fields "access_token", "expires_in", "refresh_token","scope", and "token_type". Below is an explanation:
+
+<br>
+
+![You will Receive a message back with the fields "access_token", "expires_in", "refresh_token","scope", and "token_type". Below is an explanation:](documentation/readme_resources/Thunder_Client_Extension_Post_3.png)
 
 ```
 
@@ -313,7 +386,7 @@ scope: This token is a list of scopes you provided in step 6.
 token_type: This just states what type of token the present token is. 
 
 ```
-11. Congratulations and pat yourself on the back! You just did the hardest part of the set up.
+22. Congratulations and pat yourself on the back! You just did the hardest part of the set up.
 
 ## OAuth and /server/.env file
 
