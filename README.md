@@ -153,31 +153,87 @@ npm start
 
 1. Open a new internet browsers and navigate to Google Cloud at the following Link: https://console.cloud.google.com/
 
-2. ![Login into your gmail account by navigating to the login option, which will be top right of the screen.](documentation/readme_resources/google_could_login.png)
+<br>
 
-3. ![Click "Select Project" on the top left of the google cloud console](documentation/readme_resources/Select_Project_Button.png)
+2. Login into your gmail account by navigating to the login option, which will be top right of the screen.
 
-4. ![Click "Create New Project" in the top right of the screen](documentation/readme_resources/Create_New_Project_Button.png)
+<br>
 
-5. ![Name your project, by filling in the Project Name field. Do not enter an orginization, it is uneeded. Press the "Create" button when you are finished.](documentation/readme_resources/Create_New_Project_Screen.png)
+![Login into your gmail account by navigating to the login option, which will be top right of the screen.](documentation/readme_resources/google_could_login.png)
 
-6. ![Select your new project by pressing the "Select Project" button, and click on the project name of the project you just created.](documentation/readme_resources/Select_Created_Project.png)
+3. Click "Select Project" on the top left of the google cloud console
 
-7. ![Once your project is finished loading, click the "API & Services" Button under the quick access menu](documentation/readme_resources/API_Services_Button.png)
+<br>
 
-8. ![Navigate to the "OAuth consent screen" tab and by pressing the button ](documentation/readme_resources/OAuth_Consent_Navigation.png)
+![Click "Select Project" on the top left of the google cloud console](documentation/readme_resources/Select_Project_Button.png)
 
-9. ![You will be prompted to select a user type, for this project make sure to toggle "External" and press the "Create" button](documentation/readme_resources/OAuth_Consent_User_Type.png)
+4. Click "Create New Project" in the top right of the screen
 
-10. ![Fill in the "App Name" field with your desired application name. Under the "User support email, supply the gmail account you are presently logged into. ](documentation/readme_resources/OAuth_Consent_Screen_Set_up.png)
+<br>
 
-11. ![Scroll to the bottom of the page and fill in the field "Developer contact information" with the same email you are presently logged into. Press "Save and Continue" when finished.](documentation/readme_resources/OAuth_Consent_Screen_Set_up_1.png)
+![Click "Create New Project" in the top right of the screen](documentation/readme_resources/Create_New_Project_Button.png)
 
-12. ![Press "Add or Remove" Scopes, and in the "Manually add scopes field" enter 'https://mail.google.com/', which NodeMailer is dependent on. Press "Add to table" and then "Update". Press "Save and Continue" on the bottom of the screen when finished.](documentation/readme_resources/OAuth_Consent_Scopes_Set_up.png)
+5. Name your project, by filling in the Project Name field. Do not enter an orginization, it is uneeded. Press the "Create" button when you are finished.
 
-13. ![Press "Add User" under the heading "Test Users" and add the email you are presently logged into. Once you have filled out this field, press the "Add" button once finished. Press "Save and Continue" when you are ready.](documentation/readme_resources/OAuth_Consent_Test_User_Set_up.png)
+<br>
 
-14. ![Review the consent screen, and when you are ready press "Back to Dashboard"](documentation/readme_resources/OAuth_Consent_Reviw_Consent_Set_up.png)
+![Name your project, by filling in the Project Name field. Do not enter an orginization, it is uneeded. Press the "Create" button when you are finished.](documentation/readme_resources/Create_New_Project_Screen.png)
+
+6. Select your new project by pressing the "Select Project" button, and click on the project name of the project you just created.
+
+<br>
+
+![Select your new project by pressing the "Select Project" button, and click on the project name of the project you just created.](documentation/readme_resources/Select_Created_Project.png)
+
+7. Once your project is finished loading, click the "API & Services" Button under the quick access menu
+
+<br>
+
+![Once your project is finished loading, click the "API & Services" Button under the quick access menu](documentation/readme_resources/API_Services_Button.png)
+
+8. Navigate to the "OAuth consent screen" tab and by pressing the button
+
+<br>
+
+![Navigate to the "OAuth consent screen" tab and by pressing the button](documentation/readme_resources/OAuth_Consent_Navigation.png)
+
+9. You will be prompted to select a user type, for this project make sure to toggle "External" and press the "Create" button
+
+<br>
+
+![You will be prompted to select a user type, for this project make sure to toggle "External" and press the "Create" button](documentation/readme_resources/OAuth_Consent_User_Type.png)
+
+10. Fill in the "App Name" field with your desired application name. Under the "User support email, supply the gmail account you are presently logged into.
+
+<br>
+
+![Fill in the "App Name" field with your desired application name. Under the "User support email, supply the gmail account you are presently logged into.](documentation/readme_resources/OAuth_Consent_Screen_Set_up.png)
+
+11. Scroll to the bottom of the page and fill in the field "Developer contact information" with the same email you are presently logged into. Press "Save and Continue" when finished.
+
+<br>
+
+![Scroll to the bottom of the page and fill in the field "Developer contact information" with the same email you are presently logged into. Press "Save and Continue" when finished.](documentation/readme_resources/OAuth_Consent_Screen_Set_up_1.png)
+
+12. Press "Add or Remove" Scopes, and in the "Manually add scopes field" enter 'https://mail.google.com/', which NodeMailer is dependent on. Press "Add to table" and then "Update". Press "Save and Continue" on the bottom of the screen when finished.
+
+<br>
+
+![Press "Add or Remove" Scopes, and in the "Manually add scopes field" enter 'https://mail.google.com/', which NodeMailer is dependent on. Press "Add to table" and then "Update". Press "Save and Continue" on the bottom of the screen when finished.](documentation/readme_resources/OAuth_Consent_Scopes_Set_up.png)
+
+<br>
+
+13. Press "Add User" under the heading "Test Users" and add the email you are presently logged into. Once you have filled out this field, press the "Add" button once finished. Press "Save and Continue" when you are ready.
+
+<br>
+
+![Press "Add User" under the heading "Test Users" and add the email you are presently logged into. Once you have filled out this field, press the "Add" button once finished. Press "Save and Continue" when you are ready.](documentation/readme_resources/OAuth_Consent_Test_User_Set_up.png)
+
+14. Review the consent screen, and when you are ready press "Back to Dashboard"
+
+<br>
+
+![Review the consent screen, and when you are ready press "Back to Dashboard"](documentation/readme_resources/OAuth_Consent_Reviw_Consent_Set_up.png)
 
 ## OAuth ClientID & Configuring "Credentials"
 
