@@ -6,6 +6,9 @@ A web application for verifying mathematical proofs using Truth-Functional Logic
 - [Installation](#installation)
 - [Setting up the Project](#setting-up-the-project)
 - [Running the Application](#running-the-application)
+- [Google Cloud & Configuring 'Consent Screen'](#Google-Cloud)
+- [OAuth ClientID & Credentials](#OAuth-ClientID)
+- [OAuth and env file](#OAuth-and-ENV-file)
 - [API Reference](#api-reference)
 
 ## Prerequisites
@@ -42,23 +45,41 @@ npm -v
 2. Run the installer and follow the setup process.
 3. After installation, start the MySQL server.
 4. Create a database (schema) for the application and make a note of the credentials. You'll need them to set up the backend connection. Like so:
-<<<<<<< HEAD
-4a. ![Click the local Instance MySQL80 to open the your local instance.](<MySql Client.png>)
-4b. ![Click the Schema's tab on the lower left side of the Local instance "navigator" window.](Schema_Tab-1.png)
-4c. ![Right click the white space of the Schema Window, and select "Create Schema".](Create_Schema.png)
-4d. ![Type in the your Schema name in the new window. Name it something easy to remember, and press apply. **Note** it is a good idea to name this Schema "proof_buddy_development".](Create_Schema_1.png)
-4e. ![You can confirm your Schema was created, by looking under the Navigator Tab of Schemas, you should see your named Schema.](Create_Schema_2.png)
-4d. Congratulations! You have succesfully created a Schema to for your database. Make note of any password you may have used, and the name of your Schema.
-    
-=======
-    4a. ![Click the local Instance MySQL80 to open the your local instance.](<MySql Client.png>)
-    4b. ![Click the Schema's tab on the lower left side of the Local instance "navigator" window.](Schema_Tab-1.png)
-    4c. ![Right click the white space of the Schema Window, and select "Create Schema".](Create_Schema.png)
-    4d. ![Type in the your Schema name in the new window. Name it something easy to remember, and press apply. **Note** it is a good idea to name this Schema "proof_buddy_development".](Create_Schema_1.png)
-    4e. ![You can confirm your Schema was created, by looking under the Navigator Tab of Schemas, you should see your named Schema.](Create_Schema_2.png)
-    4d. Congratulations! You have succesfully created a Schema to for your database. Make note of any password you may have used, and the name of your Schema.
 
->>>>>>> a9c18fc361b474c6a85c478e4384ebfc46589792
+<br>
+
+5. Click the local Instance MySQL80 to open the your local instance.
+
+![Click the local Instance MySQL80 to open the your local instance.](<documentation/readme_resources/MySql Client.png>)
+
+<br>
+
+6. Click the Schema's tab on the lower left side of the Local instance "navigator" window.
+
+<br>
+
+![Click the Schema's tab on the lower left side of the Local instance "navigator" window.](documentation/readme_resources/Schema_Tab-1.png)
+
+7. Right click the white space of the Schema Window, and select "Create Schema".
+
+<br>
+
+![Right click the white space of the Schema Window, and select "Create Schema".](documentation/readme_resources/Create_Schema.png)
+
+8. Type in the your Schema name in the new window. Name it something easy to remember, and press apply. Note: it is a good idea to name this Schema "proof_buddy_development".
+
+<br>
+
+![Type in the your Schema name in the new window. Name it something easy to remember, and press apply. **Note** it is a good idea to name this Schema "proof_buddy_development".](documentation/readme_resources/Create_Schema_1.png)
+
+9. You can confirm your Schema was created, by looking under the Navigator Tab of Schemas, you should see your named Schema.
+
+<br>
+
+![You can confirm your Schema was created, by looking under the Navigator Tab of Schemas, you should see your named Schema.](documentation/readme_resources/Create_Schema_2.png)
+
+10. Congratulations! You have succesfully created a Schema to for your database. Make note of any password you may have used, and the name of your Schema.
+    
 
 *Note: It's recommended to use a client tool like MySQL Workbench for easier database management.*
 
@@ -105,7 +126,11 @@ npm install
 ## Running the Application
 
 1. Before starting the server, create and configure the environment variables in the `.env` file under /sever like so:
-    1a. ![Example Env File](ENV_example.png)
+
+<br>
+
+![Example ENV File](documentation/readme_resources/ENV_example.png)
+
 2. Make sure that DB_HOST equals "localhost".
 3. Make sure DB_USER equal "root".
 4. Make sure DB_PASSWORD equals the password you created when you installed MySQl Workbench. If you opted for no password, leave this an empty String.
@@ -149,7 +174,7 @@ npm start
 
 ### Setting up OAuth 2.0 & Creating Refresh Tokens
 
-## Google Cloud & Configuring 'Consent Screen'
+## Google Cloud
 
 1. Open a new internet browsers and navigate to Google Cloud at the following Link: https://console.cloud.google.com/
 
@@ -235,7 +260,7 @@ npm start
 
 ![Review the consent screen, and when you are ready press "Back to Dashboard"](documentation/readme_resources/OAuth_Consent_Reviw_Consent_Set_up.png)
 
-## OAuth ClientID & Configuring "Credentials"
+## OAuth ClientID
 
 1. Congratulation you in the previous section you created a "consent" for your google cloud project. Please remain in the same project for the following steps:
 
@@ -388,7 +413,7 @@ token_type: This just states what type of token the present token is.
 ```
 22. Congratulations and pat yourself on the back! You just did the hardest part of the set up.
 
-## OAuth and /server/.env file
+## OAuth and ENV file
 
 1. Now that you have succesfully created the "credentials" and "client" in Google Cloud, its time to make changes in your '/server/.env' file. The next few steps will detail how to do this:
 
