@@ -14,6 +14,7 @@ A web application for verifying mathematical proofs using Truth-Functional Logic
 ## Prerequisites
 
 
+
 Before starting with the installation process, ensure you have the following installed:
 
 - [Node.js and npm](https://nodejs.org/en/download/)
