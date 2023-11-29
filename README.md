@@ -147,6 +147,155 @@ cd client
 npm start
 ```
 
+### Setting up OAuth 2.0 & Creating Refresh Tokens
+
+## Google Cloud & Configuring 'Consent Screen'
+
+1. Open a new internet browsers and navigate to Google Cloud at the following Link: https://console.cloud.google.com/
+
+2. ![Login into your gmail account by navigating to the login option, which will be top right of the screen.](documentation/readme_resources/google_could_login.png)
+
+3. ![Click "Select Project" on the top left of the google cloud console](documentation/readme_resources/Select_Project_Button.png)
+
+4. ![Click "Create New Project" in the top right of the screen](documentation/readme_resources/Create_New_Project_Button.png)
+
+5. ![Name your project, by filling in the Project Name field. Do not enter an orginization, it is uneeded. Press the "Create" button when you are finished.](documentation/readme_resources/Create_New_Project_Screen.png)
+
+6. ![Select your new project by pressing the "Select Project" button, and click on the project name of the project you just created.](documentation/readme_resources/Select_Created_Project.png)
+
+7. ![Once your project is finished loading, click the "API & Services" Button under the quick access menu](documentation/readme_resources/API_Services_Button.png)
+
+8. ![Navigate to the "OAuth consent screen" tab and by pressing the button ](documentation/readme_resources/OAuth_Consent_Navigation.png)
+
+9. ![You will be prompted to select a user type, for this project make sure to toggle "External" and press the "Create" button](documentation/readme_resources/OAuth_Consent_User_Type.png)
+
+10. ![Fill in the "App Name" field with your desired application name. Under the "User support email, supply the gmail account you are presently logged into. ](documentation/readme_resources/OAuth_Consent_Screen_Set_up.png)
+
+11. ![Scroll to the bottom of the page and fill in the field "Developer contact information" with the same email you are presently logged into. Press "Save and Continue" when finished.](documentation/readme_resources/OAuth_Consent_Screen_Set_up_1.png)
+
+12. ![Press "Add or Remove" Scopes, and in the "Manually add scopes field" enter 'https://mail.google.com/', which NodeMailer is dependent on. Press "Add to table" and then "Update". Press "Save and Continue" on the bottom of the screen when finished.](documentation/readme_resources/OAuth_Consent_Scopes_Set_up.png)
+
+13. ![Press "Add User" under the heading "Test Users" and add the email you are presently logged into. Once you have filled out this field, press the "Add" button once finished. Press "Save and Continue" when you are ready.](documentation/readme_resources/OAuth_Consent_Test_User_Set_up.png)
+
+14. ![Review the consent screen, and when you are ready press "Back to Dashboard"](documentation/readme_resources/OAuth_Consent_Reviw_Consent_Set_up.png)
+
+## OAuth ClientID & Configuring "Credentials"
+
+1. Congratulation you in the previous section you created a "consent" for your google cloud project. Please remain in the same project for the following steps:
+
+2. ![Navigate to the "Credentials" tab and press its button. Here you press "Create Credentials", and then press "OAuth Client ID". You will need to create this Credential to gather you  authorization tokens in a future step.](documentation/readme_resources/OAuth_Consent_Credentials_Client_ID.png)
+
+3. ![Under "Application Type" select "Web Application" and under the "Name" field give the name "Web Application 1" or any other name you desire. ](documentation/readme_resources/OAuth_Consent_Credentials_Client_ID_1.png)
+
+4. ![Scroll down to the heading "Authorized redirect URIs" and press the "ADD URI" Button. In the new "URIs 1" field, type in 'http://localhost:3001/oauth2callback' and press the "Create" button promptly after.](documentation/readme_resources/OAuth_Consent_Credentials_Client_ID_2.png)
+
+5. ![Review your created "Web Client" Client. Take note of "Client ID" and "Client Secret". NOTE: Keep these fields private AND never share them with anyone. "Keep it secret, Keep it safe"](documentation/readme_resources/OAuth_Consent_Credentials_Client_ID_3.png)
+
+6. The next few steps will detail how to create an "authorization URL", which is the essential piece to "Obtaining a Authorization Code". The next few steps are a bit tricky, I suggest you have a notepad open to take notes and save data.
+
+6a. To create an authorization URL, you will need to follow the below format. Dont worry we will do a step by step instruction on how to acomplish this:
+
+The URL format is as follows:
+
+     https://accounts.google.com/o/oauth2/v2/auth?
+       scope=[SCOPES]&
+       access_type=offline&
+       include_granted_scopes=true&
+       response_type=code&
+       state=[STATE]&
+       redirect_uri=[REDIRECT_URI]&
+       client_id=[CLIENT_ID]
+
+6b. ![Set 'scope' equal to 'https://mail.google.com/' like so.](documentation/readme_resources/Authorization_URL_Scope.png)
+6c. ![Set 'state' equal to your current state code like so.](documentation/readme_resources/Authorization_URL_State.png)
+6d. ![Set 'redirect_uri' equal to 'http://localhost:3001/oauth2callback' like so.](documentation/readme_resources/Authorization_URL_Redirect_URI.png)
+6e. ![Set 'client_id' equal to your Client ID, which you can find under your web client you created in Step 5. See Step 6e1 for more assitance. Note: Remember to not share your 'Client ID' with anyone!](documentation/readme_resources/Authorization_URL_Client_ID.png)
+6e1. ![In case you forgot how to find your Client ID - Naviate to your Google Cloud Consol and click 'APIs & Services' then 'credentials' then select your 'web client'. The information will be on the right hand side. Note: Do NOT share your 'Client ID' or 'Client Secret' with anyone. "Keep it secret, Keep it safe". ](documentation/readme_resources/Authorization_URL_Client_ID_1.png)
+6f. ![Your URL will look something like this now. Note: I have blocked out my client ID for security reasons.](documentation/readme_resources/Authorization_URL_Finished_Example.png)
+
+7. ![Enter your new 'Authorization URL' into a internet browser of your choice like so.](documentation/readme_resources/Authorization_URL_Browser_Insertion.png)
+
+8. ![You will be prompted to log into your gmail account for google cloud. Make sure to use the email you are logged into your google cloud for. You may be warned thast the app is not verified, press "Continue" and ignore this prompt. ](documentation/readme_resources/Authorization_URL_Browser_Log_In.png)
+
+9. ![Now you will be greeted with a new web page, with a 'Message' that equals 'This is OAuth Callback endpoint'. Look at the URL, and take note of the code. This is important to save or write down in a notepad, because this is the 'authorization code' for your web client. Note: DO NOT LOSE THIS AUTHORIZATION CODE](documentation/readme_resources/Authorization_URL_Browser_Code_Acquisition.png)
+
+10. Now that we have our 'authorization' code its time to focus on generating our 'refresh token'. The next few steps will detail how to generate a refresh token.
+
+10a. ![In your IDE, install the 'Thunder Client' extension. NOTE: you can use Postman as well, but this tutorial will focus on Thunder Client.](documentation/readme_resources/Thunder_Client_Extension_Installation.png)
+
+10b. ![Open the 'Thunder Client' application in your IDE, this can be found on the left handside of your IDE. Press 'New Request', and toggle the type of request to 'POST'. Navigate to the 'Body' section of this request.](documentation/readme_resources/Thunder_Client_Extension_Post.png)
+
+10c. ![Fill in the JSON based 'POST' Request like the screenshot and the below format](documentation/readme_resources/Thunder_Client_Extension_Post_1.png)
+
+Your 'POST' Request should follow this format.
+```
+
+{
+
+    "code": your_authorization_code_here_from_step_9,
+    "client_id": your_client_id_here_from_step_5,
+    "client_secret": your_client_secret_here_from_step_5,
+    "redirect_url": "http://localhost:3001/oauth2callback",
+    "grant_type": "authorization_code"
+}
+
+```
+10d. ![Replace the current link inside the 'POST' request, and instead enter 'http:localhost:3001/oauth2callback' and press 'Send'](documentation/readme_resources/Thunder_Client_Extension_Post_2.png)
+
+10e. ![You will Receive a message back with the fields "access_token", "expires_in", "refresh_token","scope", and "token_type". Below is an explanation:](documentation/readme_resources/Thunder_Client_Extension_Post_3.png)
+
+```
+
+access_token: This is the token, that you will need to access the user API functionality. Make sure you keep this token saved in a notepad.
+
+expires_in: This is the time it takes for a token to expire. This means that the access token will expire in 3599 seconds (aka an hour).
+
+refresh_token: This token will be used to get a new access token when your access token expires. More on this later in the guide.
+
+scope: This token is a list of scopes you provided in step 6. 
+
+token_type: This just states what type of token the present token is. 
+
+```
+11. Congratulations and pat yourself on the back! You just did the hardest part of the set up.
+
+## OAuth and /server/.env file
+
+1. Now that you have succesfully created the "credentials" and "client" in Google Cloud, its time to make changes in your '/server/.env' file. The next few steps will detail how to do this:
+
+2. Follow the below format to edit your '/server/.env' file:
+
+```
+# Database configurations.
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD="Your_Password_Here"
+DB_NAME=your_schema_name_here
+DB_DIALECT=mysql
+
+# JSON web token configurations.
+JWT_SECRET=mysecretkey
+JWT_EXPIRATION=86400
+
+# Email configurations.
+GMAIL_USERNAME=your_gmail.com_account_you_used_for_OAuth
+GMAIL_CLIENT_ID=your_client_id_from_step_five
+GMAIL_CLIENT_SECRET=your_client_secret_from_step_five
+GMAIL_ACCESS_TOKEN=your_access_token_that_you_got_from_step_10e
+GMAIL_REFRESH_TOKEN=your_refresh_token_that_you_got_from_step_10e
+
+# Front-end configurations.
+FRONTEND_URL=http://localhost:3000
+
+
+```
+3. Save the file, and restart your server. In the terminal running your server, press 'Control + C' to terminate the server. Then type 'npm start', to restart your server.
+
+4. Congratulations! You have fully set up the current version of Proof Buddy.
+
+
+
+
 ## API Reference
 
 A list of the User API endpoints and their functions.
