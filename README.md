@@ -376,7 +376,7 @@ client_id=[CLIENT_ID]
 ```
 
 {
-    "code": your_authorization_code_here_from_step_9,
+    "code": your_authorization_code_here_from_step_15,
     "client_id": your_client_id_here_from_step_5,
     "client_secret": your_client_secret_here_from_step_5,
     "redirect_url": "http://localhost:3001/oauth2callback",
@@ -388,11 +388,11 @@ client_id=[CLIENT_ID]
 
 ![Fill in the JSON based 'POST' Request like the screenshot and the below format](documentation/readme_resources/Thunder_Client_Extension_Post_1.png)
 
-20. Replace the current link inside the 'POST' request, and instead enter 'http:localhost:3001/oauth2callback' and press 'Send':
+20. Replace the current link inside the 'POST' request, and instead enter 'https://oauth2.googleapis.com/token' and press 'Send':
 
 <br>
 
-![Replace the current link inside the 'POST' request, and instead enter 'http:localhost:3001/oauth2callback' and press 'Send'](documentation/readme_resources/Thunder_Client_Extension_Post_2.png)
+![Replace the current link inside the 'POST' request, and instead enter 'https://oauth2.googleapis.com/token' and press 'Send'](documentation/readme_resources/Thunder_Client_Extension_Post_2.png)
 
 21. You will Receive a message back with the fields "access_token", "expires_in", "refresh_token","scope", and "token_type". Below is an explanation:
 
@@ -435,10 +435,10 @@ JWT_EXPIRATION=86400
 
 # Email configurations.
 GMAIL_USERNAME=your_gmail.com_account_you_used_for_OAuth
-GMAIL_CLIENT_ID=your_client_id_from_step_five
-GMAIL_CLIENT_SECRET=your_client_secret_from_step_five
-GMAIL_ACCESS_TOKEN=your_access_token_that_you_got_from_step_10e
-GMAIL_REFRESH_TOKEN=your_refresh_token_that_you_got_from_step_10e
+GMAIL_CLIENT_ID=your_client_id_from_step_5
+GMAIL_CLIENT_SECRET=your_client_secret_from_step_5
+GMAIL_ACCESS_TOKEN=your_access_token_that_you_got_from_step_15
+GMAIL_REFRESH_TOKEN=your_refresh_token_that_you_got_from_step_21
 
 # Front-end configurations.
 FRONTEND_URL=http://localhost:3000
