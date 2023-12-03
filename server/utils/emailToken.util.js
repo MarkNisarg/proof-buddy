@@ -6,6 +6,10 @@ export const generateVerificationToken = (user) => {
   return jwt.sign({ username: user.username }, authConfig.secret, { expiresIn: '2h' });
 };
 
+export const generateEmailResendToken = (user) => {
+  return jwt.sign({ email: user.email }, authConfig.secret, { expiresIn: '2h' });
+}
+
 // Verify email token.
 export const verifyEmailToken = (token) => {
   try {

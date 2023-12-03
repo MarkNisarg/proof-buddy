@@ -29,8 +29,10 @@ export const verifyEmail = async (req, res) => {
     user.is_active = true;
     await user.save();
 
-    res.send({ message: 'Account verified successfully!' });
+    res.status(200).send({
+      message: 'Account verified successfully!' });
   } catch (error) {
+    console.log(error);
     res.status(500).send({ message: 'Failed to verify account.' });
   }
 };

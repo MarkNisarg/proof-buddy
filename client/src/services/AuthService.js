@@ -8,8 +8,10 @@ const registerUser = async (userData) => {
     const response = await axiosInstance.post(`${API_GATEWAY}/signup`, userData);
     return response.data;
   } catch (error) {
-    // TODO: Handle errors (network issues, server errors, etc.)
-    console.error('Error during user registration:', error);
+    console.error('Error during login:', error);
+    if (!error.response) {
+      console.error('Network error or server is down.');
+    }
     throw error;
   }
 };
@@ -17,10 +19,12 @@ const registerUser = async (userData) => {
 const login = async (credentials) => {
   try {
     const response = await axiosInstance.post(`${API_GATEWAY}/signin`, credentials);
-    // TODO: Handle token storage and management here.
     return response.data;
   } catch (error) {
     console.error('Error during login:', error);
+    if (!error.response) {
+      console.error('Network error or server is down.');
+    }
     throw error;
   }
 };
@@ -28,34 +32,48 @@ const login = async (credentials) => {
 const verifyEmail = async (token) => {
   try {
     const response = await axiosInstance.post(`${API_GATEWAY}/verify-email`, { token });
-    return response.data;
+    if (response.status >= 200 && response.status < 300) {
+      return { success: true, data: response.data };
+    } else {
+      return { success: false, message: 'Email verification failed. Please try again.' };
+    }
   } catch (error) {
     console.error('Error during email verification:', error);
+    if (!error.response) {
+      console.error('Network error or server is down.');
+    }
     throw error;
   }
 };
 
 const resendVerificationEmail = async () => {
   try {
-    const email = Cookies.get('email');
-    if (!email) {
-      throw new Error('User email is not available.');
+    const emailResendToken = Cookies.get('emailResendToken');
+    if (!emailResendToken) {
+      throw new Error('User email could not found.');
     }
 
-    const response = await axiosInstance.post(`${API_GATEWAY}/resend-verification`, { email });
+    const response = await axiosInstance.post(`${API_GATEWAY}/resend-verification`, { emailResendToken });
     return response.data;
   } catch (error) {
-    // TODO: Handle errors like network issues, server errors, etc.
     console.error('Error during resending verification email:', error);
+    if (!error.response) {
+      console.error('Network error or server is down.');
+    }
     throw error;
   }
+};
+
+const isAuthenticated = () => {
+  return Cookies.get('accessToken') ? true : false;
 };
 
 const AuthService = {
   registerUser,
   login,
   verifyEmail,
-  resendVerificationEmail
+  resendVerificationEmail,
+  isAuthenticated
 };
 
 export default AuthService;

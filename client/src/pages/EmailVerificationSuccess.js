@@ -1,19 +1,19 @@
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Cookies from 'js-cookie';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import MainLayout from '../layouts/MainLayout';
+import '../scss/_email-verification.scss';
 
 const EmailVerificationSuccess = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    const email = Cookies.get('email');
-    if (!email) {
-      navigate('/signup');
+    if (!location.state?.verified) {
+      navigate('/');
     }
-  }, [navigate]);
+  }, [location.state?.verified, navigate]);
 
   const handleGoHome = () => {
     navigate('/');
@@ -28,7 +28,7 @@ const EmailVerificationSuccess = () => {
           <p>Please proceed to login and access your account.</p>
           <p>Or click the button below to go the homepage.</p>
           <div className='button-wrap'>
-            <Button variant="primary" onClick={handleGoHome}>Go to Homepage</Button>
+            <Button className='orange-btn' onClick={handleGoHome}>Go to Homepage</Button>
           </div>
         </div>
       </Container>

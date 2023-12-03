@@ -1,0 +1,82 @@
+@use "./variables" as *;
+
+.home-container {
+  margin-top: 50px;
+
+  @media (min-width: $breakpoint-md) {
+    margin-top: 80px;
+  }
+
+  .row {
+    .col-md-6 {
+      text-align: center;
+
+      @media (min-width: $breakpoint-md) {
+        text-align: left;
+      }
+
+      &.dragon-section {
+        img {
+          width: 80%;
+        }
+      }
+
+      &.text-section {
+        h1 {
+          font-size: 50px;
+          background: $blue-orange-gradient;
+          background-clip: text;
+          -webkit-background-clip: text;
+          -ms-background-clip: text;
+          -o-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          -ms-text-fill-color: transparent;
+          -o-text-fill-color: transparent;
+
+          @media (min-width: $breakpoint-md) {
+            font-size: 70px;
+          }
+        }
+
+        p {
+          font-size: 22px;
+          font-weight: $font-semi-bold;
+          color: $color-black;
+
+          @media (min-width: $breakpoint-md) {
+            font-size: 26px;
+          }
+        }
+
+        a {
+          text-decoration: none;
+          font-weight: $font-semi-bold;
+          display: inline-block;
+          background: $orange-gradient;
+          background-clip: text;
+          -webkit-background-clip: text;
+          -ms-background-clip: text;
+          -o-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          -ms-text-fill-color: transparent;
+          -o-text-fill-color: transparent;
+
+          &::after {
+            content: "";
+            display: block;
+            width: 0;
+            height: 2px;
+            background: $color-drexel-orange;
+            transition: width 0.3s;
+          }
+
+          &:hover {
+            &::after {
+              width: 100%;
+            }
+          }
+        }
+      }
+    }
+  }
+}

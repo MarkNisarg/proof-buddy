@@ -1,0 +1,272 @@
+@use "./variables" as *;
+
+header {
+  .navbar {
+    padding: 12px 0;
+    background-image: $blue-gradient;
+
+    @media (min-width: $breakpoint-md) {
+      padding: 0;
+    }
+
+    a {
+      &.navbar-brand {
+        font-weight: $font-bold;
+        font-size: 28px;
+        line-height: 32px;
+        color: $color-white;
+
+        @media (min-width: $breakpoint-md) {
+          padding: 17px 0;
+        }
+      }
+    }
+
+    button {
+      &.navbar-toggler {
+        border-color: $color-white;
+
+        span {
+          &.navbar-toggler-icon {
+            background-image: $navbar-toggler-icon-bg;
+          }
+        }
+      }
+    }
+
+    .navbar-collapse {
+      .navbar-nav {
+        &:first-child {
+          margin-top: 20px;
+
+          @media (min-width: $breakpoint-md) {
+            margin-top: 0;
+          }
+        }
+
+        .nav-item {
+          &.dropdown {
+            border-bottom: 1px solid $color-white;
+
+            @media (min-width: $breakpoint-md) {
+              border-bottom: 0;
+
+              &:hover {
+                .dropdown-menu {
+                  display: block;
+                }
+
+                a {
+                  &.dropdown-toggle {
+                    color: $color-drexel-orange;
+
+                    &::before {
+                      width: 100%;
+                    }
+
+                    &::after {
+                      content: "";
+                      transform: rotate(135deg);
+                      top: 31px;
+                      border-color: $color-drexel-orange;
+                    }
+                  }
+                }
+              }
+            }
+
+            a {
+              &.dropdown-toggle {
+                padding: 12px 0;
+                position: relative;
+
+                @media (min-width: $breakpoint-md) {
+                  padding: 22px 20px 22px 17px;
+                }
+
+                &::after {
+                  font-size: 32px;
+                  content: "+";
+                  position: absolute;
+                  top: 25px;
+                  right: 0;
+                  transform: translate(-50%, -50%);
+                  font-weight: 400;
+                  border: 0;
+                  margin-left: 0;
+                  transition: all 0.3s;
+
+                  @media (min-width: $breakpoint-md) {
+                    content: "";
+                    border: 3px solid $color-white;
+                    border-width: 0 0 3px 3px;
+                    height: 10px;
+                    width: 10px;
+                    position: absolute;
+                    transform: rotate(-45deg);
+                    top: 26px;
+                    right: 2px;
+                  }
+                }
+
+                &.show {
+                  &::after {
+                    content: "\2013";
+
+                    @media (min-width: $breakpoint-md) {
+                      content: "";
+                      transform: rotate(135deg);
+                      top: 31px;
+                    }
+                  }
+                }
+              }
+
+              + .dropdown-menu {
+                border: 0;
+                background: transparent;
+                margin: 0;
+                padding: 0;
+                margin-bottom: 5px;
+
+                @media (min-width: $breakpoint-md) {
+                  top: 66px;
+                  left: 10px;
+                  background: $blue-gradient;
+                  border-radius: 0 0 6px 6px;
+                  padding: 8px 0;
+                }
+
+                a {
+                  font-size: 18px;
+                  color: $color-white;
+                  padding: 6px 9px 6px 2px;
+
+                  @media (min-width: $breakpoint-md) {
+                    padding: 4px 16px;
+                  }
+
+                  &:hover,
+                  &:focus {
+                    color: $color-drexel-orange;
+                    background: transparent;
+                  }
+                }
+
+                hr {
+                  display: none;
+
+                  @media (min-width: $breakpoint-md) {
+                    display: block;
+                    border-color: $color-white;
+                  }
+                }
+              }
+            }
+          }
+
+          a {
+            &.nav-link {
+              font-weight: $font-semi-bold;
+              font-size: 20px;
+              line-height: 22px;
+              color: $color-white;
+
+              &.top-menu-item {
+                padding: 12px 0;
+                border-bottom: 1px solid $color-white;
+
+                @media (min-width: $breakpoint-md) {
+                  padding: 22px 16px;
+                  border-bottom: none;
+                }
+              }
+
+              @media (min-width: $breakpoint-md) {
+                &:not(.orange-link, .login) {
+                  &::before {
+                    content: "";
+                    display: block;
+                    width: 0;
+                    height: 2px;
+                    background: $color-drexel-orange;
+                    transition: all 0.3s;
+                    position: relative;
+                    top: 32px;
+                  }
+
+                  &:hover {
+                    color: $color-drexel-orange;
+
+                    &::before {
+                      width: 100%;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        &:last-child {
+          margin-bottom: 25px;
+
+          @media (min-width: $breakpoint-md) {
+            margin-bottom: 0;
+          }
+
+          li {
+            &.nav-item {
+              @media (min-width: $breakpoint-md) {
+                margin-left: 15px;
+              }
+
+              a {
+                padding: 12px 0;
+                border-bottom: 1px solid $color-white;
+
+                @media (min-width: $breakpoint-md) {
+                  padding: 8px 20px;
+
+                  &.login {
+                    border: 2px solid $color-white;
+
+                    &:hover {
+                      color: $color-drexel-blue;
+                      background: $color-white;
+                    }
+                  }
+                }
+
+                &.orange-link {
+                  color: $color-drexel-orange;
+                  border-bottom: 1px solid $color-drexel-orange;
+
+                  @media (min-width: $breakpoint-md) {
+                    border: 2px solid $color-drexel-orange;
+
+                    &:hover {
+                      color: $color-drexel-blue;
+                      background: $orange-gradient;
+                    }
+                  }
+                }
+
+                &.profile {
+                  @media (min-width: $breakpoint-md) {
+                    border: 0;
+                  }
+
+                  i {
+                    font-size: 20px;
+                    margin-right: 4px;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

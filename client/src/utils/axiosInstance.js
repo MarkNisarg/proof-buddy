@@ -1,5 +1,6 @@
 import axios from 'axios';
 import apiCondig from '../config/apiConfig'
+import Cookies from 'js-cookie';
 
 const axiosInstance = axios.create({
   baseURL: apiCondig.apiBaseUrl
@@ -8,7 +9,7 @@ const axiosInstance = axios.create({
 // Request interceptor for API calls.
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
+    const token = Cookies.get('accessToken');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

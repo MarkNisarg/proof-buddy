@@ -5,6 +5,7 @@ import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import MainLayout from '../layouts/MainLayout';
 import AuthService from '../services/AuthService';
+import '../scss/_email-verification.scss';
 
 const EmailVerification = () => {
   const [serverMessage, setServerMessage] = useState({ message: '', type: '' });
@@ -12,9 +13,9 @@ const EmailVerification = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const email = Cookies.get('email');
-    if (!email) {
-      navigate('/signup');
+    const emailResendToken = Cookies.get('emailResendToken');
+    if (!emailResendToken) {
+      navigate('/');
       return;
     }
 
@@ -22,9 +23,11 @@ const EmailVerification = () => {
       const token = searchParams.get('token');
       if (token) {
         try {
-          await AuthService.verifyEmail(token);
-          Cookies.remove('email');
-          navigate('/verify-success');
+          const isVerified = await AuthService.verifyEmail(token);
+          if (isVerified.success) {
+            Cookies.remove('emailResendToken');
+            navigate('/verify-success', { state: { verified: true } });
+          }
         } catch (error) {
           setServerMessage({message: error.response.data.message || 'Failed to verify email. Please try the link again or request a new one.', type: 'error'});
         }
@@ -42,9 +45,13 @@ const EmailVerification = () => {
   const handleResendEmail = async () => {
     try {
       const response = await AuthService.resendVerificationEmail();
-      setServerMessage({message: response.message, type: 'success'});
+      setServerMessage({message: response.message, type: 'text-success'});
     } catch (error) {
-      setServerMessage({message: error.response.data.message || 'An error occurred while trying to resend the verification email. Please try again later.', type: 'error'});
+      if (error.response && error.response.data && error.response.data.message) {
+        setServerMessage({message: error.response.data.message, type: 'text-danger'});
+      } else {
+        setServerMessage({message: 'An error occurred while trying to resend the verification email. Unable to connect to the server.', type: 'text-danger'});
+      }
     }
   };
 
@@ -60,7 +67,7 @@ const EmailVerification = () => {
           ) : (
             <>
               <div className='button-wrap'>
-                <Button variant="warning" onClick={handleResendEmail}>Send Email Again</Button>
+                <Button className='orange-btn' onClick={handleResendEmail}>Send Email Again</Button>
               </div>
             </>
           )}
