@@ -1,0 +1,40 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "A robust Node.js application providing a suite of APIs for document proofreading and verification, with user authentication, role-based access control, and extensive activity logging. Utilizing Express for server management and MySQL for data persistence, the application ensures secure and efficient handling of user interactions and document processing.",
+  "type": "module",
+  "keywords": [
+    "express",
+    "nodejs",
+    "api",
+    "authentication",
+    "verification",
+    "proofreading",
+    "document-management",
+    "jwt",
+    "mysql",
+    "user-management",
+    "activity-logging",
+    "secure-api"
+  ],
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "development": "nodemon server.js"
+  },
+  "author": "Proof Buddy Team",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "eslint": "^8.53.0",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.6.2",
+    "nodemailer": "^6.9.7",
+    "nodemon": "^3.0.2",
+    "sequelize": "^6.33.0",
+    "sequelize-cli": "^6.6.1"
+  }
+}

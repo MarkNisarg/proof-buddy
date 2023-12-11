@@ -1,0 +1,42 @@
+@use "./variables" as *;
+
+.login-container {
+  div {
+    &.alert {
+      font-size: 18px;
+      font-weight: $font-medium;
+    }
+
+    &.link-wrap {
+      text-align: right;
+      font-size: 20px;
+
+      a {
+        font-size: inherit;
+        text-decoration: none;
+        color: $color-muted-blue;
+        font-weight: $font-medium;
+        display: inline-block;
+
+        &::after {
+          content: "";
+          display: block;
+          width: 0;
+          height: 2px;
+          background: $color-muted-blue;
+          transition: width 0.3s;
+        }
+
+        &:hover {
+          &::after {
+            width: 100%;
+          }
+        }
+      }
+
+      &.signup-link {
+        text-align: center;
+      }
+    }
+  }
+}

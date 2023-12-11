@@ -1,0 +1,81 @@
+@use "./scss/variables" as *;
+
+html {
+  height: 100%;
+
+  body {
+    font-family: $font-source-sans;
+    height: 100%;
+
+    #root {
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+    }
+  }
+}
+
+h1,
+.h1 {
+  font-size: 44px;
+  color: $color-drexel-blue;
+  margin: 40px 0;
+  font-weight: $font-extra-bold;
+
+  @media (min-width: $breakpoint-md) {
+    font-size: 56px;
+  }
+
+  .login-container &,
+  .signup-container & {
+    font-size: 36px;
+    margin: 40px 0;
+    font-weight: $font-semi-bold;
+
+    @media (min-width: $breakpoint-md) {
+      margin: 60px 0 30px;
+    }
+  }
+}
+
+.orange-btn {
+  letter-spacing: 1.5px;
+  font-weight: $font-bold;
+  font-size: 20px;
+  text-transform: uppercase;
+  padding: 10px 30px;
+  border-radius: 0;
+  line-height: normal;
+  border: none;
+  color: $color-black;
+  margin: 10px 0;
+  background: transparent;
+  border: 2px solid $color-drexel-orange;
+
+  &:hover {
+    color: $color-black;
+    background-image: $orange-gradient;
+    border: 2px solid $color-creamy-orange;
+  }
+}
+
+.blue-btn {
+  letter-spacing: 1.5px;
+  font-weight: $font-bold;
+  font-size: 20px;
+  text-transform: uppercase;
+  padding: 10px 30px;
+  border-radius: 0;
+  line-height: normal;
+  border: none;
+  color: $color-black;
+  margin: 10px 0;
+  background: transparent;
+  border: 2px solid $color-drexel-blue;
+
+  &:hover {
+    color: $color-white;
+    background-image: $blue-gradient;
+    border: 2px solid $color-drexel-blue;
+  }
+}

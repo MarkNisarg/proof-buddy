@@ -1,0 +1,44 @@
+@use "./variables" as *;
+
+.signup-parent-container {
+  margin-bottom: 30px;
+
+  h1 {
+    font-size: 48px;
+    margin: 120px 0 30px;
+    background: $blue-orange-gradient;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -ms-background-clip: text;
+    -o-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -ms-text-fill-color: transparent;
+    -o-text-fill-color: transparent;
+
+    @media (min-width: $breakpoint-md) {
+      font-size: 66px;
+      margin: 150px 0 40px;
+    }
+  }
+
+  p {
+    font-size: 26px;
+    font-weight: $font-semi-bold;
+  }
+
+  .buttons-wrap {
+    a {
+      width: 190px;
+      margin: 10px;
+    }
+  }
+}
+
+.signup-container {
+  div {
+    &.alert {
+      font-size: 18px;
+      font-weight: $font-medium;
+    }
+  }
+}

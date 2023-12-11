@@ -1,0 +1,26 @@
+@use "./variables" as *;
+
+.email-verification-container,
+.logout-container {
+  margin: 150px 0 50px;
+
+  p {
+    font-size: 22px;
+    font-weight: $font-semi-bold;
+
+    @media (min-width: $breakpoint-md) {
+      font-size: 30px;
+    }
+
+    &.resend-message {
+      &.text-danger,
+      &.text-success {
+        font-weight: $font-bold;
+      }
+    }
+  }
+
+  .button-wrap {
+    margin-top: 30px;
+  }
+}
