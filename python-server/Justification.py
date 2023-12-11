@@ -2,6 +2,8 @@ import LineNumber
 from Rule import Rule
 from TList import TList
 
+# This should essentially just be a reference to a Rule, from the allowed rule list, and the line numbers
+# that correspond to the premises of that rule's proof
 class Justification:
     def __init__(self, rule:Rule=Rule(), references:TList=TList(LineNumber,[])):
         if rule and not isinstance(rule,Rule):
