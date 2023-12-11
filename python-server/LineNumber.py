@@ -1,5 +1,7 @@
 from Expression import Expression
 
+# This class might not be necessary if we simply make the string representation
+# construct itself from the layering of subproofs
 class LineNumber(list):
     def __init__(self, iterable=None):
         super(LineNumber, self).__init__()

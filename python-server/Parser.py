@@ -2,6 +2,13 @@
 from TList import TList
 import re
 
+# All used classes are self contained in one file to avoid circular references.
+# This is not ideal for scale programming, but works for now.
+
+# ExpressionType and Expression should likely extend from TokenType and Token respectively so that we
+# can have homogenous lists for storing partially parsed expressions
+
+# We will need to find a way to OR these together so that we can make more dynamic expression types
 class TokenType():
     def __init__(self, name:str, recognizeRegex:str, printRegex:str, isTerminal:bool=False):
         self.name = name
@@ -39,6 +46,7 @@ class Token():
     def __repr__(self:'Token'):
         return f'{type(self).__name__}({self.tokenType},Match object,{self.isTerminal})'
 
+# Likewise for TokenType, we should create a way to OR these together to make more dynamic ExpressionTypes
 class ExpressionType:
     def __init__(self, name:str, structure:list):
         self.name = name
@@ -87,7 +95,7 @@ class Expression:
         return s
     
     def __repr__(self):
-        return f'{type(self).__name__}({self.type},{self.subcomponents},{self.token})'
+        return f'{type(self).__name__}({self.type},{self.subcomponents},\'{self.token}\')'
             
 class Parser:
     def __init__(self, tokenTypes:TList[TokenType], expressionTypes:TList[ExpressionType]):
@@ -106,21 +114,26 @@ class Parser:
                     tokens.append(Token(t,match))
         return tokens
 
-    def parse(self, inputLine:str) -> Expression:
+    def parse(self, inputLine:str, debug:bool=False) -> Expression:
         # tokenize str->TList[Token]
         # Match TList[Token] to TList[ExpressionType] (recursively) to create Expression tree
         tokenList = list(self.tokenize(inputLine))
         for t_i, t in enumerate(tokenList):
             if t.isTerminal:
-                print(f'{t.tokenType.name}: {t}')
+                if debug:
+                    print(f'{t.tokenType.name}: {t}')
+                    print()
                 tokenList[t_i] = Expression(ExpressionType(t.tokenType.name, [t.tokenType]), f'{t}')
         while len(tokenList) > 1:
             for e in self.expressionTypes:
                 found, index = e.match(tokenList)
                 if found:
-                    print(f'{e.name}: {tokenList[index:index+len(e.structure)]}')
+                    if debug:
+                        print(f'{e.name}: {tokenList[index:index+len(e.structure)]!s}')
+                        print()
                     new_expr = Expression(e, tokenList[index:index+len(e.structure)])
                     # I couldn't figure out how to pass a slice to __delitem__ for some reason
+                    # It should support it
                     for i in range(len(e.structure)):
                         tokenList.__delitem__(index)
                     tokenList.insert(index, new_expr)

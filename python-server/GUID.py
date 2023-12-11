@@ -1,5 +1,7 @@
 import random
 
+# This is for referencing proofs/rules by something that allows us to type check
+# without creating circular references
 class GUID():
     def __init__(self, type:str='', guid:'GUID'=None):
         # For randomly generating GUIDs we should consider something more robust

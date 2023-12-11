@@ -2,6 +2,9 @@ from typing import TypeVar
 
 _T = TypeVar("_T")
 
+# Currently these have to be instantiated as `list1 = TList[int](int,[])` to tell the
+# linter the class (the first int) and allow python to know the class for actual type
+# checking (the second int)
 class TList(list[_T]):
     def __init__(self, type:_T, iterable=None):
         self.T = type
@@ -54,17 +57,17 @@ class TList(list[_T]):
     def __str__(self):
         s = '['
         if self.__len__() > 0:
-            s += f'{self.__getitem__(0)!s}'
+            s += f'{self.__getitem__(0)!s}\n'
         for i in range(1,self.__len__()):
-            s += f', {self.__getitem__(i)!s}'
+            s += f', {self.__getitem__(i)!s}\n'
         s += ']'
         return s
     
     def __repr__(self):
         s = f'{type(self).__name__}('
         if self.__len__() > 0:
-            s += f'{self.__getitem__(0)!r}'
+            s += f'{self.__getitem__(0)!r}\n'
         for i in range(1,self.__len__()):
-            s += f', {self.__getitem__(i)!r}'
-        s += ']'
+            s += f', {self.__getitem__(i)!r}\n'
+        s += ')'
         return s
