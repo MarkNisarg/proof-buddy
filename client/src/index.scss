@@ -27,7 +27,8 @@ h1,
   }
 
   .login-container &,
-  .signup-container & {
+  .signup-container &,
+  .forgot-password-container & {
     font-size: 36px;
     margin: 40px 0;
     font-weight: $font-semi-bold;

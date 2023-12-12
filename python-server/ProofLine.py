@@ -5,6 +5,8 @@ from Proof import Proof
 
 class ProofLine:
     def __init__(self, line_no:LineNumber=LineNumber(), argument:Expression=Expression(), justification:Justification=Justification()):
+        # This should probably be replaced with a single int and the string
+        # representation just be constructed from the layering of subproofs
         if line_no and not isinstance(line_no,LineNumber):
             print('error')
         else:

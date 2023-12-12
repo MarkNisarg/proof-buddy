@@ -7,6 +7,13 @@ from RuleList import RuleList
 from TList import TList
 from GUID import GUID
 
+# The Proof class will contain all the fields that a proof will need to know to pass along API calls.
+# It will only store the information however and will call the necessary methods for parsing and
+# validation from other classes so that multiple proof engines can be used.
+
+# We might want to store both the initiial raw strings that the user entered, as well as the parsed
+# expressions separately and have them fill out each other as needed
+
 class Proof:
     def __init__(self):
         self.premises : TList(Expression) = None

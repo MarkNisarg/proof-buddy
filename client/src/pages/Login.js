@@ -132,7 +132,7 @@ const Login = () => {
               </Form.Floating>
 
               <div className="link-wrap">
-                <Link to="#">Forgot Password?</Link>
+                <Link to="/forgot-password">Forgot Password?</Link>
               </div>
 
               <div className="text-center">

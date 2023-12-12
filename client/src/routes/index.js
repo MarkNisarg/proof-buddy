@@ -5,14 +5,15 @@ import Login from '../pages/Login';
 import Logout from '../pages/Logout'
 import SignUp from '../pages/SignUp';
 import SignUpUser from '../pages/SignUpUser';
+import ForgotPassword from '../pages/ForgotPassword';
 import EmailVerification from '../pages/EmailVerification';
 import EmailVerificationSuccess from '../pages/EmailVerificationSuccess';
 import withAuth from '../hoc/withAuth'
 import withNoAuth from '../hoc/withNoAuth'
 
-const RouteWithNoAuth = ({ component: Component }) => {
+const RouteWithNoAuth = ({ component: Component, ...rest }) => {
   const WrappedComponent = withNoAuth(Component);
-  return <WrappedComponent />;
+  return <WrappedComponent {...rest} />;
 };
 
 const RouteWithAuth = ({ component: Component }) => {
@@ -30,6 +31,7 @@ const AppRoutes = () => {
         <Route path="/signup" element={<RouteWithNoAuth component={SignUp} />} />
         <Route path="/signup/student" element={<RouteWithNoAuth component={SignUpUser} role="student" / >} />
         <Route path="/signup/instructor" element={<RouteWithNoAuth component={SignUpUser} role="instructor" / >} />
+        <Route path="/forgot-password" element={<RouteWithNoAuth component={ForgotPassword} />} />
         <Route path="/verify-email" element={<RouteWithNoAuth component={EmailVerification} / >} />
         <Route path="/verify-success" element={<RouteWithNoAuth component={EmailVerificationSuccess} / >} />
       </Routes>
