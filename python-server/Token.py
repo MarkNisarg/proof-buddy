@@ -1,6 +1,5 @@
 import re
 
-
 class Token():
     def __init__(self:'Token', tokenType:'TokenType', regexMatch:re.Match[str]):
         self.tokenType = tokenType
@@ -31,9 +30,9 @@ class TokenType():
         regex = re.compile(self.recognizeRegex)
         match = regex.match(input)
         
-        return match
-        
-
+        if match != None:
+            return Token(self,match)
+        return None
 
     # For creating ExpressionTypes where a token can be of multiple types
     # This will probably need to be implemented with a list for each property
@@ -45,5 +44,4 @@ class TokenType():
     
     def __repr__(self):
         return f'{type(self).__name__}({self.name},{self.recognizeRegex},{self.printRegex})'
-    
     
