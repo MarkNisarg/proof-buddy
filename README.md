@@ -24,14 +24,14 @@ Before starting with the installation process, ensure you have the following ins
 
 For first time project set up instruction on your local machine, please view: documentation/user_documentation/local_installation/1_first_time_project_set_up.md. 
 
-[First Time Project Setup](documentation/user_documentation/local_installation/1_first_time_project_set_up.md)
+[First Time Project Setup](documentation/user_documentation/local_installation/documentation/readme_resources/1_first_time_project_set_up.md)
 
 
 ## Running the Application
 
 For instructions for running the application, please view: documentation/user_documentation/local_installation/2_first_time_running_application.md
 
-[Running the application](documentation/user_documentation/local_installation/2_first_time_running_application.md)
+[Running the application](documentation/user_documentation/local_installation/documentation/readme_resources/2_first_time_running_application.md)
 
 ### Setting up OAuth 2.0 & Creating Refresh Tokens
 
