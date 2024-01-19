@@ -44,9 +44,12 @@ class ExpressionType(TokenType):
                         hasMatch = False
                         break
             if hasMatch:
-                return (True, i)
-        return (False, -1)
-    
+                expression = Expression(self, inputLine[i:i+len(self.structure)-1])
+                newLine = inputLine[:i-1]+expression + inputLine[i+len(self.structure)-1:]
+                return newLine
+        return inputLine
+
+
     def __str__(self):
         return self.name
     
