@@ -19,10 +19,13 @@ npm -v
 
 ### MySQL
 
+Please view this link for a tutorial on MySQL Workbench: https://www.w3resource.com/mysql/administration-tools/mysql-workbench-tutorial.php
+[MySQL Workbench Tutorial](https://www.w3resource.com/mysql/administration-tools/mysql-workbench-tutorial.php)
+
 1. Download the MySQL installer from [here](https://dev.mysql.com/downloads/installer/).
 2. Run the installer and follow the setup process.
 3. After installation, start the MySQL server.
-4. Create a database (schema) for the application and make a note of the credentials. You'll need them to set up the backend connection. Like so:
+4. Create a database (schema) for the application and make a note of the credentials.
 
 <br>
 
