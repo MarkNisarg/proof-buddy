@@ -28,12 +28,12 @@ class ExpressionType(TokenType):
 
     def __init__(self, name:str, structure:list):
         self.name = name
-        self.structure = list[TokenType]
+        self.structure = list[TokenType]()
         for e in structure:
             if isinstance(e,TokenType):
                 self.structure.append(e)
     
-    def match(self:'ExpressionType', inputLine:list) -> (bool, int):
+    def match(self:'ExpressionType', inputLine:list[Token|Expression]) -> (bool, int):
         for i in range(len(inputLine)-len(self.structure)+1):
             hasMatch = True
             for j in range(len(self.structure)):
@@ -44,10 +44,8 @@ class ExpressionType(TokenType):
                         hasMatch = False
                         break
             if hasMatch:
-                expression = Expression(self, inputLine[i:i+len(self.structure)-1])
-                newLine = inputLine[:i-1]+expression + inputLine[i+len(self.structure)-1:]
-                return newLine
-        return inputLine
+                return Expression(self, inputLine[i:i+len(self.structure)])
+        return None
 
 
     def __str__(self):

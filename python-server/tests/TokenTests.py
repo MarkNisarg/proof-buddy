@@ -50,7 +50,7 @@ class TokenTests(unittest.TestCase):
                     token = ti.tokenType.parse(s)
                     self.assertIsNotNone(token)
 
-    def test_tokentype_print_valid_list_of_strings(self):
+    def test_token_print_valid_list_of_strings(self):
         for ti in self.tokenTypeList:
             with self.subTest(ti.tokenType.name):
                 for j, s in enumerate(ti.valid_unparsed):

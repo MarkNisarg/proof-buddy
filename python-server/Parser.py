@@ -37,7 +37,6 @@ class Parser:
                 if found:
                     if debug:
                         print(f'{e.name}: {tokenList[index:index+len(e.structure)]!s}')
-                        print()
                     new_expr = Expression(e, tokenList[index:index+len(e.structure)])
                     # I couldn't figure out how to pass a slice to __delitem__ for some reason
                     # It should support it
