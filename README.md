@@ -3,7 +3,7 @@ A web application for verifying mathematical proofs using Truth-Functional Logic
 
 ## Table of Contents
 - [Prerequisites](#prerequisites)
-- [Installation](#installation)
+- [Local Installation](#Local-Installation)
 - [Setting up the Project](#setting-up-the-project)
 - [Running the Application](#running-the-application)
 - [Google Cloud & Configuring 'Consent Screen'](#Google-Cloud)
@@ -20,7 +20,8 @@ Before starting with the installation process, ensure you have the following ins
 - [Node.js and npm](https://nodejs.org/en/download/)
 - [MySQL](https://dev.mysql.com/downloads/installer/)
 
-## Installation
+
+## Local Installation
 
 ### Node.js and npm
 
@@ -76,6 +77,8 @@ npm -v
 
 9. You can confirm your Schema was created, by looking under the Navigator Tab of Schemas, you should see your named Schema.
 
+Note: Do not edit your schema such as adding tables or rows to tables. When you run the server for the first time, it will sync and populate your schema automatically.
+
 <br>
 
 ![You can confirm your Schema was created, by looking under the Navigator Tab of Schemas, you should see your named Schema.](documentation/readme_resources/Create_Schema_2.png)
@@ -127,7 +130,7 @@ npm install
 
 ## Running the Application
 
-1. Before starting the server, create and configure the environment variables in the `.env` file under /sever like so:
+1. Before starting the server, create and configure the environment variables in the `.env` file under /server like so:
 
 <br>
 
@@ -178,6 +181,11 @@ npm start
 
 ## Google Cloud
 
+Abstract:
+In the following steps you will be creating an OAuth Account with Google Cloud, which is a cloud based service that handles POST/GET requests. Furthermore, it will be used for generating credentials for registering users both Students and Instructors on your local machine.
+
+Installation Steps:
+
 1. Open a new internet browsers and navigate to Google Cloud at the following Link: https://console.cloud.google.com/
 
 <br>
@@ -200,7 +208,7 @@ npm start
 
 ![Click "Create New Project" in the top right of the screen](documentation/readme_resources/Create_New_Project_Button.png)
 
-5. Name your project, by filling in the Project Name field. Do not enter an orginization, it is uneeded. Press the "Create" button when you are finished.
+5. Name your project, by filling in the Project Name field. Do not enter an organization, it is uneeded. Press the "Create" button when you are finished.
 
 <br>
 
@@ -264,7 +272,7 @@ npm start
 
 ## OAuth ClientID
 
-1. Congratulation you in the previous section you created a "consent" for your google cloud project. Please remain in the same project for the following steps:
+1. Congratulations! In the previous section you created a "consent" for your google cloud project. Please remain in the same project for the following steps:
 
 <br>
 
@@ -294,7 +302,7 @@ npm start
 
 6. The next few steps will detail how to create an "authorization URL", which is the essential piece to "Obtaining a Authorization Code". The next few steps are a bit tricky, I suggest you have a notepad open to take notes and save data.
 
-7. To create an authorization URL, you will need to follow the below format. Dont worry we will do a step by step instruction on how to acomplish this. The URL format is as follows:
+7. To create an authorization URL, you will need to follow the below format (clarified in steps 8 - 12 below). Don't worry we will do a step by step instruction on how to acomplish this. The URL format is as follows:
 
 ```
 https://accounts.google.com/o/oauth2/v2/auth?
@@ -307,6 +315,8 @@ redirect_uri=[REDIRECT_URI]&
 client_id=[CLIENT_ID]
 
 ```
+Note: Remove the "[]"'s (Square Brackets) note that in the above example that the entire URL should be on the same line. In the above example, the line breaks are for ease of reading. Make sure not to delete the "&"'s following each field. Also note that the entire URL starting from 'https' to and including the 'client_id' field are all part of the 'authorization url'.
+
 8. Set 'scope' equal to 'https://mail.google.com/' like this screen shot.
 
 <br>
@@ -325,7 +335,7 @@ client_id=[CLIENT_ID]
 
 ![Set 'redirect_uri' equal to 'http://localhost:3001/oauth2callback' like so:](documentation/readme_resources/Authorization_URL_Redirect_URI.png)
 
-11. Set 'client_id' equal to your Client ID, which you can find under your web client you created in Step 5. See Step 6 in the previoussection for more assitance. Note: Remember to not share your 'Client ID' with anyone!
+11. Set 'client_id' equal to your Client ID, which you can find under your web client you created in Step 5. See Step 6 in the previous section for more assitance. Note: Remember to not share your 'Client ID' with anyone!
 
 <br>
 
@@ -337,19 +347,21 @@ client_id=[CLIENT_ID]
 
 ![Your URL will look something like this now. Note: I have blocked out my client ID for security reasons.](documentation/readme_resources/Authorization_URL_Finished_Example.png)
 
-13. Enter your new 'Authorization URL' into a internet browser of your choice like so:
+13. Enter your new 'Authorization URL', which you just created in the above steps 7 - 12, into an internet browser of your choice like so:
 
 <br>
 
-![Enter your new 'Authorization URL' into a internet browser of your choice like so.](documentation/readme_resources/Authorization_URL_Browser_Insertion.png)
+![Enter your new 'Authorization URL' into an internet browser of your choice like so.](documentation/readme_resources/Authorization_URL_Browser_Insertion.png)
 
-14. You will be prompted to log into your gmail account for google cloud. Make sure to use the email you are logged into your google cloud for. You may be warned thast the app is not verified, press "Continue" and ignore this prompt.
+14. You will be prompted to log into your gmail account for google cloud. Make sure to use the email you are logged into your google cloud for. You may be warned that the app is not verified, press 'Continue' and ignore this prompt.
 
 <br>
 
 ![You will be prompted to log into your gmail account for google cloud. Make sure to use the email you are logged into your google cloud for. You may be warned thast the app is not verified, press "Continue" and ignore this prompt. ](documentation/readme_resources/Authorization_URL_Browser_Log_In.png)
 
 15. Now you will be greeted with a new web page, with a 'Message' that equals 'This is OAuth Callback endpoint'. Look at the URL, and take note of the code. This is important to save or write down in a notepad, because this is the 'authorization code' for your web client. Note: DO NOT LOSE THIS AUTHORIZATION CODE
+
+Note: Your 'authorization code' is everything after 'code=' up to but not including the '&scope'.
 
 <br>
 
@@ -363,13 +375,13 @@ client_id=[CLIENT_ID]
 
 ![In your IDE, install the 'Thunder Client' extension. NOTE: you can use Postman as well, but this tutorial will focus on Thunder Client.](documentation/readme_resources/Thunder_Client_Extension_Installation.png)
 
-18. Open the 'Thunder Client' application in your IDE, this can be found on the left handside of your IDE. Press 'New Request', and toggle the type of request to 'POST'. Navigate to the 'Body' section of this request.
+18. Open the 'Thunder Client' application in your IDE, this can be found on the left handside of your editor (Refer to the Lightning Bolt Symbol). Press 'New Request', and use the dropdown menu to select 'POST'. Navigate to the 'Body' section of this request.
 
 <br>
 
-![Open the 'Thunder Client' application in your IDE, this can be found on the left handside of your IDE. Press 'New Request', and toggle the type of request to 'POST'. Navigate to the 'Body' section of this request.](documentation/readme_resources/Thunder_Client_Extension_Post.png)
+![Open the 'Thunder Client' application in your IDE, this can be found on the left handside of your editor (Refer to the Lightning Bolt Symbol). Press 'New Request', and use the dropdown menu to select 'POST'. Navigate to the 'Body' section of this request.](documentation/readme_resources/Thunder_Client_Extension_Post.png)
 
-19. Fill in the JSON based 'POST' Request like the screenshot and the below format. Your 'POST' Request should follow this format:
+19. Fill in the JSON based 'POST' Request like the screenshot. Your 'POST' Request should follow this format:
 
 <br>
 
@@ -379,11 +391,12 @@ client_id=[CLIENT_ID]
     "code": your_authorization_code_here_from_step_15,
     "client_id": your_client_id_here_from_step_5,
     "client_secret": your_client_secret_here_from_step_5,
-    "redirect_url": "http://localhost:3001/oauth2callback",
+    "redirect_uri": "http://localhost:3001/oauth2callback",
     "grant_type": "authorization_code"
 }
 
 ```
+
 <br>
 
 ![Fill in the JSON based 'POST' Request like the screenshot and the below format](documentation/readme_resources/Thunder_Client_Extension_Post_1.png)
@@ -404,7 +417,7 @@ client_id=[CLIENT_ID]
 
 access_token: This is the token, that you will need to access the user API functionality. Make sure you keep this token saved in a notepad.
 
-expires_in: This is the time it takes for a token to expire. This means that the access token will expire in 3599 seconds (aka an hour).
+expires_in: This is the time it takes for a token to expire. This means that the access token will expire in 3599 seconds (aka almost an hour).
 
 refresh_token: This token will be used to get a new access token when your access token expires. More on this later in the guide.
 
@@ -413,6 +426,8 @@ scope: This token is a list of scopes you provided in step 6.
 token_type: This just states what type of token the present token is. 
 
 ```
+Note: If for any reason you run into an error that states 'invalid_grant', please recreate your 'Authorization URL' starting from step 7 up to step 15. Generally the reason this error occurs is because the time has elapsed for that specific 'Authorization URL', which forces you to start over with a new one.
+
 22. Congratulations and pat yourself on the back! You just did the hardest part of the set up.
 
 ## OAuth and ENV file
@@ -420,6 +435,8 @@ token_type: This just states what type of token the present token is.
 1. Now that you have succesfully created the "credentials" and "client" in Google Cloud, its time to make changes in your '/server/.env' file. The next few steps will detail how to do this:
 
 2. Follow the below format to edit your '/server/.env' file:
+
+Note: Do not remove anything from the .env file that was already present, but rather simply append the information starting from 'Email Configurations'.
 
 ```
 # Database configurations.
@@ -443,8 +460,8 @@ GMAIL_REFRESH_TOKEN=your_refresh_token_that_you_got_from_step_21
 # Front-end configurations.
 FRONTEND_URL=http://localhost:3000
 
-
 ```
+
 3. Save the file, and restart your server. In the terminal running your server, press 'Control + C' to terminate the server. Then type 'npm start', to restart your server.
 
 4. Congratulations! You have fully set up the current version of Proof Buddy.

@@ -14,10 +14,12 @@ const EMAIL_CONFIG = {
   }
 };
 
+
 // Validate essential email configuration.
 if (!EMAIL_CONFIG.auth.user || !EMAIL_CONFIG.auth.clientId || !EMAIL_CONFIG.auth.clientSecret || !EMAIL_CONFIG.auth.refreshToken || !EMAIL_CONFIG.auth.accessToken) {
   console.error('Fatal Error: Email configuration is incomplete.');
   process.exit(1);
 }
+
 
 export default EMAIL_CONFIG;
