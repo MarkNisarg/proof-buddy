@@ -13,7 +13,11 @@ import Button from 'react-bootstrap/esm/Button';
 
 const Home = () => {
   const { user } = useAuth();
-  const [proofType, setProofType] = useState('');
+  const [proofType, setProofType] = useState('/EquationalReasoningRacket');
+
+  const proofButtonClickHandler = () => {
+    console.log('Proof Type: ' + proofType);
+  }
 
   return (
     <MainLayout>
@@ -42,15 +46,26 @@ const Home = () => {
                           <Form.Select
                             id='proofType'
                             type='select'
-                            onChange={this.setProofType.bind(this)}
+                            onChange={e => {
+                              setProofType(e.target.value);
+                              console.log('Target: ' + e.target.value);
+                            }}
                           >
                             <option 
-                              id='EquationalReasoning' 
-                              value='EquationalReasoningRacket'>
+                              id='EquationalReasoningRacket' 
+                              value='/EquationalReasoningRacket'>
                                 Equational Reasoning: Racket
                             </option>
-                            <option value='NaturalDeductionPropositionalLogic'>Natural Deduction: Propositional Logic</option>
-                            <option value='NaturalDeductionFirstOrderLogic'>Natural Deduction: First Order Logic</option>
+                            <option 
+                              id='NaturalDeductionPropositionalLogic'
+                              value='/NaturalDeductionPropositionalLogic'>
+                                Natural Deduction: Propositional Logic
+                            </option>
+                            <option
+                              id='NaturalDeductionFirstOrderLogicc' 
+                              value='/NaturalDeductionFirstOrderLogic'>
+                                Natural Deduction: First Order Logic
+                            </option>
                           </Form.Select>
                         
                         </Col>
@@ -61,8 +76,8 @@ const Home = () => {
                 
                 </Col>
                
-                <Link to="/proof">
-                  <Button>
+                <Link to={proofType}>
+                  <Button onClick={proofButtonClickHandler}>
                     Lets Begin
                   </Button>
                 </Link>
