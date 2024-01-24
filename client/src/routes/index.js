@@ -10,9 +10,9 @@ import EmailVerification from '../pages/EmailVerification';
 import EmailVerificationSuccess from '../pages/EmailVerificationSuccess';
 import withAuth from '../hoc/withAuth'
 import withNoAuth from '../hoc/withNoAuth'
-import Proof from '../pages/Proof';
-import CreateProof from '../pages/CreateProof';
 import EquationalReasoningRacket from '../pages/EquationalReasoningRacket';
+import NaturalDeductionFirstOrderLogic from '../pages/NaturalDeductionFirstOrderLogic';
+import NaturalDeductionPropositionalLogic from'../pages/NaturalDeductionPropositionalLogic'
 
 const RouteWithNoAuth = ({ component: Component, ...rest }) => {
   const WrappedComponent = withNoAuth(Component);
@@ -37,9 +37,9 @@ const AppRoutes = () => {
         <Route path="/forgot-password" element={<RouteWithNoAuth component={ForgotPassword} />} />
         <Route path="/verify-email" element={<RouteWithNoAuth component={EmailVerification} / >} />
         <Route path="/verify-success" element={<RouteWithNoAuth component={EmailVerificationSuccess} / >} />
-        <Route path="/proof" element={<RouteWithAuth component={Proof} / >} />
-        <Route path="/createproof" element={<RouteWithAuth component={CreateProof} / >} />
         <Route path="/EquationalReasoningRacket" element={<RouteWithAuth component={EquationalReasoningRacket} / >} />
+        <Route path="/NaturalDeductionFirstOrderLogic" element={<RouteWithAuth component={NaturalDeductionFirstOrderLogic} / >} />
+        <Route path="/NaturalDeductionPropositionalLogic" element={<RouteWithAuth component={NaturalDeductionPropositionalLogic} / >} />
       </Routes>
     </Router>
   );

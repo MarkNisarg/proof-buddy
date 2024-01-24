@@ -48,7 +48,6 @@ const Home = () => {
                             type='select'
                             onChange={e => {
                               setProofType(e.target.value);
-                              console.log('Target: ' + e.target.value);
                             }}
                           >
                             <option 
@@ -62,7 +61,7 @@ const Home = () => {
                                 Natural Deduction: Propositional Logic
                             </option>
                             <option
-                              id='NaturalDeductionFirstOrderLogicc' 
+                              id='NaturalDeductionFirstOrderLogic' 
                               value='/NaturalDeductionFirstOrderLogic'>
                                 Natural Deduction: First Order Logic
                             </option>

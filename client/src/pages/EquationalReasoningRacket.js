@@ -4,12 +4,17 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import FormLabel from 'react-bootstrap/esm/FormLabel';
 import Button from 'react-bootstrap/esm/Button';
+import Col from 'react-bootstrap/Col';
+import { Link } from 'react-router-dom';
 
 const EquationalReasoningRacket = () => {
 
   return (
     <MainLayout>
-      <Container className='create-proof-container'>
+      <Container className='equational-reasoning-bracket-container'>
+        <Col className='text-center'>
+          <h2>Equational Reasoning: Racket</h2>
+        </Col>
         <Form>
           <Form.Group className='proof-creation'>
             <FormLabel>
@@ -54,7 +59,13 @@ const EquationalReasoningRacket = () => {
         <Button id='counterButton'>Start Counter Example</Button>
         <br></br>
         <br></br>
-        <Button>Back</Button>
+        
+        <Col>
+          <Link to='/'>
+            <Button>Back</Button>
+          </Link>
+        </Col>
+        
       </Container>
     </MainLayout>
   );
