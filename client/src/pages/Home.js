@@ -15,10 +15,6 @@ const Home = () => {
   const { user } = useAuth();
   const [proofType, setProofType] = useState('/EquationalReasoningRacket');
 
-  const proofButtonClickHandler = () => {
-    console.log('Proof Type: ' + proofType);
-  }
-
   return (
     <MainLayout>
       <Container className='home-container'>
@@ -76,7 +72,7 @@ const Home = () => {
                 </Col>
                
                 <Link to={proofType}>
-                  <Button onClick={proofButtonClickHandler}>
+                  <Button>
                     Lets Begin
                   </Button>
                 </Link>
