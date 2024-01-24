@@ -10,6 +10,8 @@ import EmailVerification from '../pages/EmailVerification';
 import EmailVerificationSuccess from '../pages/EmailVerificationSuccess';
 import withAuth from '../hoc/withAuth'
 import withNoAuth from '../hoc/withNoAuth'
+import Proof from '../pages/Proof';
+import CreateProof from '../pages/CreateProof';
 
 const RouteWithNoAuth = ({ component: Component, ...rest }) => {
   const WrappedComponent = withNoAuth(Component);
@@ -34,6 +36,8 @@ const AppRoutes = () => {
         <Route path="/forgot-password" element={<RouteWithNoAuth component={ForgotPassword} />} />
         <Route path="/verify-email" element={<RouteWithNoAuth component={EmailVerification} / >} />
         <Route path="/verify-success" element={<RouteWithNoAuth component={EmailVerificationSuccess} / >} />
+        <Route path="/proof" element={<RouteWithAuth component={Proof} / >} />
+        <Route path="/createproof" element={<RouteWithAuth component={CreateProof} / >} />
       </Routes>
     </Router>
   );
