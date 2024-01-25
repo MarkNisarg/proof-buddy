@@ -27,7 +27,14 @@ const EquationalReasoningRacket = () => {
 
   const removeBracketLine = (i) => {
     let newBracketList = [...bracketList];
+
+    //must list bracket names.... Something is wrong with removal
+    for (i=0; i < newBracketList.length; i++) {
+      console.log(newBracketList[i].name);
+    }
+
     bracketList.splice(i, 1);
+    console.log(newBracketList.length);
     setBracketList(newBracketList);
   }
   
@@ -91,7 +98,7 @@ const EquationalReasoningRacket = () => {
                   <Row key={index}>
                     <Col md={3}>
                       <Form.Control
-                        id='proofName'
+                        id='leftBracket'
                         type='text'
                         placeholder='Enter Bracket'
                         onChange={e => handleBracketListChange(index, e)}
@@ -104,7 +111,7 @@ const EquationalReasoningRacket = () => {
 
                     <Col md={3}>
                       <Form.Control
-                        id='proofName'
+                        id='rightBracket'
                         type='text'
                         placeholder='Enter Bracket'
                       />
