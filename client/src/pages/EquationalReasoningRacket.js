@@ -12,6 +12,25 @@ const EquationalReasoningRacket = () => {
 
   const [isFormVisible, setIsFormVisible] = useState(false);
 
+  const [bracketList, setBracketList] = useState([{ Bracket: ''}])
+
+  const handleBracketListChange = (i, e) => {
+    let newBracketList = [...bracketList];
+    newBracketList[i][e.target.name] = e.target.value;
+    setBracketList(newBracketList);
+
+  }
+
+  const addNewBracketLine = () => {
+    setBracketList([...bracketList, {Bracket: ''}]);
+  }
+
+  const removeBracketLine = (i) => {
+    let newBracketList = [...bracketList];
+    bracketList.splice(i, 1);
+    setBracketList(newBracketList);
+  }
+  
   const handleVisibility = () => {
     setIsFormVisible(!isFormVisible);
   }
@@ -25,7 +44,7 @@ const EquationalReasoningRacket = () => {
         <Col className='text-center'>
           <Row>
             <Col className='text-center' md={4}>
-              <Button onClick={handleVisibility} >Start New Proof</Button>  
+              <Button onClick={handleVisibility} >Start/Close New Proof</Button>  
             </Col>
             <Col className='text-center' md={4}>
               <Button>Help</Button>  
@@ -41,7 +60,7 @@ const EquationalReasoningRacket = () => {
           isFormVisible && 
 
         <Form >
-          <Form.Group className='proof-creation'>
+          <Form.Group id='ER-proof-creation'>
             <Form.Floating>
               <Col md={4}>
                 <FormLabel>
@@ -65,47 +84,56 @@ const EquationalReasoningRacket = () => {
                   label="Lemmas Enabled"
                 />
               </Col>
-
+              <br></br>
+              {/* Using Map to Create Input fields for Brackets */}
               <Row className='text-center'>
-                <Col md={3}>
-                  <Form.Control
-                    id='proofName'
-                    type='text'
-                    placeholder='Enter Bracket'
-                  />
+                {bracketList.map((bracket, index) => (
+                  <Row key={index}>
+                    <Col md={3}>
+                      <Form.Control
+                        id='proofName'
+                        type='text'
+                        placeholder='Enter Bracket'
+                        onChange={e => handleBracketListChange(index, e)}
+                      />
+                    </Col>
+
+                    <Col md={3}>
+                      <h2>=</h2>
+                    </Col>
+
+                    <Col md={3}>
+                      <Form.Control
+                        id='proofName'
+                        type='text'
+                        placeholder='Enter Bracket'
+                      />
+                    </Col>
+                    {
+                      index ?
+                        <Col md={2}>
+                          <Button  variant='danger' onClick={() => removeBracketLine(index)}>Remove</Button>
+                        </Col>
+                        : null
+                    }
+                  </Row>
+ 
+                ))}
+                <br></br>
+                <Col md={1}>
+                  <Button onClick={addNewBracketLine}>Add Line</Button>
                 </Col>
-                <Col md={3}>
-                  <h2>=</h2>
-                </Col>
-                <Col md={3}>
-                  <Form.Control
-                    id='proofName'
-                    type='text'
-                    placeholder='Enter Bracket'
-                  />
-                </Col>
+                {/* <Col md={2}>
+                  <Button variant='danger' onClick={addNewBracketLine}>Remove Line</Button>
+                </Col> */}
+                
               </Row>
 
             </Form.Floating>
           </Form.Group>
-        </Form>  
+        </Form>   
         }
 
-        <br>
-        </br>
-        
-        <Col>
-          <Row>
-            <Col>
-              <Button id='startButton'>Save Proof</Button>
-            </Col>
-
-            <Col>
-              <Button id='counterButton'>Start Counter Example</Button>
-            </Col>
-          </Row>
-        </Col>
-         
       </Container>
     </MainLayout>
   );
