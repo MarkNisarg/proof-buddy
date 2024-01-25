@@ -13,9 +13,9 @@ from Token import Token, TokenType
 
 class ExpressionTestInstance(NamedTuple):
     expressionType: ExpressionType
-    valid_unparsed: list[str]
-    valid_parsed: list[str]
-    invalid_unparsed: list[str]
+    valid_unparsed: list[list[Token | Expression]]
+    valid_parsed: list[list[Expression]]
+    invalid_unparsed: list[list[Token | Expression]]
 
 class ExpressionTests(unittest.TestCase):
     def setUp(self):    
@@ -39,7 +39,7 @@ class ExpressionTests(unittest.TestCase):
             ])
         )
 
-    def test_expressiontype_parse_valid_list_of_tokens(self):        
+    def test_expressiontype_parse_valid_list_of_tokens(self):
         for ti in self.expressionTypeList:
             with self.subTest(ti.expressionType.name):
                 for s in ti.valid_unparsed:
@@ -61,22 +61,13 @@ class ExpressionTests(unittest.TestCase):
                     self.assertEqual(f'{ti.valid_parsed[j]}', f'{expression}')
     
     def test_expression_tree_valid(self):
-        pass
-        # for ti in self.expressionTypeList:
-        #     with self.subTest(ti.expressionType.name):
-        #         for j in range(len(ti.valid_unparsed)):
-        #             expression = ti.expressionType.match(ti.valid_unparsed[j])
-        #             for s in expression.type.structure:
-        #                 for i in range(len(ti.valid_unparsed[j])-len(self.structure)+1):
-        #                     hasMatch = True
-        #                     for j in range(len(self.structure)):
-        #                         if isinstance(ti.valid_unparsed[i+k],Expression) and self.structure[j].generic:
-        #                             continue
-        #                         if isinstance(inputLine[i+j],Expression) or self.structure[j].generic or \
-        #                             inputLine[i+j].tokenType != self.structure[j]:
-        #                                 hasMatch = False
-        #                                 break
-        #                 self.assertEqual(ti.valid_unparsed[s:s+len(self)], s)
+        for ti in self.expressionTypeList:
+            with self.subTest(ti.expressionType.name):
+                for j in range(len(ti.valid_unparsed)):
+                    expression = ti.expressionType.match(ti.valid_unparsed[j])
+                    expression2 = ti.valid_parsed[j]
+                    self.assertEqual(expression, expression2)
+
 
 if __name__ == '__main__':
     unittest.main()

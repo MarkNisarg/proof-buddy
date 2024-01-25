@@ -51,6 +51,3 @@ class Parser:
 
     def addExpressionType(self, name:str, structure:list[TokenType]):
         self.expressionTypes.append(structure)
-
-    def printExpr(self, expr:Expression) -> str:
-        pass

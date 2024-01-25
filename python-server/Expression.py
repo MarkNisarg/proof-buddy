@@ -23,7 +23,20 @@ class Expression(Token):
     
     def __repr__(self):
         return f'{type(self).__name__}({self.type},{self.subcomponents},\'{self.token}\')'
-    
+
+    def __eq__(self, other:'Expression'):
+        if len(self.subcomponents) != len(other.subcomponents):
+            return False
+        else:
+            if len(self.subcomponents) == 0:
+                return self.type == other.type
+
+            for i in range(len(self.subcomponents)):
+                if self.subcomponents[i] != other.subcomponents[i]:
+                    return False
+            return True
+
+
 class ExpressionType(TokenType):
 
     def __init__(self, name:str, structure:list):
@@ -40,7 +53,7 @@ class ExpressionType(TokenType):
                 if isinstance(inputLine[i+j],Expression) and self.structure[j].generic:
                     continue
                 if isinstance(inputLine[i+j],Expression) or self.structure[j].generic or \
-                    inputLine[i+j].tokenType != self.structure[j]:
+                    inputLine[i+j].type != self.structure[j]:
                         hasMatch = False
                         break
             if hasMatch:

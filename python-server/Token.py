@@ -2,15 +2,15 @@ import re
 
 class Token():
     def __init__(self:'Token', tokenType:'TokenType', regexMatch:re.Match[str]):
-        self.tokenType = tokenType
+        self.type = tokenType
         self.regexMatch = regexMatch
         self.isTerminal = tokenType.isTerminal
     
     def __str__(self:'Token'):
-        return self.regexMatch.expand(self.tokenType.printRegex)
+        return self.regexMatch.expand(self.type.printRegex)
     
     def __repr__(self:'Token'):
-        return f'{type(self).__name__}({self.tokenType},Match object,{self.isTerminal})'
+        return f'{type(self).__name__}({self.type},Match object,{self.isTerminal})'
     
 class TokenType():
     def __init__(self, name:str, recognizeRegex:str, printRegex:str, isTerminal:bool=False):
