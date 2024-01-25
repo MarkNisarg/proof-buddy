@@ -66,21 +66,46 @@ const EquationalReasoningRacket = () => {
                 />
               </Col>
 
-              <Row>
-                <Col>
-                  <Button id='startButton'>Save Proof</Button>
+              <Row className='text-center'>
+                <Col md={3}>
+                  <Form.Control
+                    id='proofName'
+                    type='text'
+                    placeholder='Enter Bracket'
+                  />
                 </Col>
-
-                <Col>
-                  <Button id='counterButton'>Start Counter Example</Button>
+                <Col md={3}>
+                  <h2>=</h2>
+                </Col>
+                <Col md={3}>
+                  <Form.Control
+                    id='proofName'
+                    type='text'
+                    placeholder='Enter Bracket'
+                  />
                 </Col>
               </Row>
+
             </Form.Floating>
           </Form.Group>
-        </Form>
-        
+        </Form>  
         }
+
+        <br>
+        </br>
         
+        <Col>
+          <Row>
+            <Col>
+              <Button id='startButton'>Save Proof</Button>
+            </Col>
+
+            <Col>
+              <Button id='counterButton'>Start Counter Example</Button>
+            </Col>
+          </Row>
+        </Col>
+         
       </Container>
     </MainLayout>
   );
