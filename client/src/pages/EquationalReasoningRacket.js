@@ -12,30 +12,30 @@ const EquationalReasoningRacket = () => {
 
   const [isFormVisible, setIsFormVisible] = useState(false);
 
-  const [bracketList, setBracketList] = useState([{ Bracket: ''}])
+  const [racketList, setRacketList] = useState([{ Racket: ''}])
 
-  const handleBracketListChange = (i, e) => {
-    let newBracketList = [...bracketList];
-    newBracketList[i][e.target.name] = e.target.value;
-    setBracketList(newBracketList);
+  const handleRacketListChange = (i, e) => {
+    let newRacketList = [...racketList];
+    newRacketList[i][e.target.name] = e.target.value;
+    setRacketList(newRacketList);
 
   }
 
-  const addNewBracketLine = () => {
-    setBracketList([...bracketList, {Bracket: ''}]);
+  const addNewRacketLine = () => {
+    setRacketList([...racketList, {Racket: ''}]);
   }
 
-  const removeBracketLine = (i) => {
-    let newBracketList = [...bracketList];
+  const removeRacketLine = (i) => {
+    let newRacketList = [...racketList];
 
-    //must list bracket names.... Something is wrong with removal
-    for (i=0; i < newBracketList.length; i++) {
-      console.log(newBracketList[i].name);
+    //must list racket names.... Something is wrong with removal. Fix Mark!
+    for (i=0; i < newRacketList.length; i++) {
+      console.log(newRacketList[i].name);
     }
 
-    bracketList.splice(i, 1);
-    console.log(newBracketList.length);
-    setBracketList(newBracketList);
+    racketList.splice(i, 1);
+    console.log(newRacketList.length);
+    setRacketList(newRacketList);
   }
   
   const handleVisibility = () => {
@@ -44,7 +44,7 @@ const EquationalReasoningRacket = () => {
 
   return (
     <MainLayout>
-      <Container className='equational-reasoning-bracket-container'>
+      <Container className='equational-reasoning-racket-container'>
         <Col className='text-center'>
           <h2>Equational Reasoning: Racket</h2>
         </Col>
@@ -92,34 +92,49 @@ const EquationalReasoningRacket = () => {
                 />
               </Col>
               <br></br>
-              {/* Using Map to Create Input fields for Brackets */}
+              <Col>
+                <h3>
+                  Left Hand Side:
+                </h3>
+              </Col>
+              <br></br>
+              {/* Using Map to Create Input fields for rackets */}
               <Row className='text-center'>
-                {bracketList.map((bracket, index) => (
+                {racketList.map((racket, index) => (
                   <Row key={index}>
                     <Col md={3}>
                       <Form.Control
-                        id='leftBracket'
+                        id='leftRacket1'
                         type='text'
-                        placeholder='Enter Bracket'
-                        onChange={e => handleBracketListChange(index, e)}
+                        placeholder='Enter Racket'
+                        onChange={e => handleRacketListChange(index, e)}
                       />
                     </Col>
 
+                    <Col md={3}>
+                      <Form.Control
+                        id='leftRacket2'
+                        type='text'
+                        placeholder='Enter Rule'
+                        onChange={e => handleRacketListChange(index, e)}
+                      />
+                    </Col>
+                    
                     <Col md={3}>
                       <h2>=</h2>
                     </Col>
 
-                    <Col md={3}>
+                    {/* <Col md={3}>
                       <Form.Control
-                        id='rightBracket'
+                        id='rightRacket'
                         type='text'
-                        placeholder='Enter Bracket'
+                        placeholder='Enter Racket'
                       />
-                    </Col>
+                    </Col> */}
                     {
                       index ?
                         <Col md={2}>
-                          <Button  variant='danger' onClick={() => removeBracketLine(index)}>Remove</Button>
+                          <Button  variant='danger' onClick={() => removeRacketLine(index)}>Remove</Button>
                         </Col>
                         : null
                     }
@@ -128,7 +143,7 @@ const EquationalReasoningRacket = () => {
                 ))}
                 <br></br>
                 <Col md={1}>
-                  <Button onClick={addNewBracketLine}>Add Line</Button>
+                  <Button onClick={addNewRacketLine}>Add Line</Button>
                 </Col>
                 {/* <Col md={2}>
                   <Button variant='danger' onClick={addNewBracketLine}>Remove Line</Button>
