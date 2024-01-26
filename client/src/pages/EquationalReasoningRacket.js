@@ -14,32 +14,32 @@ const EquationalReasoningRacket = () => {
   
   const [id, setID] = useState(1);
 
-  const [racketList, setRacketList] = useState([{ racket: '', racketID: 0}])
+  const [proofLineList, setProofLineList] = useState([{ proofLine: '', proofLineID: 0}])
 
-  const handleRacketListChange = (i, e) => {
-    let newRacketList = [...racketList];
+  const handleProofLineListChange = (i, e) => {
+    let newProofLineList = [...proofLineList];
     //wrong code fix
-    newRacketList[i][e.target.name] = e.target.value;
-    setRacketList(newRacketList);
+    //newRacketList[i][e.target.name] = e.target.value;
+    setProofLineList(newProofLineList);
   }
 
-  const addNewRacketLine = () => {
+  const addNewProofLine = () => {
     setID(id + 1);
     //console.log('ID: ' + id);
-    setRacketList([...racketList, {racket: '', racketID: id}]);
+    setProofLineList([...proofLineList, {proofLine: '', proofLineID: id}]);
   }
 
-  const removeRacketLine = (i) => {
-    let newRacketList = [...racketList];
+  const removeProofLine = (i) => {
+    let newProofLineList = [...proofLineList];
 
     //must list racket names.... Something is wrong with removal. Fix Mark!
-    for (i=0; i < newRacketList.length; i++) {
-      console.log('Racket ID: ' + newRacketList[i].racketID);
+    for (i=0; i < newProofLineList.length; i++) {
+      console.log('ProofLine ID: ' + newProofLineList[i].proofLineID);
     } 
 
-    racketList.splice(i, 1);
-    console.log(newRacketList.length);
-    setRacketList(newRacketList);
+    //racketList.splice(i, 1);
+    console.log(newProofLineList.length);
+    setProofLineList(newProofLineList);
   }
   
   const handleVisibility = () => {
@@ -104,14 +104,14 @@ const EquationalReasoningRacket = () => {
               <br></br>
               {/* Using Map to Create Input fields for rackets */}
               <Row className='text-center'>
-                {racketList.map((racket, index) => (
+                {proofLineList.map((racket, index) => (
                   <Row key={index}>
                     <Col md={3}>
                       <Form.Control
                         id='leftRacket'
                         type='text'
                         placeholder='Enter Racket'
-                        onChange={e => handleRacketListChange(index, e)}
+                        onChange={e => handleProofLineListChange(index, e)}
                         name='test'
                       />
                     </Col>
@@ -121,7 +121,7 @@ const EquationalReasoningRacket = () => {
                         id='leftRule'
                         type='text'
                         placeholder='Enter Rule'
-                        onChange={e => handleRacketListChange(index, e)}
+                        onChange={e => handleProofLineListChange(index, e)}
                         name={'Rule' + ' ' + index}
                       />
                     </Col>
@@ -140,7 +140,7 @@ const EquationalReasoningRacket = () => {
                     {
                       index ?
                         <Col md={2}>
-                          <Button  variant='danger' onClick={() => removeRacketLine(index)}>Remove</Button>
+                          <Button  variant='danger' onClick={() => removeProofLine(index)}>Remove</Button>
                         </Col>
                         : null
                     }
@@ -149,7 +149,7 @@ const EquationalReasoningRacket = () => {
                 ))}
                 <br></br>
                 <Col md={1}>
-                  <Button onClick={addNewRacketLine}>Add Line</Button>
+                  <Button onClick={addNewProofLine}>Add Line</Button>
                 </Col>
                 {/* <Col md={2}>
                   <Button variant='danger' onClick={addNewBracketLine}>Remove Line</Button>
