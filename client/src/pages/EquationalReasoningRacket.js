@@ -11,6 +11,8 @@ import { Link } from 'react-router-dom';
 const EquationalReasoningRacket = () => {
 
   const [isFormVisible, setIsFormVisible] = useState(false);
+  
+  const [name, setName] = useState('');
 
   const [racketList, setRacketList] = useState([{ Racket: ''}])
 
@@ -18,7 +20,6 @@ const EquationalReasoningRacket = () => {
     let newRacketList = [...racketList];
     newRacketList[i][e.target.name] = e.target.value;
     setRacketList(newRacketList);
-
   }
 
   const addNewRacketLine = () => {
@@ -108,6 +109,7 @@ const EquationalReasoningRacket = () => {
                         type='text'
                         placeholder='Enter Racket'
                         onChange={e => handleRacketListChange(index, e)}
+                        name={racket}
                       />
                     </Col>
 
@@ -117,6 +119,7 @@ const EquationalReasoningRacket = () => {
                         type='text'
                         placeholder='Enter Rule'
                         onChange={e => handleRacketListChange(index, e)}
+                        name={'Rule' + ' ' + index}
                       />
                     </Col>
                     
