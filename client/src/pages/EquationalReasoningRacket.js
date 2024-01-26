@@ -14,7 +14,7 @@ const EquationalReasoningRacket = () => {
   
   const [id, setID] = useState(1);
 
-  const [proofLineList, setProofLineList] = useState([{ proofLine: '', proofLineID: 0}])
+  const [proofLineList, setProofLineList] = useState([{ proofLine: ''}])
 
   const handleProofLineListChange = (i, e) => {
     let newProofLineList = [...proofLineList];
@@ -24,21 +24,13 @@ const EquationalReasoningRacket = () => {
   }
 
   const addNewProofLine = () => {
-    setID(id + 1);
-    //console.log('ID: ' + id);
-    setProofLineList([...proofLineList, {proofLine: '', proofLineID: id}]);
+    setProofLineList([...proofLineList, {proofLine: ''}]);
   }
 
-  const removeProofLine = (i) => {
+  const removeProofLine = (index) => {
     let newProofLineList = [...proofLineList];
-
-    //must list racket names.... Something is wrong with removal. Fix Mark!
-    for (i=0; i < newProofLineList.length; i++) {
-      console.log('ProofLine ID: ' + newProofLineList[i].proofLineID);
-    } 
-
-    //racketList.splice(i, 1);
-    console.log(newProofLineList.length);
+   
+    newProofLineList.splice(index, 1);
     setProofLineList(newProofLineList);
   }
   
@@ -140,7 +132,8 @@ const EquationalReasoningRacket = () => {
                     {
                       index ?
                         <Col md={2}>
-                          <Button  variant='danger' onClick={() => removeProofLine(index)}>Remove</Button>
+                          <Button  variant='danger' onClick={() => 
+                            removeProofLine(index)}>Remove</Button>
                         </Col>
                         : null
                     }
