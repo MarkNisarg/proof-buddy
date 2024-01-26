@@ -12,18 +12,21 @@ const EquationalReasoningRacket = () => {
 
   const [isFormVisible, setIsFormVisible] = useState(false);
   
-  const [name, setName] = useState('');
+  const [id, setID] = useState(1);
 
-  const [racketList, setRacketList] = useState([{ Racket: ''}])
+  const [racketList, setRacketList] = useState([{ racket: '', racketID: 0}])
 
   const handleRacketListChange = (i, e) => {
     let newRacketList = [...racketList];
+    //wrong code fix
     newRacketList[i][e.target.name] = e.target.value;
     setRacketList(newRacketList);
   }
 
   const addNewRacketLine = () => {
-    setRacketList([...racketList, {Racket: ''}]);
+    setID(id + 1);
+    //console.log('ID: ' + id);
+    setRacketList([...racketList, {racket: '', racketID: id}]);
   }
 
   const removeRacketLine = (i) => {
@@ -31,8 +34,8 @@ const EquationalReasoningRacket = () => {
 
     //must list racket names.... Something is wrong with removal. Fix Mark!
     for (i=0; i < newRacketList.length; i++) {
-      console.log(newRacketList[i].name);
-    }
+      console.log('Racket ID: ' + newRacketList[i].racketID);
+    } 
 
     racketList.splice(i, 1);
     console.log(newRacketList.length);
@@ -105,17 +108,17 @@ const EquationalReasoningRacket = () => {
                   <Row key={index}>
                     <Col md={3}>
                       <Form.Control
-                        id='leftRacket1'
+                        id='leftRacket'
                         type='text'
                         placeholder='Enter Racket'
                         onChange={e => handleRacketListChange(index, e)}
-                        name={racket}
+                        name='test'
                       />
                     </Col>
 
                     <Col md={3}>
                       <Form.Control
-                        id='leftRacket2'
+                        id='leftRule'
                         type='text'
                         placeholder='Enter Rule'
                         onChange={e => handleRacketListChange(index, e)}
