@@ -14,7 +14,7 @@ const EquationalReasoningRacket = () => {
 
   const [isLeftHandActive, setIsLeftHandActive] = useState(true);
   
-  const [leftHandSideProofLineList, setLeftHandSideProofLineList] = useState([{ proofLine: ''}]);
+  const [leftHandSideProofLineList, setLeftHandSideProofLineList] = useState([{proofLine: ''}]);
   
   const[rightHandSideProofLineList, setRightHandSideProofLineList] = useState([{proofLine: ''}]);
 
@@ -31,9 +31,14 @@ const EquationalReasoningRacket = () => {
     //setProofLineList(newProofLineList);
   }
 
-  const addNewProofLine = () => {
-    setActiveProofLineList([...activeProofLineList, {proofLine: ''}]);
-    //setProofLineList([...proofLineList, {proofLine: ''}]);
+  const addNewProofLineRightHandSide = () => {
+    setRightHandSideProofLineList([...rightHandSideProofLineList, {proofLine: ''}]);
+    console.log('RHS length: ' + rightHandSideProofLineList.length);
+  }
+
+  const addNewProofLineLeftHandSide = () => {
+    setLeftHandSideProofLineList([...leftHandSideProofLineList, {proofLine: ''}]);
+    console.log('LHS length: ' + leftHandSideProofLineList.length);
   }
 
   const removeProofLine = (index) => {
@@ -123,10 +128,10 @@ const EquationalReasoningRacket = () => {
                 
               </Col>
               <br></br>
+              
               {/* Using Map to Create Input fields for rackets */}
               <Row className='text-center'>
-
-                {activeProofLineList.map((racket, index) => (
+                { !isLeftHandActive && rightHandSideProofLineList.map((racket, index) => (
                   <Row key={index}>
 
                     {/* if LHS is inactive, then render '=' sign on left of equation */}
@@ -136,6 +141,48 @@ const EquationalReasoningRacket = () => {
                       </Col>
                     }
 
+                    <Col md={6}>
+                      {/* if LHS is inactive, then render RHS Form.Control */}
+                      { !isLeftHandActive &&
+                        <Form.Control
+                          id='right-racket'
+                          type='text'
+                          placeholder='Enter Racket for RHS'
+                          onChange={e => handleProofLineListChange(index, e)}
+                        />
+                      }
+                    </Col>
+
+                    <Col md={3}>
+                      {/* if LHS is inactive, then render RHS Form.Control */}
+                      { !isLeftHandActive &&
+                        <Form.Control
+                          id='right-rule'
+                          type='text'
+                          placeholder='Enter Rule for RHS'
+                          onChange={e => handleProofLineListChange(index, e)}
+                        />
+                      } 
+                    </Col>
+
+                    <Col md={1}>
+                      {                   
+                        index ?
+                          <Col md={1}>
+                            { !isLeftHandActive &&
+                              <Button  variant='danger' onClick={() => 
+                                removeProofLine(index)}>Remove</Button>
+                            }
+                          </Col>
+                          : null
+                      }
+                    </Col>
+                  </Row>
+                ))}
+
+                { isLeftHandActive && leftHandSideProofLineList.map((racket, index) => (
+                  <Row key={index}>
+
                     {/* if LHS is active, then render LHS Form.Control */}
                     <Col md={6}>
                       { isLeftHandActive &&
@@ -143,16 +190,6 @@ const EquationalReasoningRacket = () => {
                           id='left-racket'
                           type='text'
                           placeholder='Enter Racket for LHS'
-                          onChange={e => handleProofLineListChange(index, e)}
-                        />
-                      }
-
-                      {/* if LHS is inactive, then render RHS Form.Control */}
-                      { !isLeftHandActive &&
-                        <Form.Control
-                          id='right-racket'
-                          type='text'
-                          placeholder='Enter Racket for RHS'
                           onChange={e => handleProofLineListChange(index, e)}
                         />
                       }
@@ -168,16 +205,6 @@ const EquationalReasoningRacket = () => {
                           onChange={e => handleProofLineListChange(index, e)}
                         />
                       }
-
-                      {/* if LHS is inactive, then render RHS Form.Control */}
-                      { !isLeftHandActive &&
-                        <Form.Control
-                          id='right-rule'
-                          type='text'
-                          placeholder='Enter Rule for RHS'
-                          onChange={e => handleProofLineListChange(index, e)}
-                        />
-                      } 
                     </Col>
 
                     <Col md={1}>
@@ -199,24 +226,23 @@ const EquationalReasoningRacket = () => {
                       </Col>
                     }
                     
-                    {/* <Col md={3}>
-                      <Form.Control
-                        id='rightRacket'
-                        type='text'
-                        placeholder='Enter Racket'
-                      />
-                    </Col> */}
                   </Row>
  
                 ))}
+
                 <br></br>
                 <Col md={1}>
-                  <Button onClick={addNewProofLine}>Add Line</Button>
+                  { isLeftHandActive &&
+                    <Button onClick={addNewProofLineLeftHandSide}>Add Line</Button>
+                  }
+
+                  {
+                    !isLeftHandActive &&
+                    <Button onClick={addNewProofLineRightHandSide}>Add Line</Button>
+                  }
+                  
                 </Col>
-                {/* <Col md={2}>
-                  <Button variant='danger' onClick={addNewBracketLine}>Remove Line</Button>
-                </Col> */}
-                
+               
               </Row>
 
             </Form.Floating>
