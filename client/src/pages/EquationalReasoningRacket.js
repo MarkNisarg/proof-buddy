@@ -18,8 +18,6 @@ const EquationalReasoningRacket = () => {
   
   const[rightHandSideProofLineList, setRightHandSideProofLineList] = useState([{proofLine: ''}]);
 
-  const [activeProofLineList, setActiveProofLineList] = useState([[{ proofLine: ''}]]);
-
   const handleToggleLAndR = () => {
     setIsLeftHandActive(!isLeftHandActive); 
   }
@@ -41,11 +39,18 @@ const EquationalReasoningRacket = () => {
     console.log('LHS length: ' + leftHandSideProofLineList.length);
   }
 
-  const removeProofLine = (index) => {
-    let newProofLineList = [...activeProofLineList];
+  const removeProofLineLHS = (index) => {
+    let newLeftHandSideList = [...leftHandSideProofLineList];
    
-    newProofLineList.splice(index, 1);
-    setActiveProofLineList(newProofLineList);
+    newLeftHandSideList.splice(index, 1);
+    setLeftHandSideProofLineList(newLeftHandSideList);
+  }
+
+  const removeProofLineRHS = (index) => {
+    let newRightHandSideList = [...rightHandSideProofLineList];
+   
+    newRightHandSideList.splice(index, 1);
+    setRightHandSideProofLineList(newRightHandSideList);
   }
   
   const handleVisibility = () => {
@@ -164,14 +169,15 @@ const EquationalReasoningRacket = () => {
                         />
                       } 
                     </Col>
-
+                    
+                    {/* This method simply removes a RHS line from the rightHandSideProofLineList by targeting its index in the array */}
                     <Col md={1}>
                       {                   
                         index ?
                           <Col md={1}>
                             { !isLeftHandActive &&
                               <Button  variant='danger' onClick={() => 
-                                removeProofLine(index)}>Remove</Button>
+                                removeProofLineRHS(index)}>Remove</Button>
                             }
                           </Col>
                           : null
@@ -206,20 +212,21 @@ const EquationalReasoningRacket = () => {
                         />
                       }
                     </Col>
-
+                      
+                    {/* This method simply removes a LHS line from the leftHandSideProofLineList by targeting its index in the array */}
                     <Col md={1}>
                       {                   
                         index ?
                           <Col md={1}>
                             { isLeftHandActive &&
                               <Button  variant='danger' onClick={() => 
-                                removeProofLine(index)}>Remove</Button>
+                                removeProofLineLHS(index)}>Remove</Button>
                             }
                           </Col>
                           : null
                       }
                     </Col>
-
+                    
                     { isLeftHandActive &&
                       <Col md={1}>
                         <h3>=</h3>
