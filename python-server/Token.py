@@ -1,18 +1,21 @@
 import re
 
+
 class Token():
-    def __init__(self:'Token', tokenType:'TokenType', regexMatch:re.Match[str]):
-        self.type = tokenType
+    def __init__(self:'Token', tokenIdentifier:'TokenIdentifier', regexMatch:re.Match[str]):
+        self.id = tokenIdentifier
         self.regexMatch = regexMatch
-        self.isTerminal = tokenType.isTerminal
+        self.isTerminal = tokenIdentifier.isTerminal
+        self.type
     
     def __str__(self:'Token'):
-        return self.regexMatch.expand(self.type.printRegex)
+        return self.regexMatch.expand(self.id.printRegex)
     
     def __repr__(self:'Token'):
-        return f'{type(self).__name__}({self.type},Match object,{self.isTerminal})'
-    
-class TokenType():
+        return f'{type(self).__name__}({self.id},Match object,{self.isTerminal})'
+
+
+class TokenIdentifier():
     def __init__(self, name:str, recognizeRegex:str, printRegex:str, isTerminal:bool=False):
         self.name = name
         self.recognizeRegex = recognizeRegex
@@ -22,7 +25,7 @@ class TokenType():
     
     # This method is for creating a dummy "token" that takes the place of a subexpression
     def getGeneric(name:str):
-        genericToken = TokenType(name,'','')
+        genericToken = TokenIdentifier(name,'','')
         genericToken.generic = True
         return genericToken
     

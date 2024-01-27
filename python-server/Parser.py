@@ -1,19 +1,19 @@
-from Token import Token, TokenType
+from Token import Token, TokenIdentifier
 from Expression import Expression, ExpressionType
 import re
 
 
 class Parser:
 
-    def __init__(self, tokenTypes: list[TokenType], expressionTypes: list[ExpressionType]):
-        self.tokenTypes = tokenTypes
+    def __init__(self, tokenIdentifiers: list[TokenIdentifier], expressionTypes: list[ExpressionType]):
+        self.tokenIdentifiers = tokenIdentifiers
         self.expressionTypes = expressionTypes
 
     def tokenize(self, inputLine:str) -> list[Token]:
         tokens = list[Token]
         cursor = 0
         while cursor < len(inputLine):
-            for t in self.tokenTypes:
+            for t in self.tokenIdentifiers:
                 regex = re.compile(t.recognizeRegex)
                 match = regex.match(inputLine, cursor)
                 if match != None:
@@ -28,9 +28,9 @@ class Parser:
         for t_i, t in enumerate(tokenList):
             if t.isTerminal:
                 if debug:
-                    print(f'{t.tokenType.name}: {t}')
+                    print(f'{t.tokenIdentifier.name}: {t}')
                     print()
-                tokenList[t_i] = Expression(ExpressionType(t.tokenType.name, [t.tokenType]), f'{t}')
+                tokenList[t_i] = Expression(ExpressionType(t.tokenIdentifier.name, [t.tokenIdentifier]), f'{t}')
         while len(tokenList) > 1:
             for e in self.expressionTypes:
                 found, index = e.match(tokenList)
@@ -46,8 +46,8 @@ class Parser:
                     break
         return tokenList[0]
 
-    def addTokenType(self, tokenType:TokenType):
-        self.tokenTypes.append(tokenType)
+    def addTokenIdentifier(self, tokenIdentifier:TokenIdentifier):
+        self.tokenIdentifiers.append(tokenIdentifier)
 
-    def addExpressionType(self, name:str, structure:list[TokenType]):
+    def addExpressionType(self, name:str, structure:list[TokenIdentifier]):
         self.expressionTypes.append(structure)

@@ -9,7 +9,7 @@ parent = os.path.dirname(current)
 sys.path.append(parent)
 
 from Expression import Expression, ExpressionType
-from Token import Token, TokenType
+from Token import Token, TokenIdentifier
 
 class ExpressionTestInstance(NamedTuple):
     expressionType: ExpressionType
@@ -19,9 +19,9 @@ class ExpressionTestInstance(NamedTuple):
 
 class ExpressionTests(unittest.TestCase):
     def setUp(self):    
-        tTrue = TokenType('True',r'#t','#t')
+        tTrue = TokenIdentifier('True',r'#t','#t')
         tokenTrue = tTrue.parse('#t')
-        tSymbol = TokenType('Symbol',r'([A-Z])',r'\g<1>')
+        tSymbol = TokenIdentifier('Symbol',r'([A-Z])',r'\g<1>')
         tokenSymbol = tSymbol.parse('A')
         eTerminal = ExpressionType('Terminal',[tSymbol])
         eBoolean = ExpressionType('Boolean',[tTrue])

@@ -1,10 +1,10 @@
 #from ExpressionType import ExpressionType
-from Token import Token, TokenType
+from Token import Token, TokenIdentifier
 
 
 class Expression(Token):
-    def __init__(self, type:'ExpressionType', subcomponents:list=[], token:str=''):
-        self.type = type
+    def __init__(self, id:'ExpressionType', subcomponents:list=[], token:str=''):
+        self.id = id
         self.token = token
         self.isRoot = False
         self.subcomponents = []
@@ -22,14 +22,14 @@ class Expression(Token):
         return s
     
     def __repr__(self):
-        return f'{type(self).__name__}({self.type},{self.subcomponents},\'{self.token}\')'
+        return f'{type(self).__name__}({self.id},{self.subcomponents},\'{self.token}\')'
 
     def __eq__(self, other:'Expression'):
         if len(self.subcomponents) != len(other.subcomponents):
             return False
         else:
             if len(self.subcomponents) == 0:
-                return self.type == other.type
+                return self.id == other.id
 
             for i in range(len(self.subcomponents)):
                 if self.subcomponents[i] != other.subcomponents[i]:
@@ -37,13 +37,13 @@ class Expression(Token):
             return True
 
 
-class ExpressionType(TokenType):
+class ExpressionType(TokenIdentifier):
 
     def __init__(self, name:str, structure:list):
         self.name = name
-        self.structure = list[TokenType]()
+        self.structure = list[TokenIdentifier]()
         for e in structure:
-            if isinstance(e,TokenType):
+            if isinstance(e,TokenIdentifier):
                 self.structure.append(e)
     
     def match(self:'ExpressionType', inputLine:list[Token|Expression]) -> (bool, int):
@@ -53,7 +53,7 @@ class ExpressionType(TokenType):
                 if isinstance(inputLine[i+j],Expression) and self.structure[j].generic:
                     continue
                 if isinstance(inputLine[i+j],Expression) or self.structure[j].generic or \
-                    inputLine[i+j].type != self.structure[j]:
+                    inputLine[i+j].id != self.structure[j]:
                         hasMatch = False
                         break
             if hasMatch:
