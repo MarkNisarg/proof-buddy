@@ -23,17 +23,7 @@ const EquationalReasoningRacket = () => {
 
   const handleToggleLAndR = () => {
     setIsLeftHandVisible(!isLeftHandVisible);
-    let activeLineList = [...activeProofLineList];
-
-    if(isLeftHandVisible) {
-      console.log('Should be true');
-      setRightHandSideProofLineList(activeLineList);
-      console.log(rightHandSideProofLineList.length);
-    } else {
-      console.log('Should be false');
-    }
-
-    console.log(isLeftHandVisible);
+    
   }
 
   const handleProofLineListChange = (i, e) => {
@@ -105,37 +95,15 @@ const EquationalReasoningRacket = () => {
                 <Form.Check 
                   id='proofLemmas'
                   type='switch'
+                  label="Lemmas Enabled"
                 />
               </Col>
-              
               <br></br>
-
-              <Col className='text-center'>
-                <FormLabel>
-                  <h5>Toggle LHS / RHS </h5>
-                </FormLabel>
-                <Form.Check 
-                  id='lhs-rhs-toggle'
-                  type='switch'
-                  onChange={handleToggleLAndR}
-                />
+              <Col>
+                <h3>
+                  Left Hand Side:
+                </h3>
               </Col>
-
-              <br></br>
-
-              <Row md={8} className='text-center'>
-                <Col>
-                  <h3>
-                    Left Hand Side:
-                  </h3>
-                </Col>
-                {/* <Col>
-                  <h3>
-                    Right Hand Side:
-                  </h3>
-                </Col> */}
-              </Row>
-              
               <br></br>
               {/* Using Map to Create Input fields for rackets */}
               <Row className='text-center'>
@@ -143,30 +111,36 @@ const EquationalReasoningRacket = () => {
                   
                   <Row key={index}>
                     
-                    <Col md={6}>
-                      <Form.Control
-                        id='active-racket'
-                        type='text'
-                        placeholder='Enter Racket'
-                        onChange={e => handleProofLineListChange(index, e)}
-                      />
+                    <Col md={3}>
+                      { isLeftHandVisible &&
+                        <Form.Control
+                          id='left-racket'
+                          type='text'
+                          placeholder='Enter Racket'
+                          onChange={e => handleProofLineListChange(index, e)}
+                        />
+                      }
                     </Col>
 
-                    <Col md={4}>
-                      <Form.Control
-                        id='active-rule'
-                        type='text'
-                        placeholder='Enter Rule'
-                        onChange={e => handleProofLineListChange(index, e)}
-                      />
+                    <Col md={3}>
+                      { isLeftHandVisible &&
+                        <Form.Control
+                          id='left-rule'
+                          type='text'
+                          placeholder='Enter Rule'
+                          onChange={e => handleProofLineListChange(index, e)}
+                        />
+                      }
                     </Col>
 
                     <Col md={1}>
                       {                   
                         index ?
                           <Col md={1}>
-                            <Button  variant='danger' onClick={() => 
-                              removeProofLine(index)}>Remove</Button>
+                            { isLeftHandVisible &&
+                              <Button  variant='danger' onClick={() => 
+                                removeProofLine(index)}>Remove</Button>
+                            }
                           </Col>
                           : null
                       }
@@ -175,35 +149,25 @@ const EquationalReasoningRacket = () => {
                     <Col md={1}>
                       <h3>=</h3>
                     </Col>
-                    
+
                     {/* <Col md={3}>
-                      { !isLeftHandVisible &&
                       <Form.Control
-                        id='right-racket'
+                        id='rightRacket'
                         type='text'
                         placeholder='Enter Racket'
-                        onChange={e => handleProofLineListChange(index, e)}
-                        name='test'
-                      />
-                      }
-                    </Col> */}
-
-                    {/* <Col md={3}>
-                      <Form.Control
-                        id='right-rule'
-                        type='text'
-                        placeholder='Enter Rule'
-                        onChange={e => handleProofLineListChange(index, e)}
                       />
                     </Col> */}
-
                   </Row>
-
+ 
                 ))}
                 <br></br>
                 <Col md={1}>
                   <Button onClick={addNewProofLine}>Add Line</Button>
                 </Col>
+                {/* <Col md={2}>
+                  <Button variant='danger' onClick={addNewBracketLine}>Remove Line</Button>
+                </Col> */}
+                
               </Row>
 
             </Form.Floating>
