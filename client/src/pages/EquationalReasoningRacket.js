@@ -111,7 +111,7 @@ const EquationalReasoningRacket = () => {
                   
                   <Row key={index}>
                     
-                    <Col md={3}>
+                    <Col md={6}>
                       { isLeftHandVisible &&
                         <Form.Control
                           id='left-racket'
