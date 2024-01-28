@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import MainLayout from '../layouts/MainLayout';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
@@ -13,18 +13,26 @@ const EquationalReasoningRacket = () => {
   const [isFormVisible, setIsFormVisible] = useState(false);
 
   const [isLeftHandActive, setIsLeftHandActive] = useState(true);
+
+  const leftRule = useRef('');
   
-  const [leftHandSideProofLineList, setLeftHandSideProofLineList] = useState([{proofLine: ''}]);
+  const [leftHandSideProofLineList, setLeftHandSideProofLineList] = useState([{proofLineRacket: '', proofLineRule: ''}]);
   
-  const[rightHandSideProofLineList, setRightHandSideProofLineList] = useState([{proofLine: ''}]);
+  const[rightHandSideProofLineList, setRightHandSideProofLineList] = useState([{proofLineRacket: '', proofLineRule: ''}]);
 
   const handleToggleLAndR = () => {
     setIsLeftHandActive(!isLeftHandActive); 
   }
 
-  const handleProofLineListChange = (i, e) => {
-    //let newProofLineList = [...proofLineList];
-    //wrong code fix
+  const handleProofLineListChange = (index, element, targetList) => {
+    let newProofLineList = [...targetList];
+    newProofLineList[index][element.target.value] = element.target.value;
+    
+    newProofLineList[index].proofLineRacket = element.target.value;
+
+    //console.log(newProofLineList[index].proofLineRacket);
+
+    //let targetElementValue = newProofLineList[index][element.target.value];
     //newRacketList[i][e.target.name] = e.target.value;
     //setProofLineList(newProofLineList);
   }
@@ -153,7 +161,7 @@ const EquationalReasoningRacket = () => {
                           id='right-racket'
                           type='text'
                           placeholder='Enter Racket for RHS'
-                          onChange={e => handleProofLineListChange(index, e)}
+                          onChange={element => handleProofLineListChange(index, element, rightHandSideProofLineList)}
                         />
                       }
                     </Col>
@@ -165,7 +173,7 @@ const EquationalReasoningRacket = () => {
                           id='right-rule'
                           type='text'
                           placeholder='Enter Rule for RHS'
-                          onChange={e => handleProofLineListChange(index, e)}
+                          onChange={element => handleProofLineListChange(index, element, rightHandSideProofLineList)}
                         />
                       } 
                     </Col>
@@ -194,9 +202,10 @@ const EquationalReasoningRacket = () => {
                       { isLeftHandActive &&
                         <Form.Control
                           id='left-racket'
+                          ref={leftRule}
                           type='text'
                           placeholder='Enter Racket for LHS'
-                          onChange={e => handleProofLineListChange(index, e)}
+                          onChange={element => handleProofLineListChange(index, element, leftHandSideProofLineList)}
                         />
                       }
                     </Col> 
@@ -208,7 +217,7 @@ const EquationalReasoningRacket = () => {
                           id='left-rule'
                           type='text'
                           placeholder='Enter Rule for LHS'
-                          onChange={e => handleProofLineListChange(index, e)}
+                          onChange={element => handleProofLineListChange(index, element, leftHandSideProofLineList)}
                         />
                       }
                     </Col>
