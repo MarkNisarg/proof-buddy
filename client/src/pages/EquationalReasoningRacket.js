@@ -13,8 +13,6 @@ const EquationalReasoningRacket = () => {
   const [isFormVisible, setIsFormVisible] = useState(false);
 
   const [isLeftHandActive, setIsLeftHandActive] = useState(true);
-
-  const leftRule = useRef('');
   
   const [leftHandSideProofLineList, setLeftHandSideProofLineList] = useState([{proofLineRacket: '', proofLineRule: ''}]);
   
@@ -26,24 +24,25 @@ const EquationalReasoningRacket = () => {
 
   const handleProofLineListChange = (index, element, targetList) => {
     let newProofLineList = [...targetList];
-    newProofLineList[index][element.target.value] = element.target.value;
-    
-    newProofLineList[index].proofLineRacket = element.target.value;
 
-    //console.log(newProofLineList[index].proofLineRacket);
-
-    //let targetElementValue = newProofLineList[index][element.target.value];
-    //newRacketList[i][e.target.name] = e.target.value;
-    //setProofLineList(newProofLineList);
+    if (element.target.id == 'left-racket'){
+      newProofLineList[index].proofLineRacket = element.target.value;
+      console.log('Racket: ' + newProofLineList[index].proofLineRacket);
+    } else if(element.target.id == 'left-rule') {
+      newProofLineList[index].proofLineRule = element.target.value;
+      console.log('Rule: ' + newProofLineList[index].proofLineRule);
+    } else {
+      throw new Error('Error in creating racket and rules from input field.');
+    }
   }
 
   const addNewProofLineRightHandSide = () => {
-    setRightHandSideProofLineList([...rightHandSideProofLineList, {proofLine: ''}]);
+    setRightHandSideProofLineList([...rightHandSideProofLineList, {proofLineRacket: '', proofLineRule: ''}]);
     console.log('RHS length: ' + rightHandSideProofLineList.length);
   }
 
   const addNewProofLineLeftHandSide = () => {
-    setLeftHandSideProofLineList([...leftHandSideProofLineList, {proofLine: ''}]);
+    setLeftHandSideProofLineList([...leftHandSideProofLineList, {proofLineRacket: '', proofLineRule: ''}]);
     console.log('LHS length: ' + leftHandSideProofLineList.length);
   }
 
@@ -202,7 +201,6 @@ const EquationalReasoningRacket = () => {
                       { isLeftHandActive &&
                         <Form.Control
                           id='left-racket'
-                          ref={leftRule}
                           type='text'
                           placeholder='Enter Racket for LHS'
                           onChange={element => handleProofLineListChange(index, element, leftHandSideProofLineList)}
