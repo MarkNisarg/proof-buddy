@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState} from 'react';
 import MainLayout from '../layouts/MainLayout';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
@@ -7,6 +7,7 @@ import Button from 'react-bootstrap/esm/Button';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import { Link } from 'react-router-dom';
+import '../scss/_equational-reasoning.scss'
 
 const EquationalReasoningRacket = () => {
 
@@ -25,14 +26,31 @@ const EquationalReasoningRacket = () => {
   const handleProofLineListChange = (index, element, targetList) => {
     let newProofLineList = [...targetList];
 
-    if (element.target.id == 'left-racket'){
+    if (element.target.id == 'left-racket' || element.target.id == 'right-racket'){
       newProofLineList[index].proofLineRacket = element.target.value;
       console.log('Racket: ' + newProofLineList[index].proofLineRacket);
-    } else if(element.target.id == 'left-rule') {
+    } else if(element.target.id == 'left-rule' || element.target.id == 'right-rule') {
       newProofLineList[index].proofLineRule = element.target.value;
       console.log('Rule: ' + newProofLineList[index].proofLineRule);
     } else {
       throw new Error('Error in creating racket and rules from input field.');
+    }
+  }
+
+  const handleFormSubmission = () => {
+    console.log(leftHandSideProofLineList.length);
+    let EquationalReasoningObject = {
+      leftRackets: [],
+      leftRules: [],
+      rightRackets: [],
+      rightRules: []
+    }
+
+  }
+
+  const populateRacketAndRulesFromList = (targetList, targetERObject) => {
+    for(let index = 0; index < leftHandSideProofLineList.length; index++){
+      console.log('Left Racket, ' + leftHandSideProofLineList[index].proofLineRacket + '. Left Rule: ' + leftHandSideProofLineList[index].proofLineRule);
     }
   }
 
@@ -88,54 +106,86 @@ const EquationalReasoningRacket = () => {
         {
           isFormVisible && 
 
-        <Form >
+        <Form>
           <Form.Group id='er-proof-creation'>
-            <Form.Floating>
-              <Col md={4}>
-                <FormLabel>
-                  <h3>Name</h3>
-                </FormLabel>
-
-                <Form.Control
-                  id='proofName'
-                  type='text'
-                  placeholder='Enter Name'
-                />
-              </Col>
-
-              <Col>
-                <FormLabel>
-                  <h3>Lemmas Allowed?</h3>
-                </FormLabel>
-                <Form.Check 
-                  id='proofLemmas'
-                  type='switch'
-                  label="Lemmas Enabled"
-                />
-              </Col>
+            <Form.Floating md={20}>
               <br></br>
+              <Row>
+                <Col md={4}>
+                  <FormLabel>
+                    <h3>Name:</h3>
+                  </FormLabel>
+
+                  <Form.Control
+                    id='proofName'
+                    type='text'
+                    placeholder='Enter Name'
+                  />
+                </Col>
+              </Row>
+
+              <Row>
+                <Col>
+                  <FormLabel>
+                    <h3>Lemmas Allowed?</h3>
+                  </FormLabel>
+                  <Form.Check 
+                    id='proofLemmas'
+                    type='switch'
+                    label="Lemmas Enabled"
+                  />
+                </Col>
+              </Row>
               
-              <Col className='text-center'>
-                <FormLabel>
-                  <h4>Toggle LHS/RHS</h4>
-                </FormLabel>
-                <Form.Check
-                  md={2}
-                  id='lhs-rhs-toggle'
-                  type='switch'
-                  onChange={handleToggleLAndR}
-                  
-                />
+              <Col>
+                <h3>Goal:</h3>
               </Col>
+              
+              <Row className='text-center'>
+                <Col md={5}>
+                  <Form.Control
+                    id='lhs-goal'
+                    type='text'
+                    placeholder='LHS Goal'
+                  />
+                </Col>
+                <Col md={1}>
+                  <h4>=</h4>
+                </Col>
+                <Col md={5}>
+                  <Form.Control
+                    id='rhs-goal'
+                    type='text'
+                    placeholder='RHS Goal'
+                  />
+                </Col>
+              </Row>
+              <br></br>
+              <Row>
+                <Col>
+                  Current LHS:
+                </Col>
+                <Col>
+                  Current RHS:
+                </Col>
+              </Row>
+
+              <br></br>
               <br></br>
 
               <Col className='text-center'>
                 { isLeftHandActive &&
-                  <h3>Left Hand Side:</h3>
+                  <Col id='lhs-rhs-toggle'>
+                    Currently Showing
+                    <Button id='lhs-rhs-toggle-button' onClick={handleToggleLAndR}>Left Hand Side</Button>
+                  </Col>  
                 }
 
                 { !isLeftHandActive &&
-                  <h3>Right Hand Side:</h3>
+                  <Col id='lhs-rhs-toggle'>
+                    Currently Showing
+                    <Button id='lhs-rhs-toggle-button' onClick={handleToggleLAndR}>Right Hand Side</Button>
+                  </Col> 
                 }
                 
               </Col>
@@ -258,9 +308,14 @@ const EquationalReasoningRacket = () => {
                 </Col>
                
               </Row>
-
             </Form.Floating>
           </Form.Group>
+          
+          <Col className='text-center'>
+            <Button onClick={handleFormSubmission}>
+              Submit
+            </Button>
+          </Col>
         </Form>   
         }
 
