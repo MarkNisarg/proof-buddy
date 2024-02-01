@@ -14,6 +14,10 @@ const EquationalReasoningRacket = () => {
   const [isFormVisible, setIsFormVisible] = useState(false);
 
   const [isLeftHandActive, setIsLeftHandActive] = useState(true);
+
+  const [currentLHS, setCurrentLHS] = useState('');
+
+  const [currentRHS, setCurrentRHS] = useState('');
   
   const [leftHandSideProofLineList, setLeftHandSideProofLineList] = useState([{proofLineRacket: '', proofLineRule: ''}]);
   
@@ -108,7 +112,7 @@ const EquationalReasoningRacket = () => {
 
         <Form>
           <Form.Group id='er-proof-creation'>
-            <Form.Floating md={20}>
+            <Form.Floating>
               <br></br>
               <Row>
                 <Col md={4}>
@@ -147,6 +151,7 @@ const EquationalReasoningRacket = () => {
                     id='lhs-goal'
                     type='text'
                     placeholder='LHS Goal'
+                    onChange={(element) => setCurrentLHS(element.target.value)}
                   />
                 </Col>
                 <Col md={1}>
@@ -157,16 +162,38 @@ const EquationalReasoningRacket = () => {
                     id='rhs-goal'
                     type='text'
                     placeholder='RHS Goal'
+                    onChange={(element) => setCurrentRHS(element.target.value)}
                   />
                 </Col>
               </Row>
               <br></br>
+              
               <Row>
-                <Col>
-                  Current LHS:
+                <Col md={5}>
+                  <FormLabel>
+                    <h5>Current LHS:</h5>
+                  </FormLabel>
+                  <Form.Control
+                    id='current-lhs'
+                    type='text'
+                    placeholder=''
+                    value={currentLHS}
+                    readOnly
+                  />
                 </Col>
-                <Col>
-                  Current RHS:
+                <Col md={1}>
+                </Col>
+                <Col md={5}>
+                  <FormLabel>
+                    <h5>Current RHS:</h5>
+                  </FormLabel>
+                  <Form.Control
+                    id='current-rhs'
+                    type='text'
+                    placeholder=''
+                    value={currentRHS}
+                    readOnly
+                  />
                 </Col>
               </Row>
 
