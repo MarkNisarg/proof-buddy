@@ -15,6 +15,14 @@ const EquationalReasoningRacket = () => {
 
   const [isLeftHandActive, setIsLeftHandActive] = useState(true);
 
+  const [isLemmasAllowed, setIsLemmasAllowed] = useState(false);
+  
+  const [proofName, setProofName] = useState('');
+
+  const [LHSGoal, setLHSGoal] = useState('');
+
+  const [RHSGoal, setRHSGoal] = useState(''); 
+
   const [currentLHS, setCurrentLHS] = useState('');
 
   const [currentRHS, setCurrentRHS] = useState('');
@@ -25,6 +33,10 @@ const EquationalReasoningRacket = () => {
 
   const handleToggleLAndR = () => {
     setIsLeftHandActive(!isLeftHandActive); 
+  }
+
+  const handleToggleIsLemmasAllowed = () => {
+    setIsLemmasAllowed(!isLemmasAllowed);
   }
 
   const handleProofLineListChange = (index, element, targetList) => {
@@ -44,28 +56,24 @@ const EquationalReasoningRacket = () => {
   const handleFormSubmission = () => {
     console.log(leftHandSideProofLineList.length);
     let EquationalReasoningObject = {
-      leftRackets: [],
-      leftRules: [],
-      rightRackets: [],
-      rightRules: []
+      name: proofName,
+      lemmasAllowed: isLemmasAllowed ,
+      leftRacketsAndRules: [],
+      rightRacketsAndRules:[]
     }
+    console.log(EquationalReasoningObject.name);
+    console.log(EquationalReasoningObject.lemmasAllowed);
 
-  }
-
-  const populateRacketAndRulesFromList = (targetList, targetERObject) => {
-    for(let index = 0; index < leftHandSideProofLineList.length; index++){
-      console.log('Left Racket, ' + leftHandSideProofLineList[index].proofLineRacket + '. Left Rule: ' + leftHandSideProofLineList[index].proofLineRule);
-    }
   }
 
   const addNewProofLineRightHandSide = () => {
     setRightHandSideProofLineList([...rightHandSideProofLineList, {proofLineRacket: '', proofLineRule: ''}]);
-    console.log('RHS length: ' + rightHandSideProofLineList.length);
+    setCurrentRHS(rightHandSideProofLineList[rightHandSideProofLineList.length - 1].proofLineRacket);
   }
 
   const addNewProofLineLeftHandSide = () => {
     setLeftHandSideProofLineList([...leftHandSideProofLineList, {proofLineRacket: '', proofLineRule: ''}]);
-    console.log('LHS length: ' + leftHandSideProofLineList.length);
+    setCurrentLHS(leftHandSideProofLineList[leftHandSideProofLineList.length -1].proofLineRacket);
   }
 
   const removeProofLineLHS = (index) => {
@@ -124,6 +132,7 @@ const EquationalReasoningRacket = () => {
                     id='proofName'
                     type='text'
                     placeholder='Enter Name'
+                    onChange={element => setProofName(element.target.value)}
                   />
                 </Col>
               </Row>
@@ -136,7 +145,7 @@ const EquationalReasoningRacket = () => {
                   <Form.Check 
                     id='proofLemmas'
                     type='switch'
-                    label="Lemmas Enabled"
+                    onChange={handleToggleIsLemmasAllowed}
                   />
                 </Col>
               </Row>
@@ -151,7 +160,7 @@ const EquationalReasoningRacket = () => {
                     id='lhs-goal'
                     type='text'
                     placeholder='LHS Goal'
-                    onChange={(element) => setCurrentLHS(element.target.value)}
+                    onChange={(element) => setLHSGoal(element.target.value)}
                   />
                 </Col>
                 <Col md={1}>
@@ -162,7 +171,7 @@ const EquationalReasoningRacket = () => {
                     id='rhs-goal'
                     type='text'
                     placeholder='RHS Goal'
-                    onChange={(element) => setCurrentRHS(element.target.value)}
+                    onChange={(element) => setRHSGoal(element.target.value)}
                   />
                 </Col>
               </Row>
@@ -217,34 +226,55 @@ const EquationalReasoningRacket = () => {
                 
               </Col>
               <br></br>
-              
               {/* Using Map to Create Input fields for rackets */}
               <Row className='text-center'>
                 { !isLeftHandActive && rightHandSideProofLineList.map((racket, index) => (
                   <Row key={index}>
-
-                    {/* if LHS is inactive, then render '=' sign on left of equation */}
-                    { !isLeftHandActive &&
+                    {
+                      index == 0 &&
+                      <Col md={1}>
+                      </Col>
+                    }
+                    {
+                      index > 0 &&
                       <Col md={1}>
                         <h3>=</h3>
                       </Col>
                     }
-
                     <Col md={6}>
                       {/* if LHS is inactive, then render RHS Form.Control */}
-                      { !isLeftHandActive &&
+                      { index == 0 &&
                         <Form.Control
                           id='right-racket'
                           type='text'
-                          placeholder='Enter Racket for RHS'
-                          onChange={element => handleProofLineListChange(index, element, rightHandSideProofLineList)}
+                          placeholder=''
+                          value={RHSGoal}
+                          readOnly
                         />
                       }
-                    </Col>
+                      {
+                        index > 0 &&
+                          <Form.Control
+                            id='right-racket'
+                            type='text'
+                            placeholder='Enter RHS Racket'
+                            onChange={element => handleProofLineListChange(index, element, rightHandSideProofLineList)}
+                          />
+                      }
 
+                    </Col>
                     <Col md={3}>
                       {/* if LHS is inactive, then render RHS Form.Control */}
-                      { !isLeftHandActive &&
+                      {
+                        index == 0 &&
+                        <Form.Control
+                          id='right-rule'
+                          type='text'
+                          placeholder=''
+                          readOnly
+                        />
+                      }
+                      { index > 0 &&
                         <Form.Control
                           id='right-rule'
                           type='text'
@@ -253,7 +283,6 @@ const EquationalReasoningRacket = () => {
                         />
                       } 
                     </Col>
-                    
                     {/* This method simply removes a RHS line from the rightHandSideProofLineList by targeting its index in the array */}
                     <Col md={1}>
                       {                   
@@ -272,22 +301,51 @@ const EquationalReasoningRacket = () => {
 
                 { isLeftHandActive && leftHandSideProofLineList.map((racket, index) => (
                   <Row key={index}>
-
+                    {
+                      index == 0 &&
+                      <Col md={1}>
+                      </Col>
+                    }
+                    {
+                      index > 0 &&
+                      <Col md={1}>
+                        <h3>=</h3>
+                      </Col>
+                    }
                     {/* if LHS is active, then render LHS Form.Control */}
                     <Col md={6}>
-                      { isLeftHandActive &&
+                      { index == 0 &&
                         <Form.Control
                           id='left-racket'
                           type='text'
-                          placeholder='Enter Racket for LHS'
-                          onChange={element => handleProofLineListChange(index, element, leftHandSideProofLineList)}
+                          placeholder=''
+                          value={LHSGoal}
+                          readOnly
                         />
                       }
+                      {
+                        index > 0 &&
+                          <Form.Control
+                            id='left-racket'
+                            type='text'
+                            placeholder='Enter LHS Rule'
+                            onChange={element => handleProofLineListChange(index, element, leftHandSideProofLineList)}
+                          />
+                      }
                     </Col> 
-                    
                     {/* if LHS is active, then render LHS Form.Control */}
                     <Col md={3}>
-                      { isLeftHandActive &&
+                      {
+                        index == 0 &&
+                        <Form.Control
+                          id='left-rule'
+                          type='text'
+                          placeholder=''
+                          //value={}
+                          readOnly
+                        />
+                      }
+                      { index > 0 &&
                         <Form.Control
                           id='left-rule'
                           type='text'
@@ -296,7 +354,6 @@ const EquationalReasoningRacket = () => {
                         />
                       }
                     </Col>
-                      
                     {/* This method simply removes a LHS line from the leftHandSideProofLineList by targeting its index in the array */}
                     <Col md={1}>
                       {                   
@@ -310,15 +367,7 @@ const EquationalReasoningRacket = () => {
                           : null
                       }
                     </Col>
-                    
-                    { isLeftHandActive &&
-                      <Col md={1}>
-                        <h3>=</h3>
-                      </Col>
-                    }
-                    
                   </Row>
- 
                 ))}
 
                 <br></br>
