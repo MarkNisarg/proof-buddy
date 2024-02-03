@@ -53,17 +53,17 @@ const EquationalReasoningRacket = () => {
     }
   }
 
+  const convertToJSON = (target) => {
+    return 1;
+  }
+
   const handleFormSubmission = () => {
     console.log(leftHandSideProofLineList.length);
     let EquationalReasoningObject = {
-      name: proofName,
-      lemmasAllowed: isLemmasAllowed ,
-      leftRacketsAndRules: [],
-      rightRacketsAndRules:[]
+      name: proofName, //String Name
+      leftRacketsAndRules: leftHandSideProofLineList, //Array of JavaScript Objects {proofline: '', proofRule: ''}
+      rightRacketsAndRules: rightHandSideProofLineList //Array of JavaScript Objects {proofline: '', proofRule: ''}
     }
-    console.log(EquationalReasoningObject.name);
-    console.log(EquationalReasoningObject.lemmasAllowed);
-
   }
 
   const addNewProofLineRightHandSide = () => {
@@ -96,7 +96,7 @@ const EquationalReasoningRacket = () => {
 
   return (
     <MainLayout>
-      <Container className='equational-reasoning-racket-container'>
+      <Container fluid style={{paddingLeft: 10}} className='equational-reasoning-racket-container'>
         <Col className='text-center'>
           <h2>Equational Reasoning: Racket</h2>
         </Col>
@@ -106,7 +106,7 @@ const EquationalReasoningRacket = () => {
               <Button onClick={handleVisibility} >Start/Close New Proof</Button>  
             </Col>
             <Col className='text-center' md={4}>
-              <Button>Help</Button>  
+              <Button>View Rule Set</Button>  
             </Col>
             <Col className='text-center' md={4}>
               <Link to='/'>
@@ -123,29 +123,17 @@ const EquationalReasoningRacket = () => {
             <Form.Floating>
               <br></br>
               <Row>
-                <Col md={4}>
+                <Col md={1}>
                   <FormLabel>
                     <h3>Name:</h3>
                   </FormLabel>
-
+                </Col>
+                <Col md={4}>
                   <Form.Control
                     id='proofName'
                     type='text'
                     placeholder='Enter Name'
                     onChange={element => setProofName(element.target.value)}
-                  />
-                </Col>
-              </Row>
-
-              <Row>
-                <Col>
-                  <FormLabel>
-                    <h3>Lemmas Allowed?</h3>
-                  </FormLabel>
-                  <Form.Check 
-                    id='proofLemmas'
-                    type='switch'
-                    onChange={handleToggleIsLemmasAllowed}
                   />
                 </Col>
               </Row>
@@ -155,7 +143,7 @@ const EquationalReasoningRacket = () => {
               </Col>
               
               <Row className='text-center'>
-                <Col md={5}>
+                <Col>
                   <Form.Control
                     id='lhs-goal'
                     type='text'
@@ -163,10 +151,10 @@ const EquationalReasoningRacket = () => {
                     onChange={(element) => setLHSGoal(element.target.value)}
                   />
                 </Col>
-                <Col md={1}>
+                <Col md={1} className='small-col'>
                   <h4>=</h4>
                 </Col>
-                <Col md={5}>
+                <Col>
                   <Form.Control
                     id='rhs-goal'
                     type='text'
@@ -178,7 +166,7 @@ const EquationalReasoningRacket = () => {
               <br></br>
               
               <Row>
-                <Col md={5}>
+                <Col>
                   <FormLabel>
                     <h5>Current LHS:</h5>
                   </FormLabel>
@@ -190,9 +178,9 @@ const EquationalReasoningRacket = () => {
                     readOnly
                   />
                 </Col>
-                <Col md={1}>
+                <Col className='small-col' md={1}>
                 </Col>
-                <Col md={5}>
+                <Col>
                   <FormLabel>
                     <h5>Current RHS:</h5>
                   </FormLabel>
@@ -232,12 +220,12 @@ const EquationalReasoningRacket = () => {
                   <Row key={index}>
                     {
                       index == 0 &&
-                      <Col md={1}>
+                      <Col className='small-col' md={1}>
                       </Col>
                     }
                     {
                       index > 0 &&
-                      <Col md={1}>
+                      <Col className='small-col' md={1}>
                         <h3>=</h3>
                       </Col>
                     }
@@ -263,7 +251,7 @@ const EquationalReasoningRacket = () => {
                       }
 
                     </Col>
-                    <Col md={3}>
+                    <Col md={5}>
                       {/* if LHS is inactive, then render RHS Form.Control */}
                       {
                         index == 0 &&
@@ -284,13 +272,13 @@ const EquationalReasoningRacket = () => {
                       } 
                     </Col>
                     {/* This method simply removes a RHS line from the rightHandSideProofLineList by targeting its index in the array */}
-                    <Col md={1}>
+                    <Col className='small-col' md={1}>
                       {                   
                         index ?
                           <Col md={1}>
                             { !isLeftHandActive &&
                               <Button  variant='danger' onClick={() => 
-                                removeProofLineRHS(index)}>Remove</Button>
+                                removeProofLineRHS(index)}>x</Button>
                             }
                           </Col>
                           : null
@@ -303,12 +291,12 @@ const EquationalReasoningRacket = () => {
                   <Row key={index}>
                     {
                       index == 0 &&
-                      <Col md={1}>
+                      <Col className='small-col' md={1}>
                       </Col>
                     }
                     {
                       index > 0 &&
-                      <Col md={1}>
+                      <Col className='small-col' md={1}>
                         <h3>=</h3>
                       </Col>
                     }
@@ -334,7 +322,7 @@ const EquationalReasoningRacket = () => {
                       }
                     </Col> 
                     {/* if LHS is active, then render LHS Form.Control */}
-                    <Col md={3}>
+                    <Col md={5}>
                       {
                         index == 0 &&
                         <Form.Control
@@ -355,13 +343,13 @@ const EquationalReasoningRacket = () => {
                       }
                     </Col>
                     {/* This method simply removes a LHS line from the leftHandSideProofLineList by targeting its index in the array */}
-                    <Col md={1}>
+                    <Col className='small-col' md={1}>
                       {                   
                         index ?
                           <Col md={1}>
                             { isLeftHandActive &&
                               <Button  variant='danger' onClick={() => 
-                                removeProofLineLHS(index)}>Remove</Button>
+                                removeProofLineLHS(index)}>x</Button>
                             }
                           </Col>
                           : null
@@ -373,12 +361,12 @@ const EquationalReasoningRacket = () => {
                 <br></br>
                 <Col md={1}>
                   { isLeftHandActive &&
-                    <Button onClick={addNewProofLineLeftHandSide}>Add Line</Button>
+                    <Button onClick={addNewProofLineLeftHandSide}>+</Button>
                   }
 
                   {
                     !isLeftHandActive &&
-                    <Button onClick={addNewProofLineRightHandSide}>Add Line</Button>
+                    <Button onClick={addNewProofLineRightHandSide}>+</Button>
                   }
                   
                 </Col>
