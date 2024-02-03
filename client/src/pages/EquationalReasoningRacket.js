@@ -118,7 +118,7 @@ const EquationalReasoningRacket = () => {
         {
           isFormVisible && 
 
-        <Form>
+        <Form className='special-form'>
           <Form.Group id='er-proof-creation'>
             <Form.Floating>
               <br></br>
@@ -361,12 +361,12 @@ const EquationalReasoningRacket = () => {
                 <br></br>
                 <Col md={1}>
                   { isLeftHandActive &&
-                    <Button onClick={addNewProofLineLeftHandSide}>+</Button>
+                    <Button onClick={addNewProofLineLeftHandSide}>Add</Button>
                   }
 
                   {
                     !isLeftHandActive &&
-                    <Button onClick={addNewProofLineRightHandSide}>+</Button>
+                    <Button onClick={addNewProofLineRightHandSide}>Add</Button>
                   }
                   
                 </Col>
