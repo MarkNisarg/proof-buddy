@@ -1,0 +1,46 @@
+@use "./variables" as *;
+
+.page-not-found {
+  margin-bottom: 20px;
+
+  h1 {
+    font-size: 100px;
+    margin: 60px 0 0;
+    font-weight: $font-bold;
+    background: $blue-orange-gradient;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -ms-background-clip: text;
+    -o-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -ms-text-fill-color: transparent;
+    -o-text-fill-color: transparent;
+
+    @media (min-width: $breakpoint-md) {
+      font-size: 125px;
+      margin: 60px 0 0;
+    }
+  }
+
+  h2 {
+    font-size: 32px;
+    margin-bottom: 40px;
+    font-weight: $font-bold;
+
+    @media (min-width: $breakpoint-md) {
+      font-size: 40px;
+    }
+  }
+
+  p {
+    font-size: 20px;
+    font-weight: $font-semi-bold;
+    margin: 15px auto 0;
+    max-width: 700px;
+    color: $color-font-black;
+
+    a {
+      color: $color-muted-blue;
+    }
+  }
+}

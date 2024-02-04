@@ -95,3 +95,10 @@ form {
     }
   }
 }
+
+div {
+  &.alert {
+    font-size: 18px;
+    font-weight: $font-medium;
+  }
+}

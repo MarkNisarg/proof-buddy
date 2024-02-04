@@ -2,6 +2,10 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+/**
+ * DB_HOST, DB_USER, DB_PASSWORD, DB_NAME,
+ * DB_DIALECT: Database configurartions.
+ */
 const DB_CONFIG = {
   HOST: process.env.DB_HOST,
   USER: process.env.DB_USER,
@@ -16,4 +20,21 @@ if (!DB_CONFIG.HOST || !DB_CONFIG.USER || DB_CONFIG.PASSWORD === undefined || !D
   process.exit(1);
 }
 
-export default DB_CONFIG;
+/**
+ * Start the database connection.
+ *
+ * @param {Object} db - Database object.
+ */
+const startDatabase = async (db) => {
+  try {
+    await db.sequelize.authenticate();
+    console.log('Database connection has been established successfully.');
+    await db.sequelize.sync({ force: false });
+    console.log('Database synced.');
+  } catch (error) {
+    console.error('Unable to connect to the database:', error);
+    throw error;
+  }
+};
+
+export { DB_CONFIG, startDatabase };

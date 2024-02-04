@@ -9,7 +9,11 @@ import { Link } from 'react-router-dom';
 import dragon from '../images/drexel-dragon.svg'
 import '../scss/_home.scss';
 
+/**
+ * The Home component serves as the landing page of the application.
+ */
 const Home = () => {
+  // Accessing the current user's information from the AuthContext.
   const { user } = useAuth();
 
   return (

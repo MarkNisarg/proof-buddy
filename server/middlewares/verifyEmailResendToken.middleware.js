@@ -1,28 +1,35 @@
-import { verifyEmailToken } from '../utils/emailToken.util.js';
-import db from '../models/index.js';
+import { verifyEmailToken } from '../utils/token.util.js';
+import { respondWithError } from '../utils/response.util.js';
+import userService from '../services/user.service.js';
 
-const User = db.user;
-
-// Verify token coming through request header.
-export const verifyEmailResendToken = async (req, res, next) => {
-  const { emailResendToken } = req.body;
+/**
+ * Middleware to verify the email resend token from the request body.
+ *
+ * @param {Object} req - The HTTP request object, containing the verification type and email resend token.
+ * @param {Object} res - The HTTP response object.
+ * @param {Function} next - The next middleware function in the Express.js route.
+ * @returns {Promise<void>} - A promise that resolves when the verification is complete or an error response is sent.
+ */
+const verifyEmailResendToken = async (req, res, next) => {
+  const { verificationType, emailResendToken } = req.body;
 
   if (!emailResendToken) {
-    return res.status(400).send({ message: 'No token provided.' });
+    return respondWithError(res, 400, 'No token provided.');
   }
 
   try {
     const decoded = verifyEmailToken(emailResendToken);
     if (!decoded) {
-      return res.status(400).send({ message: 'Invalid or expired token.' });
+      return respondWithError(res, 400, 'Invalid or expired token.');
     }
 
-    const user = await User.findOne({ where: { email: decoded.email } });
+    const user = await userService.findUserByEmail(decoded.email);
     if (!user) {
-      return res.status(404).send({ message: `Sorry! We don't recognize you.` });
+      return respondWithError(res, 404, 'Sorry! We don\'t recognize you.');
     }
 
-    if (user.is_active) {
+    const userIsActive = await userService.isUserActive(user);
+    if (verificationType === 'signupVerify' && userIsActive) {
       return res.status(400).send({ message: 'Your account is already verified.' });
     }
 
@@ -30,8 +37,8 @@ export const verifyEmailResendToken = async (req, res, next) => {
     next();
   } catch (error) {
     console.log('Error resending verification email:', error);
-    res.status(500).send({
-      message: 'Error resending verification email. Please try again.'
-    });
+    respondWithError(res, 500, 'Error resending verification email. Please try again.');
   }
 };
+
+export default verifyEmailResendToken;

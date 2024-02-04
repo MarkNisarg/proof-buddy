@@ -1,12 +1,19 @@
 import axios from 'axios';
-import apiCondig from '../config/apiConfig'
+import apiConfig from '../config/apiConfig'
 import Cookies from 'js-cookie';
 
+/**
+ * Creates an Axios instance with a pre-configured base URL.
+ */
 const axiosInstance = axios.create({
-  baseURL: apiCondig.apiBaseUrl
+  baseURL: apiConfig.apiBaseUrl
 });
 
-// Request interceptor for API calls.
+/**
+ * Request Interceptor
+ * - Attaches the 'Authorization' header with a bearer token (if available in cookies) to every outgoing request.
+ * - Ensures all requests sent by this axios instance include token authentication when the token is present.
+ */
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = Cookies.get('accessToken');
@@ -20,7 +27,11 @@ axiosInstance.interceptors.request.use(
   }
 );
 
-// Response interceptor for API calls.
+/**
+ * Response Interceptor
+ * - Directly passes through any successful responses.
+ * - Intercepts errors, specifically handling 401 Unauthorized errors globally.
+ */
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Cookies from 'js-cookie';
@@ -9,82 +9,58 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Alert from 'react-bootstrap/Alert';
 import MainLayout from '../layouts/MainLayout';
-import AuthService from '../services/AuthService';
+import authService from '../services/authService';
+import validateField from '../utils/formValidationUtils';
+import { useInputState } from '../hooks/useInputState';
+import { usePasswordVisibility } from '../hooks/usePasswordVisibility';
+import { useFormValidation } from '../hooks/useFormValidation';
+import { useFormSubmit } from '../hooks/useFormSubmit';
+import { useServerError } from '../hooks/useServerError';
 import '../scss/_forms.scss';
 import '../scss/_login.scss';
 
+/**
+ * The Login component provides a form for users to login.
+ * It integrates custom hooks for input state management, password visibility toggling, form validation,
+ * and server error handling. Successful login attempts store the access token and redirect to the homepage.
+ * Unsuccessful attempts may navigate to the email verification page or display an error.
+ */
 const Login = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [serverError, setServerError] = useState('');
-  const [validated, setValidated] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [touched, setTouched] = useState({
-    username: false,
-    password: false
-  });
-  const [validationMessages, setValidationMessages] = useState({
+  const initialValues = {
     username: '',
     password: ''
-  });
+  }
+  const [formValues, handleChange] = useInputState(initialValues);
+  const [passwordType, toggleVisibility] = usePasswordVisibility();
+  const [serverError, handleServerError] = useServerError();
+  const [validationMessages, handleBlur, setAllTouched, isFormValid ] = useFormValidation(formValues, validateField);
+  const [validated, setValidated] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    setValidationMessages({
-      username: touched.username && !username ? 'Please provide a username.' : '',
-      password: touched.password && !password ? 'Please provide a password.' : ''
-    });
-  }, [username, password, touched]);
-
-  const handleBlur = (field) => {
-    setTouched({ ...touched, [field]: true });
-  };
-
-  const toggleShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
-
-  // Function to handle the login submission.
-  const handleLogin = async (event) => {
-    event.preventDefault();
-    const form = event.currentTarget;
-    setTouched({
-      username: true,
-      password: true
-    });
-
-    if (!form.checkValidity() || Object.values(validationMessages).some(msg => msg)) {
-      event.stopPropagation();
-      setValidated(true);
-      return;
-    }
+  const handleLogin = async () => {
+    const credentials = {
+      username: formValues.username,
+      password: formValues.password
+    };
 
     try {
-      const credentials = {
-        username,
-        password
-      };
-
-      const response = await AuthService.login(credentials);
+      const response = await authService.login(credentials);
       if (response.accessToken) {
         Cookies.set('accessToken', response.accessToken, { expires: 1, secure: true, sameSite: 'Strict' });
         await login();
         navigate('/');
       }
     } catch (error) {
-      if (error.response && error.response.data && error.response.data.message) {
-        setServerError(error.response.data.message);
-        if (error.response.data.emailResendToken) {
-          Cookies.set('emailResendToken', error.response.data.emailResendToken, { expires: 1/24, secure: true, sameSite: 'Strict' });
-          navigate('/verify-email');
-        }
-      } else {
-        console.log(error);
-        setServerError('An error occurred during login. Unable to connect to the server.');
+      handleServerError(error);
+      if (error.response.data.emailResendToken) {
+        Cookies.set('emailResendToken', error.response.data.emailResendToken, { expires: 1/24, secure: true, sameSite: 'Strict' });
+        navigate('/verify-email');
       }
     }
   };
+
+  const { handleSubmit } = useFormSubmit(isFormValid, setValidated, setAllTouched, handleLogin);
 
   return (
     <MainLayout>
@@ -93,16 +69,17 @@ const Login = () => {
           <Col xs={12} md={8} lg={4}>
             <h1>Log In</h1>
             {serverError && <Alert variant={'danger'}>{serverError}</Alert>}
-            <Form noValidate validated={validated} onSubmit={handleLogin}>
+            <Form noValidate validated={validated} onSubmit={handleSubmit}>
               <Form.Group className='login-username'>
                 <Form.Floating className="mb-3">
                   <Form.Control
                     id="loginUsername"
+                    name="username"
                     type="text"
                     placeholder="Enter username"
-                    value={username}
+                    value={formValues.username}
                     onBlur={() => handleBlur('username')}
-                    onChange={(e) => setUsername(e.target.value)}
+                    onChange={handleChange}
                     isInvalid={!!validationMessages.username}
                     required
                   />
@@ -116,16 +93,17 @@ const Login = () => {
               <Form.Floating className="mb-2">
                 <Form.Control
                   id="loginPassword"
-                  type={showPassword ? 'text' : 'password'}
+                  name="password"
+                  type={passwordType}
                   placeholder="Enter password"
-                  value={password}
+                  value={formValues.password}
                   onBlur={() => handleBlur('password')}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={handleChange}
                   isInvalid={!!validationMessages.password}
                   required
                 />
                 <label htmlFor="loginPassword">Password</label>
-                <i className={`fa-solid ${showPassword ? 'fa-eye' : 'fa-eye-slash'}`} onClick={toggleShowPassword}></i>
+                <i className={`fa-solid ${passwordType === 'text' ? 'fa-eye' : 'fa-eye-slash'}`} onClick={toggleVisibility}></i>
                 <Form.Control.Feedback type="invalid">
                   {validationMessages.password}
                 </Form.Control.Feedback>
