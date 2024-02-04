@@ -14,8 +14,6 @@ const EquationalReasoningRacket = () => {
   const [isFormVisible, setIsFormVisible] = useState(false);
 
   const [isLeftHandActive, setIsLeftHandActive] = useState(true);
-
-  const [isLemmasAllowed, setIsLemmasAllowed] = useState(false);
   
   const [proofName, setProofName] = useState('');
 
@@ -35,10 +33,6 @@ const EquationalReasoningRacket = () => {
     setIsLeftHandActive(!isLeftHandActive); 
   }
 
-  const handleToggleIsLemmasAllowed = () => {
-    setIsLemmasAllowed(!isLemmasAllowed);
-  }
-
   const handleProofLineListChange = (index, element, targetList) => {
     let newProofLineList = [...targetList];
 
@@ -52,18 +46,20 @@ const EquationalReasoningRacket = () => {
       throw new Error('Error in creating racket and rules from input field.');
     }
   }
-
+  
+  //Creates JSON object of the target incoming parameter (which should be a JavaScript Object)
   const convertToJSON = (target) => {
-    return 1;
+    alert(JSON.stringify(target)); //Testing Based Alert
+    return JSON.stringify(target);
   }
 
   const handleFormSubmission = () => {
-    console.log(leftHandSideProofLineList.length);
     let EquationalReasoningObject = {
-      name: proofName, //String Name
+      name: proofName, //String Proof Name
       leftRacketsAndRules: leftHandSideProofLineList, //Array of JavaScript Objects {proofline: '', proofRule: ''}
       rightRacketsAndRules: rightHandSideProofLineList //Array of JavaScript Objects {proofline: '', proofRule: ''}
     }
+    convertToJSON(EquationalReasoningObject);
   }
 
   const addNewProofLineRightHandSide = () => {
@@ -245,8 +241,9 @@ const EquationalReasoningRacket = () => {
                           <Form.Control
                             id='right-racket'
                             type='text'
-                            placeholder='Enter RHS Racket'
+                            placeholder='RHS Racket'
                             onChange={element => handleProofLineListChange(index, element, rightHandSideProofLineList)}
+                            //readOnly
                           />
                       }
 
@@ -258,7 +255,7 @@ const EquationalReasoningRacket = () => {
                         <Form.Control
                           id='right-rule'
                           type='text'
-                          placeholder=''
+                          placeholder='Premise'
                           readOnly
                         />
                       }
@@ -316,8 +313,9 @@ const EquationalReasoningRacket = () => {
                           <Form.Control
                             id='left-racket'
                             type='text'
-                            placeholder='Enter LHS Rule'
+                            placeholder='Racket for LHS'
                             onChange={element => handleProofLineListChange(index, element, leftHandSideProofLineList)}
+                            //readOnly
                           />
                       }
                     </Col> 
@@ -328,7 +326,7 @@ const EquationalReasoningRacket = () => {
                         <Form.Control
                           id='left-rule'
                           type='text'
-                          placeholder=''
+                          placeholder='Premise'
                           //value={}
                           readOnly
                         />
@@ -375,11 +373,24 @@ const EquationalReasoningRacket = () => {
             </Form.Floating>
           </Form.Group>
           
-          <Col className='text-center'>
-            <Button onClick={handleFormSubmission}>
-              Submit
-            </Button>
-          </Col>
+          <br></br>
+          
+          <Row className='text-center'>
+            <Col>
+            </Col>
+            <Col md={1}>
+              <Button onClick={handleFormSubmission}>
+                Submit
+              </Button>
+            </Col>
+            <Col md={1}>
+              <Button onClick={handleFormSubmission}>
+                Download
+              </Button>
+            </Col>
+            <Col>
+            </Col>
+          </Row>
         </Form>   
         }
 
