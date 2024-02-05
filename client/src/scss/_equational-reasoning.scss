@@ -13,11 +13,31 @@
     font-size: 24px;
 }
 
+#fixed-row {
+  //position: fixed;
+  //width: 100%;
+  //background-color: azure;
+}
+
+#fixed-goal-row {
+  //position: fixed;
+  //width: 100%;
+}
+
+#center-element-text {
+  text-align: center;
+}
 
 .small-col {
     width: 2%;
     padding-left: 0;
     padding-right: 0;
+}
+
+.generate-button {
+  width: 2%;
+  padding-left: 10;
+  padding-right: 10;
 }
 
 .special-form {

@@ -73,7 +73,6 @@ const EquationalReasoningRacket = () => {
   }
 
   const removeProofLineLHS = (index) => {
-    
     if (confirm('Do you want to delete this line?')) {
       let newLeftHandSideList = [...leftHandSideProofLineList];
       newLeftHandSideList.splice(index, 1);
@@ -82,10 +81,12 @@ const EquationalReasoningRacket = () => {
   }
 
   const removeProofLineRHS = (index) => {
-    let newRightHandSideList = [...rightHandSideProofLineList];
-   
-    newRightHandSideList.splice(index, 1);
-    setRightHandSideProofLineList(newRightHandSideList);
+    if (confirm('Do you want to delete this line?')) {
+      let newRightHandSideList = [...rightHandSideProofLineList];
+      newRightHandSideList.splice(index, 1);
+      setRightHandSideProofLineList(newRightHandSideList);
+    }
+    
   }
   
   const handleVisibility = () => {
@@ -120,78 +121,78 @@ const EquationalReasoningRacket = () => {
           <Form.Group id='er-proof-creation'>
             <Form.Floating>
               <br></br>
-              <Row>
-                <Col md={1}>
-                  <FormLabel>
-                    <h3>Name:</h3>
-                  </FormLabel>
-                </Col>
-                <Col md={4}>
-                  <Form.Control
-                    id='proofName'
-                    type='text'
-                    placeholder='Enter Name'
-                    onChange={element => setProofName(element.target.value)}
-                  />
-                </Col>
-              </Row>
-              
-              <Col>
-                <h3>Goal:</h3>
-              </Col>
-              
-              <Row className='text-center'>
-                <Col>
-                  <Form.Control
-                    id='lhs-goal'
-                    type='text'
-                    placeholder='LHS Goal'
-                    onChange={(element) => setLHSGoal(element.target.value)}
-                  />
-                </Col>
-                <Col md={1} className='small-col'>
-                  <h4>=</h4>
-                </Col>
-                <Col>
-                  <Form.Control
-                    id='rhs-goal'
-                    type='text'
-                    placeholder='RHS Goal'
-                    onChange={(element) => setRHSGoal(element.target.value)}
-                  />
-                </Col>
-              </Row>
-              <br></br>
-              
-              <Row>
-                <Col>
-                  <FormLabel>
-                    <h5>Current LHS:</h5>
-                  </FormLabel>
-                  <Form.Control
-                    id='current-lhs'
-                    type='text'
-                    placeholder=''
-                    value={currentLHS}
-                    readOnly
-                  />
-                </Col>
-                <Col className='small-col' md={1}>
-                </Col>
-                <Col>
-                  <FormLabel>
-                    <h5>Current RHS:</h5>
-                  </FormLabel>
-                  <Form.Control
-                    id='current-rhs'
-                    type='text'
-                    placeholder=''
-                    value={currentRHS}
-                    readOnly
-                  />
-                </Col>
-              </Row>
+              <Row id='fixed-row'>
+                <Row>
+                  <Col md={1}>
+                    <FormLabel>
+                      <h4>Name:</h4>
+                    </FormLabel>
+                  </Col>
+                  <Col md={4}>
+                    <Form.Control
+                      id='proofName'
+                      type='text'
+                      placeholder='Enter Name'
+                      onChange={element => setProofName(element.target.value)}
+                    />
+                  </Col>
+                </Row>
+                
+                <Row>
+                  <Col md={1}>
+                    <h4>Goal:</h4>
+                  </Col>
+                  <Col>
+                    <Form.Control
+                      id='lhs-goal'
+                      type='text'
+                      placeholder='LHS Goal'
+                      onChange={(element) => setLHSGoal(element.target.value)}
+                    />
+                  </Col>
+                  <Col md={1} id='center-element-text' className='small-col'>
+                    <h4>=</h4>
+                  </Col>
+                  <Col>
+                    <Form.Control
+                      id='rhs-goal'
+                      type='text'
+                      placeholder='RHS Goal'
+                      onChange={(element) => setRHSGoal(element.target.value)}
+                    />
+                  </Col>
+                </Row>
+                <br></br>
+                <Row>
+                  <Col>
+                    <FormLabel>
+                      <h5>Current LHS:</h5>
+                    </FormLabel>
+                    <Form.Control
+                      id='current-lhs'
+                      type='text'
+                      placeholder=''
+                      value={currentLHS}
+                      readOnly
+                    />
+                  </Col>
+                  <Col className='small-col' md={1}>
+                  </Col>
+                  <Col>
+                    <FormLabel>
+                      <h5>Current RHS:</h5>
+                    </FormLabel>
+                    <Form.Control
+                      id='current-rhs'
+                      type='text'
+                      placeholder=''
+                      value={currentRHS}
+                      readOnly
+                    />
+                  </Col>
+                </Row>
 
+              </Row>
               <br></br>
               <br></br>
 
@@ -296,6 +297,14 @@ const EquationalReasoningRacket = () => {
                           : null
                       }
                     </Col>
+                    <Col>
+                      {
+                        index > 0 &&
+                        <Col className='generate-button' md={1}>
+                          <Button variant='success'>Generate</Button>
+                        </Col>
+                      }
+                    </Col>
                   </Row>
                 ))}
 
@@ -369,6 +378,12 @@ const EquationalReasoningRacket = () => {
                       }
                     </Col>
                     <Col>
+                      {
+                        index > 0 &&
+                        <Col className='generate-button' md={1}>
+                          <Button variant='success'>Generate</Button>
+                        </Col>
+                      }
                     </Col>
                   </Row>
                 ))}
