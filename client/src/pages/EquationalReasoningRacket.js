@@ -73,10 +73,12 @@ const EquationalReasoningRacket = () => {
   }
 
   const removeProofLineLHS = (index) => {
-    let newLeftHandSideList = [...leftHandSideProofLineList];
-   
-    newLeftHandSideList.splice(index, 1);
-    setLeftHandSideProofLineList(newLeftHandSideList);
+    
+    if (confirm('Do you want to delete this line?')) {
+      let newLeftHandSideList = [...leftHandSideProofLineList];
+      newLeftHandSideList.splice(index, 1);
+      setLeftHandSideProofLineList(newLeftHandSideList);
+    }
   }
 
   const removeProofLineRHS = (index) => {
@@ -200,7 +202,6 @@ const EquationalReasoningRacket = () => {
                     <Button id='lhs-rhs-toggle-button' onClick={handleToggleLAndR}>Left Hand Side</Button>
                   </Col>  
                 }
-
                 { !isLeftHandActive &&
                   <Col id='lhs-rhs-toggle'>
                     Currently Showing
@@ -209,11 +210,25 @@ const EquationalReasoningRacket = () => {
                 }
                 
               </Col>
+              
               <br></br>
+              
+              <Row>
+                <Col md={1} className='small-col'>
+                </Col>
+                <Col>
+                  <h4>Racket:</h4>
+                </Col>
+                <Col>
+                  <h4>Rule:</h4>
+                </Col>
+              </Row>
+
               {/* Using Map to Create Input fields for rackets */}
               <Row className='text-center'>
                 { !isLeftHandActive && rightHandSideProofLineList.map((racket, index) => (
                   <Row key={index}>
+                    
                     {
                       index == 0 &&
                       <Col className='small-col' md={1}>
@@ -248,7 +263,7 @@ const EquationalReasoningRacket = () => {
                       }
 
                     </Col>
-                    <Col md={5}>
+                    <Col md={4}>
                       {/* if LHS is inactive, then render RHS Form.Control */}
                       {
                         index == 0 &&
@@ -320,7 +335,7 @@ const EquationalReasoningRacket = () => {
                       }
                     </Col> 
                     {/* if LHS is active, then render LHS Form.Control */}
-                    <Col md={5}>
+                    <Col md={4}>
                       {
                         index == 0 &&
                         <Form.Control
@@ -352,6 +367,8 @@ const EquationalReasoningRacket = () => {
                           </Col>
                           : null
                       }
+                    </Col>
+                    <Col>
                     </Col>
                   </Row>
                 ))}
