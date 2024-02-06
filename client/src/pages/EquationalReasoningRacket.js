@@ -96,32 +96,32 @@ const EquationalReasoningRacket = () => {
   return (
     <MainLayout>
       <Container fluid style={{paddingLeft: 10}} className='equational-reasoning-racket-container'>
-        <Col className='text-center'>
-          <h2>Equational Reasoning: Racket</h2>
-        </Col>
-        <Col className='text-center'>
-          <Row>
-            <Col className='text-center' md={4}>
-              <Button onClick={handleVisibility} >Start/Close New Proof</Button>  
-            </Col>
-            <Col className='text-center' md={4}>
-              <Button>View Rule Set</Button>  
-            </Col>
-            <Col className='text-center' md={4}>
-              <Link to='/'>
-                <Button>Return To Home</Button>
-              </Link>
-            </Col>
-          </Row>
-        </Col>
-        {
-          isFormVisible && 
-
+        
         <Form className='special-form'>
           <Form.Group id='er-proof-creation'>
             <Form.Floating>
               <br></br>
               <Row id='fixed-row'>
+                <Row >
+                  <Col className='text-center'>
+                    <h2>Equational Reasoning: Racket</h2>
+                  </Col>
+                </Row>
+                
+                <Row className='button-group-one'>
+                  <Col className='text-center' md={4}>
+                    <Button onClick={handleVisibility} >Start/Close New Proof</Button>  
+                  </Col>
+                  <Col className='text-center' md={4}>
+                    <Button>View Rule Set</Button>  
+                  </Col>
+                  <Col className='text-center' md={4}>
+                    <Link to='/'>
+                      <Button>Return To Home</Button>
+                    </Link>
+                  </Col>
+                </Row>
+                
                 <Row>
                   <Col md={1}>
                     <FormLabel>
@@ -163,7 +163,7 @@ const EquationalReasoningRacket = () => {
                   </Col>
                 </Row>
                 <br></br>
-                <Row>
+                <Row className='current-rhs-lhs-row'>
                   <Col>
                     <FormLabel>
                       <h5>Current LHS:</h5>
@@ -195,8 +195,7 @@ const EquationalReasoningRacket = () => {
               </Row>
               <br></br>
               <br></br>
-
-              <Col className='text-center'>
+              <Col className='text-center' id='rhs-lhs-toggle'>
                 { isLeftHandActive &&
                   <Col id='lhs-rhs-toggle'>
                     Currently Showing
@@ -221,6 +220,8 @@ const EquationalReasoningRacket = () => {
                   <h4>Racket:</h4>
                 </Col>
                 <Col>
+                </Col>
+                <Col>
                   <h4>Rule:</h4>
                 </Col>
               </Row>
@@ -241,7 +242,7 @@ const EquationalReasoningRacket = () => {
                         <h3>=</h3>
                       </Col>
                     }
-                    <Col md={6}>
+                    <Col md={8}>
                       {/* if LHS is inactive, then render RHS Form.Control */}
                       { index == 0 &&
                         <Form.Control
@@ -264,7 +265,7 @@ const EquationalReasoningRacket = () => {
                       }
 
                     </Col>
-                    <Col md={4}>
+                    <Col md={3}>
                       {/* if LHS is inactive, then render RHS Form.Control */}
                       {
                         index == 0 &&
@@ -297,14 +298,6 @@ const EquationalReasoningRacket = () => {
                           : null
                       }
                     </Col>
-                    <Col>
-                      {
-                        index > 0 &&
-                        <Col className='generate-button' md={1}>
-                          <Button variant='success'>Generate</Button>
-                        </Col>
-                      }
-                    </Col>
                   </Row>
                 ))}
 
@@ -322,7 +315,7 @@ const EquationalReasoningRacket = () => {
                       </Col>
                     }
                     {/* if LHS is active, then render LHS Form.Control */}
-                    <Col md={6}>
+                    <Col md={8}>
                       { index == 0 &&
                         <Form.Control
                           id='left-racket'
@@ -344,7 +337,7 @@ const EquationalReasoningRacket = () => {
                       }
                     </Col> 
                     {/* if LHS is active, then render LHS Form.Control */}
-                    <Col md={4}>
+                    <Col md={3}>
                       {
                         index == 0 &&
                         <Form.Control
@@ -377,14 +370,6 @@ const EquationalReasoningRacket = () => {
                           : null
                       }
                     </Col>
-                    <Col>
-                      {
-                        index > 0 &&
-                        <Col className='generate-button' md={1}>
-                          <Button variant='success'>Generate</Button>
-                        </Col>
-                      }
-                    </Col>
                   </Row>
                 ))}
 
@@ -399,6 +384,9 @@ const EquationalReasoningRacket = () => {
                     <Button onClick={addNewProofLineRightHandSide}>Add</Button>
                   }
                   
+                </Col>
+                <Col className='generate-button' md={{span: 1, offset: 7}}>
+                  <Button variant='success'>Generate</Button>
                 </Col>
                
               </Row>
@@ -424,8 +412,7 @@ const EquationalReasoningRacket = () => {
             </Col>
           </Row>
         </Form>   
-        }
-
+        
       </Container>
     </MainLayout>
   );

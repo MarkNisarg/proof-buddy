@@ -14,14 +14,14 @@
 }
 
 #fixed-row {
-  //position: fixed;
-  //width: 100%;
-  //background-color: azure;
+  position: fixed;
+  width: 100%;
+  background-color: #f2ca00;
+  border-radius: 25px;
 }
 
-#fixed-goal-row {
-  //position: fixed;
-  //width: 100%;
+#rhs-lhs-toggle {
+  padding-top: 15%;
 }
 
 #center-element-text {
@@ -34,10 +34,19 @@
     padding-right: 0;
 }
 
+.button-group-one {
+  padding-bottom: 10px;
+  padding-top: 10px;
+}
+
 .generate-button {
   width: 2%;
-  padding-left: 10;
-  padding-right: 10;
+  padding-left: 35px;
+  padding-right: 35px;
+}
+
+.current-rhs-lhs-row {
+  padding-bottom: 10px;
 }
 
 .special-form {
