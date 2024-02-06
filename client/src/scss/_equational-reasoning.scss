@@ -16,7 +16,8 @@
 #fixed-row {
   position: fixed;
   width: 100%;
-  background-color: #f2ca00;
+  background: $orange-gradient;
+  //background: $color-drexel-orange;
   border-radius: 25px;
 }
 
@@ -28,6 +29,9 @@
   text-align: center;
 }
 
+.title-blue {
+  color: $color-drexel-blue;
+}
 .small-col {
     width: 2%;
     padding-left: 0;
@@ -35,6 +39,7 @@
 }
 
 .button-group-one {
+  text-align: center;
   padding-bottom: 10px;
   padding-top: 10px;
 }
@@ -46,12 +51,12 @@
 }
 
 .current-rhs-lhs-row {
+  padding-top: 5px;
   padding-bottom: 10px;
 }
 
 .special-form {
     margin-bottom: 30px;
-  
     .form-floating {
       input {
         &.form-control {

@@ -11,8 +11,6 @@ import '../scss/_equational-reasoning.scss'
 
 const EquationalReasoningRacket = () => {
 
-  const [isFormVisible, setIsFormVisible] = useState(false);
-
   const [isLeftHandActive, setIsLeftHandActive] = useState(true);
   
   const [proofName, setProofName] = useState('');
@@ -31,6 +29,15 @@ const EquationalReasoningRacket = () => {
 
   const handleToggleLAndR = () => {
     setIsLeftHandActive(!isLeftHandActive); 
+  }
+
+  const handleSaveProofRequest = () => {
+    alert('Saving Current Proof!')
+    
+  }
+
+  const handleUploadPoofRequest = () => {
+    alert('Uploading Current Proof!')
   }
 
   const handleProofLineListChange = (index, element, targetList) => {
@@ -88,10 +95,6 @@ const EquationalReasoningRacket = () => {
     }
     
   }
-  
-  const handleVisibility = () => {
-    setIsFormVisible(!isFormVisible);
-  }
 
   return (
     <MainLayout>
@@ -104,28 +107,31 @@ const EquationalReasoningRacket = () => {
               <Row id='fixed-row'>
                 <Row >
                   <Col className='text-center'>
-                    <h2>Equational Reasoning: Racket</h2>
+                    <h2 className='title-blue'>Equational Reasoning: Racket</h2>
                   </Col>
                 </Row>
                 
                 <Row className='button-group-one'>
-                  <Col className='text-center' md={4}>
-                    <Button onClick={handleVisibility} >Start/Close New Proof</Button>  
+                  <Col className='text-center' md={{span: 2, offset: 2}}>
+                    <Link to='/'>
+                      <Button variant='danger'>Close Proof</Button>
+                    </Link>
                   </Col>
-                  <Col className='text-center' md={4}>
+                  <Col className='text-center' md={2}>
+                    <Button>Definitions</Button>
+                  </Col>
+                  <Col className='text-center' md={2}>
                     <Button>View Rule Set</Button>  
                   </Col>
-                  <Col className='text-center' md={4}>
-                    <Link to='/'>
-                      <Button>Return To Home</Button>
-                    </Link>
+                  <Col className='text-center' md={2}>
+                    <Button>Assertions</Button>  
                   </Col>
                 </Row>
                 
                 <Row>
                   <Col md={1}>
                     <FormLabel>
-                      <h4>Name:</h4>
+                      <h4 className='title-blue'>Name:</h4>
                     </FormLabel>
                   </Col>
                   <Col md={4}>
@@ -140,7 +146,7 @@ const EquationalReasoningRacket = () => {
                 
                 <Row>
                   <Col md={1}>
-                    <h4>Goal:</h4>
+                    <h4 className='title-blue'>Goal:</h4>
                   </Col>
                   <Col>
                     <Form.Control
@@ -151,7 +157,7 @@ const EquationalReasoningRacket = () => {
                     />
                   </Col>
                   <Col md={1} id='center-element-text' className='small-col'>
-                    <h4>=</h4>
+                    <h4 className='title-blue'>=</h4>
                   </Col>
                   <Col>
                     <Form.Control
@@ -166,7 +172,7 @@ const EquationalReasoningRacket = () => {
                 <Row className='current-rhs-lhs-row'>
                   <Col>
                     <FormLabel>
-                      <h5>Current LHS:</h5>
+                      <h4 className='title-blue'>Current LHS:</h4>
                     </FormLabel>
                     <Form.Control
                       id='current-lhs'
@@ -180,7 +186,7 @@ const EquationalReasoningRacket = () => {
                   </Col>
                   <Col>
                     <FormLabel>
-                      <h5>Current RHS:</h5>
+                      <h4 className='title-blue'>Current RHS:</h4>
                     </FormLabel>
                     <Form.Control
                       id='current-rhs'
@@ -385,8 +391,11 @@ const EquationalReasoningRacket = () => {
                   }
                   
                 </Col>
-                <Col className='generate-button' md={{span: 1, offset: 7}}>
+                <Col md={{span: 1, offset: 7}} >
                   <Button variant='success'>Generate</Button>
+                </Col>
+                <Col md={1}>
+                  <Button variant='success'>Substitutes</Button>
                 </Col>
                
               </Row>
@@ -396,19 +405,25 @@ const EquationalReasoningRacket = () => {
           <br></br>
           
           <Row className='text-center'>
-            <Col>
-            </Col>
-            <Col md={1}>
-              <Button onClick={handleFormSubmission}>
-                Submit
-              </Button>
-            </Col>
-            <Col md={1}>
-              <Button onClick={handleFormSubmission}>
+            <Col md={{span: 1, offset: 4}}>
+              <Button>
                 Download
               </Button>
             </Col>
-            <Col>
+            <Col md={1}>
+              <Button onClick={handleUploadPoofRequest}>
+                Upload
+              </Button>
+            </Col>
+            <Col md={1}>
+              <Button onClick={handleSaveProofRequest}>
+                Save
+              </Button>
+            </Col>
+            <Col md={{span: 1, offset: 2}}>
+              <Button onClick={handleFormSubmission}>
+                Submit
+              </Button>
             </Col>
           </Row>
         </Form>   
