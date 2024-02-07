@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, { useState } from 'react';
 import MainLayout from '../layouts/MainLayout';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
@@ -26,6 +26,11 @@ const EquationalReasoningRacket = () => {
   const [leftHandSideProofLineList, setLeftHandSideProofLineList] = useState([{proofLineRacket: '', proofLineRule: ''}]);
   
   const[rightHandSideProofLineList, setRightHandSideProofLineList] = useState([{proofLineRacket: '', proofLineRule: ''}]);
+
+  const gradient = {
+    orange_gradient: 'linear-gradient(135deg, #ffc600 0, #ff8f1c 100%)',
+    orange_gradient_reverse: 'linear-gradient(135deg, #ff8f1c 0, #ffc600 100%)'
+  }
 
   const handleToggleLAndR = () => {
     setIsLeftHandActive(!isLeftHandActive); 
@@ -93,18 +98,15 @@ const EquationalReasoningRacket = () => {
       newRightHandSideList.splice(index, 1);
       setRightHandSideProofLineList(newRightHandSideList);
     }
-    
   }
 
   return (
     <MainLayout>
       <Container fluid style={{paddingLeft: 10}} className='equational-reasoning-racket-container'>
-        
-        <Form className='special-form'>
+        <Form className='special-form' >
           <Form.Group id='er-proof-creation'>
             <Form.Floating>
-              <br></br>
-              <Row id='fixed-row'>
+              <Row id='fixed-row' style={isLeftHandActive ? {background: gradient.orange_gradient} : {background: gradient.orange_gradient_reverse}}>
                 <Row >
                   <Col className='text-center'>
                     <h2 className='title-blue'>Equational Reasoning: Racket</h2>
