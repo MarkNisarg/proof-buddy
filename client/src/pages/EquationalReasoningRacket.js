@@ -7,6 +7,7 @@ import Button from 'react-bootstrap/esm/Button';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import { Link } from 'react-router-dom';
+import generateExpression from '../services/erService';
 import '../scss/_equational-reasoning.scss'
 
 const EquationalReasoningRacket = () => {
@@ -32,6 +33,14 @@ const EquationalReasoningRacket = () => {
     orange_gradient_reverse: 'linear-gradient(135deg, #ff8f1c 0, #ffc600 100%)'
   }
 
+  const goalHighlightColors = {
+    drexel_orange: '#FF8F1C',
+    drexel_yellow: '#ffc600',
+    drexel_light_blue: '#6CACE4',
+    plain_white: '#FFFFFF'
+
+  }
+
   const handleToggleLAndR = () => {
     setIsLeftHandActive(!isLeftHandActive); 
   }
@@ -50,10 +59,10 @@ const EquationalReasoningRacket = () => {
 
     if (element.target.id == 'left-racket' || element.target.id == 'right-racket'){
       newProofLineList[index].proofLineRacket = element.target.value;
-      console.log('Racket: ' + newProofLineList[index].proofLineRacket);
+      //console.log('Racket: ' + newProofLineList[index].proofLineRacket);
     } else if(element.target.id == 'left-rule' || element.target.id == 'right-rule') {
       newProofLineList[index].proofLineRule = element.target.value;
-      console.log('Rule: ' + newProofLineList[index].proofLineRule);
+      //console.log('Rule: ' + newProofLineList[index].proofLineRule);
     } else {
       throw new Error('Error in creating racket and rules from input field.');
     }
@@ -84,20 +93,48 @@ const EquationalReasoningRacket = () => {
     setCurrentLHS(leftHandSideProofLineList[leftHandSideProofLineList.length -1].proofLineRacket);
   }
 
-  const removeProofLineLHS = (index) => {
-    if (confirm('Do you want to delete this line?')) {
-      let newLeftHandSideList = [...leftHandSideProofLineList];
-      newLeftHandSideList.splice(index, 1);
-      setLeftHandSideProofLineList(newLeftHandSideList);
+  const removeProofLines = () => {
+    if (isLeftHandActive) {
+      let target = findFirstBlankLine(leftHandSideProofLineList);
+      if (confirm('Do you want to delete line number ' + target + ' and all lines after it')){
+        removeEmptyLines(leftHandSideProofLineList, setLeftHandSideProofLineList);
+      }
+    } else if (!isLeftHandActive) {
+      let target = findFirstBlankLine(rightHandSideProofLineList);
+      if (confirm('Do you want to delete line number ' + target + ' and all lines after it')){
+        removeEmptyLines(rightHandSideProofLineList, setRightHandSideProofLineList);
+      }
+    } else {
+      throw new Error('Error Deleting Lines that are Empty');
     }
   }
 
-  const removeProofLineRHS = (index) => {
-    if (confirm('Do you want to delete this line?')) {
-      let newRightHandSideList = [...rightHandSideProofLineList];
-      newRightHandSideList.splice(index, 1);
-      setRightHandSideProofLineList(newRightHandSideList);
+  const removeEmptyLines = (targetList, setterMethod) => {
+    for (let index = 0; index < targetList.length; index++) {
+      let currentElement = targetList[index];
+      if (index > 0){
+        if (!currentElement.proofLineRacket || !currentElement.proofLineRule){
+          console.log('index: ' + index);
+          console.log('Empty Line at line: ' + (index + 1));
+          let newList = targetList.slice(0, index);
+          setterMethod(newList);
+          break;
+        }
+      }
     }
+  }
+  const findFirstBlankLine = (targetList) => {
+    //let emptyIndex = 0
+    for (let index = 0; index < targetList.length; index++) {
+      let currentElement = targetList[index];
+      if (index > 0){
+        if (!currentElement.proofLineRacket || !currentElement.proofLineRule){
+          return index + 1;
+          //break;
+        }
+      }
+    }
+
   }
 
   return (
@@ -177,6 +214,7 @@ const EquationalReasoningRacket = () => {
                       <h4 className='title-blue'>Current LHS:</h4>
                     </FormLabel>
                     <Form.Control
+                      style={isLeftHandActive ? {background: goalHighlightColors.drexel_yellow, borderWidth: 4, borderColor: goalHighlightColors.plain_white} : {background: goalHighlightColors.plain_white}}
                       id='current-lhs'
                       type='text'
                       placeholder=''
@@ -191,6 +229,7 @@ const EquationalReasoningRacket = () => {
                       <h4 className='title-blue'>Current RHS:</h4>
                     </FormLabel>
                     <Form.Control
+                      style={!isLeftHandActive ? {background: goalHighlightColors.drexel_yellow, borderWidth: 4, borderColor: goalHighlightColors.plain_white} : {background: goalHighlightColors.plain_white}}
                       id='current-rhs'
                       type='text'
                       placeholder=''
@@ -293,19 +332,6 @@ const EquationalReasoningRacket = () => {
                         />
                       } 
                     </Col>
-                    {/* This method simply removes a RHS line from the rightHandSideProofLineList by targeting its index in the array */}
-                    <Col className='small-col' md={1}>
-                      {                   
-                        index ?
-                          <Col md={1}>
-                            { !isLeftHandActive &&
-                              <Button  variant='danger' onClick={() => 
-                                removeProofLineRHS(index)}>x</Button>
-                            }
-                          </Col>
-                          : null
-                      }
-                    </Col>
                   </Row>
                 ))}
 
@@ -365,19 +391,6 @@ const EquationalReasoningRacket = () => {
                         />
                       }
                     </Col>
-                    {/* This method simply removes a LHS line from the leftHandSideProofLineList by targeting its index in the array */}
-                    <Col className='small-col' md={1}>
-                      {                   
-                        index ?
-                          <Col md={1}>
-                            { isLeftHandActive &&
-                              <Button  variant='danger' onClick={() => 
-                                removeProofLineLHS(index)}>x</Button>
-                            }
-                          </Col>
-                          : null
-                      }
-                    </Col>
                   </Row>
                 ))}
 
@@ -390,11 +403,13 @@ const EquationalReasoningRacket = () => {
                   {
                     !isLeftHandActive &&
                     <Button onClick={addNewProofLineRightHandSide}>Add</Button>
-                  }
-                  
+                  } 
+                </Col>
+                <Col>
+                  <Button variant='danger' onClick={removeProofLines}>Delete Line</Button>
                 </Col>
                 <Col md={{span: 1, offset: 7}} >
-                  <Button variant='success'>Generate</Button>
+                  <Button variant='success' onClick={generateExpression}>Generate</Button>
                 </Col>
                 <Col md={1}>
                   <Button variant='success'>Substitutes</Button>

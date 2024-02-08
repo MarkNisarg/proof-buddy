@@ -1,6 +1,7 @@
 // Backend API Configuration.
 const apiCondig = {
-  apiBaseUrl: process.env.REACT_APP_BACKEND_API_BASE_URL || 'http://localhost:3001'
+  apiBaseUrl: process.env.REACT_APP_BACKEND_API_BASE_URL || 'http://localhost:3001',
+  proofApiBaseUrl: 'http://localhost:9095'
 };
 
 // Validate API configurations.
