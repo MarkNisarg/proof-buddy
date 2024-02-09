@@ -130,7 +130,6 @@ const EquationalReasoningRacket = () => {
       if (index > 0){
         if (!currentElement.proofLineRacket || !currentElement.proofLineRule){
           return index + 1;
-          //break;
         }
       }
     }
@@ -405,14 +404,14 @@ const EquationalReasoningRacket = () => {
                     <Button onClick={addNewProofLineRightHandSide}>Add</Button>
                   } 
                 </Col>
-                <Col>
-                  <Button variant='danger' onClick={removeProofLines}>Delete Line</Button>
-                </Col>
-                <Col md={{span: 1, offset: 7}} >
-                  <Button variant='success' onClick={generateExpression}>Generate</Button>
-                </Col>
                 <Col md={1}>
-                  <Button variant='success'>Substitutes</Button>
+                  <Button  variant='danger' onClick={removeProofLines}>Delete Line</Button>
+                </Col>
+                <Col md={{span: 2, offset: 6}} >
+                  <Button variant='success' onClick={generateExpression}>Generate & Check</Button>
+                </Col>
+                <Col md={{span: 1, offset: 0}}>
+                  <Button variant='success'>Substitution</Button>
                 </Col>
                
               </Row>
