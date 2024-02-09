@@ -2,11 +2,11 @@ import axiosInstanceProof from '../utils/axiosInstanceProof';
 
 const API_GATEWAY = '/api/v1/proof'
 
-const generateExpression = async () => {
+const racketGeneration = async (rule) => {
   try {
     
-    const response = await axiosInstanceProof.post(`${API_GATEWAY}/er-generate`, {name:'John', age:31, city:'New York'}) ;
-    console.log(response);
+    const response = await axiosInstanceProof.post(`${API_GATEWAY}/er-generate`, rule);
+    console.log(response.data.racket);
     return response.data;
   } catch (error) {
     console.error('Error during generation:', error);
@@ -17,4 +17,4 @@ const generateExpression = async () => {
   }
 };
 
-export default generateExpression;
+export default racketGeneration;

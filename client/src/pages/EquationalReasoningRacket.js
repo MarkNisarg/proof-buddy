@@ -7,12 +7,14 @@ import Button from 'react-bootstrap/esm/Button';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import { Link } from 'react-router-dom';
-import generateExpression from '../services/erService';
+import racketGeneration from '../services/erService';
 import '../scss/_equational-reasoning.scss'
 
 const EquationalReasoningRacket = () => {
 
   const [isLeftHandActive, setIsLeftHandActive] = useState(true);
+
+  const [currentRacket, setCurrentRacket] = useState('')
   
   const [proofName, setProofName] = useState('');
 
@@ -59,7 +61,7 @@ const EquationalReasoningRacket = () => {
 
     if (element.target.id == 'left-racket' || element.target.id == 'right-racket'){
       newProofLineList[index].proofLineRacket = element.target.value;
-      //console.log('Racket: ' + newProofLineList[index].proofLineRacket);
+      console.log('Racket: ' + newProofLineList[index].proofLineRacket);
     } else if(element.target.id == 'left-rule' || element.target.id == 'right-rule') {
       newProofLineList[index].proofLineRule = element.target.value;
       //console.log('Rule: ' + newProofLineList[index].proofLineRule);
@@ -123,6 +125,7 @@ const EquationalReasoningRacket = () => {
       }
     }
   }
+
   const findFirstBlankLine = (targetList) => {
     //let emptyIndex = 0
     for (let index = 0; index < targetList.length; index++) {
@@ -134,6 +137,15 @@ const EquationalReasoningRacket = () => {
       }
     }
 
+  }
+
+  const handlePythonGeneration = async () => {
+    //let currentRule = convertToJSON(leftHandSideProofLineList[0].proofLineRule);
+    let response = await racketGeneration({ rule: leftHandSideProofLineList[1].proofLineRule });
+    //leftHandSideProofLineList[1].proofLineRacket = response.racket;
+    setCurrentRacket(response.racket);
+
+    console.log('Racket: ' + currentRacket);
   }
 
   return (
@@ -408,7 +420,7 @@ const EquationalReasoningRacket = () => {
                   <Button  variant='danger' onClick={removeProofLines}>Delete Line</Button>
                 </Col>
                 <Col md={{span: 2, offset: 6}} >
-                  <Button variant='success' onClick={generateExpression}>Generate & Check</Button>
+                  <Button variant='success' onClick={handlePythonGeneration}>Generate & Check</Button>
                 </Col>
                 <Col md={{span: 1, offset: 0}}>
                   <Button variant='success'>Substitution</Button>
