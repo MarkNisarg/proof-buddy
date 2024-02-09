@@ -1,0 +1,160 @@
+@use "./variables" as *;
+
+#lhs-rhs-toggle-button {
+    background-color: transparent;
+    color: blue;
+    padding: 0px 6px;
+    font-size: 24px;
+    border: none;
+    text-decoration: underline;
+}
+
+#lhs-rhs-toggle {
+    font-size: 24px;
+}
+
+#fixed-row {
+  position: fixed;
+  width: 100%;
+  background: $orange-gradient;
+  padding-top: 0%;
+  margin-top: 0%;
+
+  border-radius:  0px 0px 25px 25px;
+}
+
+#rhs-lhs-toggle {
+  padding-top: 15%;
+}
+
+#center-element-text {
+  text-align: center;
+}
+
+.title-blue {
+  color: $color-drexel-blue;
+}
+
+.small-col {
+    width: 2%;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.button-group-one {
+  text-align: center;
+  padding-bottom: 10px;
+  padding-top: 10px;
+}
+
+.generate-button {
+  width: 2%;
+  padding-left: 35px;
+  padding-right: 35px;
+}
+
+.current-rhs-lhs-row {
+  padding-top: 5px;
+  padding-bottom: 10px;
+}
+
+.special-form {
+    margin-bottom: 30px;
+    padding-top: 0%;
+    .form-floating {
+      input {
+        &.form-control {
+          font-size: 18px;
+  
+          &:not(:placeholder-shown) {
+            padding-top: .50rem;
+          }
+  
+          &:focus {
+            border-color: $color-light-blue;
+            box-shadow: 0 0 0 0.25rem rega($color-light-blue, 0.25);
+          }
+  
+          &.is-invalid {
+            &:focus {
+              border-color: var(--bs-form-invalid-border-color);
+              box-shadow: 0 0 0 0.25rem rgba(var(--bs-danger-rgb), 0.25);
+            }
+          }
+  
+          &.is-valid,
+          &.is-invalid {
+            & ~ i {
+              top: 29px;
+              right: 25px;
+            }
+          }
+        }
+      }
+  
+      label {
+        font-size: 18px;
+        color: $color-dark-gray;
+      }
+  
+      i {
+        position: absolute;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        right: 0;
+        width: 25px;
+        height: 18px;
+        text-align: center;
+        font-size: 18px;
+      }
+  
+      .invalid-feedback {
+        font-size: 16px;
+      }
+    }
+  
+    &.was-validated {
+      .form-floating {
+        input {
+          &.form-control {
+            &.is-invalid {
+              border-color: var(--bs-form-invalid-border-color);
+              background-image: $form-validation-icon-bg;
+            }
+  
+            & ~ i {
+              top: 29px;
+              right: 25px;
+            }
+          }
+        }
+      }
+    }
+  
+    button {
+      &.form-submit {
+        letter-spacing: 1.5px;
+        font-weight: $font-bold;
+        font-size: 20px;
+        text-transform: uppercase;
+        padding: 10px 30px;
+        border-radius: 0;
+        line-height: normal;
+        border: none;
+        color: $color-white;
+        background-image: $blue-gradient;
+        margin: 15px 0;
+        width: 100%;
+  
+        &:hover {
+          color: $color-black;
+          background-image: $orange-gradient;
+        }
+      }
+    }
+  }
+  
+
+
+
+

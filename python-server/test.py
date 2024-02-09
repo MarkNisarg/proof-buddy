@@ -42,10 +42,10 @@ def defineTFL():
     return tokenList, expressionList
 
 def defineER():
-    tNumber = TokenType('Number',r'\d+','\1')
+    tNumber = TokenType('Number',r'\d+','\g<1>')
     tTrue = TokenType('True',r'#t','#t')
     tFalse = TokenType('False',r'#f','#f')
-    tSymbol = TokenType('Symbol',r'[A-Z]','\1')
+    tSymbol = TokenType('Symbol',r'[A-Z]','\g<1>')
     tPlus = TokenType('Plus',r'\+','+')
     tMinus = TokenType('Minus',r'-','-')
     tTimes = TokenType('Times',r'\*','*')
@@ -54,13 +54,15 @@ def defineER():
     tClosedParens = TokenType('Closed Parenthesis',r'(\))',')')
     tokenList = TList(TokenType,[tNumber,tTrue,tFalse,tSymbol,tPlus,tMinus,tTimes,tLambda,tOpenParens,tClosedParens])
 
-    tExpression = TokenType.getGeneric('Expression')
+    eExpression = TokenType.getGeneric('Expression')
     # eInteger = ExpressionType('Integer',TList(TokenType,[tNumber]))
-    eBoolean1 = ExpressionType('Boolean',TList[TokenType]([tTrue]))
-    eBoolean2 = ExpressionType('Boolean',TList[TokenType]([tFalse]))
-    eTerminal = ExpressionType('Terminal',TList[TokenType]([tSymbol]))
+    eBoolean1 = ExpressionType('Boolean',[tTrue])
+    eBoolean2 = ExpressionType('Boolean',[tFalse])
+    eTerminal = ExpressionType('Terminal',[tSymbol])
     # For ER, parentheses are necessarily part of every expression and not a wrapper
-    eAdd = ExpressionType('Add',TList[TokenType]([tOpenParens,tPlus,tNumber,tNumber,tClosedParens]))
+    eAdd = ExpressionType('Add',[tOpenParens,tPlus,tNumber,tNumber,tClosedParens])
+    expressionList = [eExpression, eBoolean1, eBoolean2, eTerminal, eAdd]
+    return tokenList, expressionList
 
 # This will be the general workflow for defining a proof engine (at least for parsing)
 tokenList, expressionList = defineTFL()

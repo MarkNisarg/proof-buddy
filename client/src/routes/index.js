@@ -4,6 +4,7 @@ import Home from '../pages/Home';
 import PageNotFound from '../pages/PageNotFound';
 import AuthRoutes from './AuthRoutes';
 import VerificationRoutes from './VerificationRoutes';
+import ProofRoutes from './ProofRoutes';
 
 /**
  * The main routing component of the application.
@@ -15,6 +16,7 @@ const AppRoutes = () => {
         <Route path="/" element={<Home />} />
         {AuthRoutes()}
         {VerificationRoutes()}
+        {ProofRoutes()}
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </Router>

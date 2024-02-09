@@ -14,7 +14,8 @@ const getApiBaseUrl = () => {
 };
 
 const apiConfig = {
-  apiBaseUrl: getApiBaseUrl()
+  apiBaseUrl: getApiBaseUrl(),
+  proofApiBaseUrl: 'http://localhost:9095'
 };
 
 export default apiConfig;
