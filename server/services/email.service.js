@@ -1,27 +1,57 @@
-import nodemailer from 'nodemailer';
-import emailConfig from '../config/email.config.js';
+import createTransporter from '../config/email.config.js';
+import { verificationEmailTemplate, passwordResetEmailTemplate } from '../templates/emailTemplates.js';
 
-const transporter = nodemailer.createTransport(emailConfig);
-
-// Send verification email with generated token.
-export const sendVerificationEmail = async (user, token) => {
+/**
+ * Send an email with specified configurations.
+ *
+ * @param {string} to - Recipient's email address.
+ * @param {string} subject - Subject of the email.
+ * @param {string} body - HTML content of the email.
+ */
+const sendEmail = async (to, subject, html) => {
+  const transporter = await createTransporter();
   const mailConfigurations = {
     from: `"Proof Buddy" <${process.env.GMAIL_USERNAME}>`,
-    to: user.email,
-    subject: 'Confirm Your Email',
-    html: `
-      <p>Hello ${user.username}!</p>
-      <p>Thank you for signing up to Proof Buddy! To get started please confirm your email address by visiting the following link:</p>
-      <a href="${process.env.FRONTEND_URL}/verify-email?token=${token}" target="_blank">${process.env.FRONTEND_URL}/verify-email?token=${token}</a>
-      <p>Thank you,<br/>Proof Buddy Team</p>
-    `
+    to,
+    subject,
+    html
   };
 
   transporter.sendMail(mailConfigurations)
     .then(info => {
-      console.log('Email Sent Successfully', info);
+      console.log(`Email Sent Successfully: `, info);
     })
     .catch(error => {
-      console.error('Error sending email', error);
+      console.error(`Error Sending Email: `, error);
+      return;
     });
 };
+
+/**
+ * Sends a verification email to a user.
+ *
+ * @param {Object} user - The user object, containing at least the username and email.
+ * @param {string} token - The verification token to be included in the email.
+ */
+const sendVerificationEmail = async (user, token) => {
+  const htmlContent  = verificationEmailTemplate(user.username, token, process.env.FRONTEND_URL);
+  await sendEmail(user.email, 'Confirm Your Email', htmlContent);
+};
+
+/**
+ * Sends a password reset email to a user.
+ *
+ * @param {Object} user - The user object, containing at least the username and email.
+ * @param {string} token - The password reset token to be included in the email.
+ */
+const sendPasswordResetEmail = async (user, token) => {
+  const htmlContent  = passwordResetEmailTemplate(user.username, token, process.env.FRONTEND_URL);
+  await sendEmail(user.email, 'Reset Your Password', htmlContent);
+};
+
+const emailService = {
+  sendVerificationEmail,
+  sendPasswordResetEmail
+};
+
+export default emailService;

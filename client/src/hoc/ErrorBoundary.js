@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
+/**
+ * ErrorBoundary component that listens for errors in its children components.
+ */
 const ErrorBoundary = ({ children }) => {
   const [hasError, setHasError] = useState(false);
   const [errorInfo, setErrorInfo] = useState(null);
@@ -28,7 +31,7 @@ const ErrorBoundary = ({ children }) => {
       <div>
         <h1>Something went wrong.</h1>
         <details style={{ whiteSpace: 'pre-wrap' }}>
-          {errorInfo}
+          {errorInfo && errorInfo.toString()}
         </details>
       </div>
     );

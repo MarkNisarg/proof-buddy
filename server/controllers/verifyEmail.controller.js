@@ -1,38 +1,43 @@
-import { verifyEmailToken } from '../utils/emailToken.util.js';
-import db from '../models/index.js';
+import { verifyEmailToken } from '../utils/token.util.js';
+import { respondWithError, respondWithSuccess } from '../utils/response.util.js';
+import userService from '../services/user.service.js';
 
-const User = db.user;
-
-// Verify email using token verification.
-export const verifyEmail = async (req, res) => {
+/**
+ * Verify an email using token verification.
+ *
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object
+ * @returns {Promise} - A promise that resolves with the HTTP response object.
+ */
+const verifyEmail = async (req, res) => {
   const { token } = req.body;
 
   if (!token) {
-    return res.status(400).send({ message: 'No token provided.' });
+    return respondWithError(res, 400, 'No token provided.');
   }
 
   try {
     const decoded = verifyEmailToken(token);
     if (!decoded) {
-      return res.status(400).send({ message: 'Invalid or expired token.' });
+      return respondWithError(res, 400, 'Invalid or expired token.');
     }
 
-    const user = await User.findOne({ where: { username: decoded.username } });
+    const user = await userService.findUserByUsername(decoded.username);
     if (!user) {
-      return res.status(404).send({ message: 'User Not found.' });
+      return respondWithError(res, 404, 'Sorry! We don\'t recognize you.');
     }
 
-    if (user.is_active) {
-      return res.status(400).send({ message: 'User has already been verified. Please Log In.' });
+    const userIsActive = await userService.isUserActive(user);
+    if (userIsActive) {
+      return respondWithError(res, 400, 'User has already been verified. Please Log In.');
     }
 
-    user.is_active = true;
-    await user.save();
-
-    res.status(200).send({
-      message: 'Account verified successfully!' });
+    await userService.activateUser(user);
+    respondWithSuccess(res, 200, 'Account verified successfully!');
   } catch (error) {
     console.log(error);
-    res.status(500).send({ message: 'Failed to verify account.' });
+    respondWithError(res, 500, 'Failed to verify account.');
   }
 };
+
+export default verifyEmail;

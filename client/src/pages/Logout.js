@@ -7,7 +7,12 @@ import Button from 'react-bootstrap/Button';
 import MainLayout from '../layouts/MainLayout';
 import '../scss/_email-verification.scss';
 
+/**
+ * The Logout component handles the user logout process by invoking the logout function
+ * from the AuthContext and removing the accessToken cookie.
+ */
 const Logout = () => {
+  // Access logout function from AuthContext.
   const { logout } = useAuth();
   const navigate = useNavigate();
 

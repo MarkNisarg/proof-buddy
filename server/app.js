@@ -1,7 +1,12 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import userRoutes from './routes/user.routes.js';
+import authRoutes from './routes/auth.routes.js';
+import verificationRoutes from './routes/verification.routes.js';
+import profileRoutes from './routes/profile.routes.js';
+import { router as welcomeRouter } from './routes/welcome.routes.js';
+import { router as oauthRouter } from './routes/oauth.routes.js';
+import errorHandler from './middlewares/errorHandler.middleware.js';
 
 dotenv.config();
 
@@ -12,22 +17,25 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// API Versioning.
+const apiVersion = '/api/v1';
+
 // Welcome Route.
-app.get('/', (req, res) => {
-  res.json({ message: 'Welcome to ProofBuddy APIs' });
-});
+app.use(`${apiVersion}/`, welcomeRouter);
 
-app.get('/oauth2callback', (req, res) => {
-  res.json({ message: 'This is OAuth Callback endpoint' });
-});
+// OAuth2 Callback Route.
+app.use(`${apiVersion}/`, oauthRouter);
 
-// Use Routes.
-userRoutes(app);
+// Auth Routes.
+app.use(`${apiVersion}/auth`, authRoutes);
+
+// Verification Routes.
+app.use(`${apiVersion}/auth`, verificationRoutes);
+
+// Profile Routes.
+app.use(`${apiVersion}/users`, profileRoutes);
 
 // Global error handling middleware.
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send({ error: 'Internal Server Error' });
-});
+app.use(errorHandler);
 
 export default app;

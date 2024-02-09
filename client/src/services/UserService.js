@@ -1,22 +1,25 @@
 import axiosInstance from '../utils/axiosInstance';
+import { handleServiceError } from '../utils/serviceErrorHandling';
 
-const API_GATEWAY = '/api/v1/users';
+const API_ENDPOINT = '/api/v1/users';
 
+/**
+ * Retrieves the profile information of the currently authenticated user.
+ *
+ * @returns {Promise<Object>} - The user's profile data as returned by the server.
+ */
 const getUserProfile = async () => {
   try {
-    const response = await axiosInstance.get(`${API_GATEWAY}/profile`);
+    const response = await axiosInstance.get(`${API_ENDPOINT}/profile`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching user profile:', error);
-    if (!error.response) {
-      console.error('Network error or server is down.');
-    }
+    handleServiceError(error, 'Error fetching user profile:');
     throw error;
   }
 };
 
-const UserService = {
+const userService = {
   getUserProfile
 };
 
-export default UserService;
+export default userService;

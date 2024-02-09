@@ -36,6 +36,10 @@
       }
     ],
     "no-unused-vars": "warn",
-    "no-console": "off"
+    "no-console": "off",
+    "object-curly-spacing": [
+      "error",
+      "always"
+    ]
   }
 }

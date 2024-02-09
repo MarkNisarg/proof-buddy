@@ -39,7 +39,10 @@
     ],
     "indent": [
       "error",
-      2
+      2,
+      {
+        "SwitchCase": 1
+      }
     ],
     "no-multiple-empty-lines": [
       "error",
@@ -56,6 +59,10 @@
     "no-unused-vars": "warn",
     "no-console": "off",
     "react-hooks/rules-of-hooks": "error",
-    "react-hooks/exhaustive-deps": "warn"
+    "react-hooks/exhaustive-deps": "warn",
+    "object-curly-spacing": [
+      "error",
+      "always"
+    ]
   }
 }

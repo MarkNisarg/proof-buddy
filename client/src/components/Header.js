@@ -7,6 +7,11 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import { Link } from 'react-router-dom';
 import '../scss/_header.scss';
 
+/**
+ * Header component that renders the navigation bar at the top of the application.
+ * It uses the authentication context to determine if a user is logged in and
+ * changes the navigation items accordingly.
+ */
 const Header = () => {
   const { user } = useAuth();
 

@@ -1,17 +1,23 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import Cookies from 'js-cookie';
-import UserService from '../services/UserService';
+import userService from '../services/userService';
 
+// Creating a context for authentication data.
 const AuthContext = createContext(null);
 
+/**
+ * AuthProvider is a component that wraps its children in an AuthContext.Provider,
+ * allowing them to access the authentication state and methods to manipulate it.
+ */
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
+  // Fetch user data if logged in.
   const fetchUserData = async () => {
     const token = Cookies.get('accessToken');
     if (token) {
       try {
-        const userData = await UserService.getUserProfile();
+        const userData = await userService.getUserProfile();
         setUser(userData);
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -40,7 +46,11 @@ const AuthProvider = ({ children }) => {
 
 export default AuthProvider;
 
-// Hook for easy access to the auth context.
+/**
+ * useAuth is a custom hook that allows easy access to the AuthContext from any component.
+ *
+ * @returns {object} The context value with the current user and auth functions.
+ */
 export const useAuth = () => {
   return useContext(AuthContext);
 };

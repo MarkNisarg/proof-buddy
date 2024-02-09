@@ -11,7 +11,11 @@ import Form from 'react-bootstrap/Form';
 import '../scss/_home.scss';
 import Button from 'react-bootstrap/esm/Button';
 
+/**
+ * The Home component serves as the landing page of the application.
+ */
 const Home = () => {
+  // Accessing the current user's information from the AuthContext.
   const { user } = useAuth();
   const [proofType, setProofType] = useState('/EquationalReasoningRacket');
 

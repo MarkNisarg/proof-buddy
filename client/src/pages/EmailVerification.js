@@ -1,59 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import Cookies from 'js-cookie';
+import React, { useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import MainLayout from '../layouts/MainLayout';
-import AuthService from '../services/AuthService';
+import { useCheckEmailResendToken } from '../hooks/useCheckEmailResendToken';
+import { useEmailVerification } from '../hooks/useEmailVerification';
+import { useResendVerificationEmail } from '../hooks/useResendVerificationEmail';
 import '../scss/_email-verification.scss';
 
+/**
+ * The EmailVerification component renders a user interface for email verification.
+ * It guides the user through the process of verifying their email address.
+ */
 const EmailVerification = () => {
   const [serverMessage, setServerMessage] = useState({ message: '', type: '' });
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
+  const verificationType = 'signupVerify';
+  useCheckEmailResendToken();
 
-  useEffect(() => {
-    const emailResendToken = Cookies.get('emailResendToken');
-    if (!emailResendToken) {
-      navigate('/');
-      return;
-    }
+  useEmailVerification(setServerMessage);
 
-    const handleEmailVerification = async () => {
-      const token = searchParams.get('token');
-      if (token) {
-        try {
-          const isVerified = await AuthService.verifyEmail(token);
-          if (isVerified.success) {
-            Cookies.remove('emailResendToken');
-            navigate('/verify-success', { state: { verified: true } });
-          }
-        } catch (error) {
-          setServerMessage({message: error.response.data.message || 'Failed to verify email. Please try the link again or request a new one.', type: 'error'});
-        }
-      }
-    };
-
-    handleEmailVerification();
-    window.addEventListener('popstate', handleEmailVerification);
-
-    return () => {
-      window.removeEventListener('popstate', handleEmailVerification);
-    };
-  }, [searchParams, navigate]);
-
-  const handleResendEmail = async () => {
-    try {
-      const response = await AuthService.resendVerificationEmail();
-      setServerMessage({message: response.message, type: 'text-success'});
-    } catch (error) {
-      if (error.response && error.response.data && error.response.data.message) {
-        setServerMessage({message: error.response.data.message, type: 'text-danger'});
-      } else {
-        setServerMessage({message: 'An error occurred while trying to resend the verification email. Unable to connect to the server.', type: 'text-danger'});
-      }
-    }
-  };
+  const handleResendEmail = useResendVerificationEmail(verificationType, setServerMessage);
 
   return (
     <MainLayout>
