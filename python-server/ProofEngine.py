@@ -1,10 +1,11 @@
-
+from Token import TokenIdentifier
+from Expression import ExpressionIdentifier
 
 class ProofEngine():
     def __init__(self):
-        self.tokenIdentifiers = None
-        self.ExpressionTypes = None
-        self.ERTypes = None
+        self._tokenIdentifiers = list[TokenIdentifier]()
+        self._expressionTypes = list[ExpressionIdentifier]()
+        self._parser = None
 
     def generateRacketFromRule(self, rule:str):
-        return 'succesful'       
+        return 'successful'
