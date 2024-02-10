@@ -1,12 +1,10 @@
 import re
 
-
 class Token():
     def __init__(self:'Token', tokenIdentifier:'TokenIdentifier', regexMatch:re.Match[str]):
         self.id = tokenIdentifier
         self.regexMatch = regexMatch
         self.isTerminal = tokenIdentifier.isTerminal
-        self.type
     
     def __str__(self:'Token'):
         return self.regexMatch.expand(self.id.printRegex)
@@ -46,5 +44,5 @@ class TokenIdentifier():
         return f'{self.name}'
     
     def __repr__(self):
-        return f'{type(self).__name__}({self.name},{self.recognizeRegex},{self.printRegex})'
+        return f'{type(self).__name__}({self.name},{self.recognizeRegex},{self.printRegex},{self.isTerminal})'
     
