@@ -1,11 +1,11 @@
 from Token import Token, TokenIdentifier
-from Expression import Expression, ExpressionType
+from Expression import Expression, ExpressionIdentifier
 import re
 
 
 class Parser:
 
-    def __init__(self, tokenIdentifiers: list[TokenIdentifier], expressionTypes: list[ExpressionType]):
+    def __init__(self, tokenIdentifiers: list[TokenIdentifier], expressionTypes: list[ExpressionIdentifier]):
         self.tokenIdentifiers = tokenIdentifiers
         self.expressionTypes = expressionTypes
 
@@ -30,7 +30,7 @@ class Parser:
                 if debug:
                     print(f'{t.tokenIdentifier.name}: {t}')
                     print()
-                tokenList[t_i] = Expression(ExpressionType(t.tokenIdentifier.name, [t.tokenIdentifier]), f'{t}')
+                tokenList[t_i] = Expression(ExpressionIdentifier(t.tokenIdentifier.name, [t.tokenIdentifier]), f'{t}')
         while len(tokenList) > 1:
             for e in self.expressionTypes:
                 found, index = e.match(tokenList)
