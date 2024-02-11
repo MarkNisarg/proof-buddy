@@ -1,3 +1,4 @@
+import logger from '../config/logger.config.js';
 import emailService from '../services/email.service.js';
 import { respondWithError, respondWithSuccess } from '../utils/response.util.js';
 import { generateEmailResendToken, generateVerificationToken } from '../utils/token.util.js';
@@ -22,7 +23,7 @@ const forgotPassword = async (req, res) => {
       { emailResendToken }
     );
   } catch (err) {
-    console.error('Error during password reset request:', err);
+    logger.error(`Error during password reset request: ${err}`);
     return respondWithError(res, 500, 'Error processing your request. Please try again later.');
   }
 };

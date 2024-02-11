@@ -13,7 +13,7 @@ const NaturalDeductionPropositionalLogic = () => {
         <Col className='text-center'>
           <h2>Natural Deduction: Propositional Logic</h2>
         </Col>
-        
+
         <Col>
           <Link to='/'>
             <Button>Back</Button>

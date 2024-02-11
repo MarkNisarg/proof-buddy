@@ -1,6 +1,7 @@
 import app from './app.js'
 import db from './models/index.js'
 import { startDatabase } from './config/db.config.js';
+import logger from './config/logger.config.js';
 
 const PORT = process.env.PORT || 3001;
 
@@ -9,14 +10,12 @@ const PORT = process.env.PORT || 3001;
  */
 const startServer = () => {
   const server = app.listen(PORT, () => {
-    console.log('----------------------------------');
-    console.log(`Server is running on port ${PORT}.`);
-    console.log('----------------------------------');
+    logger.info(`Server is running on port ${PORT}.`);
   });
 
   // Handle server errors.
-  server.on('error', (error) => {
-    console.error('Error starting server:', error);
+  server.on('error', (err) => {
+    logger.error(`Error starting server: ${err}`);
     process.exit(1);
   });
 
@@ -24,10 +23,10 @@ const startServer = () => {
    * Graceful shutdown.
    */
   const gracefulShutdown = () => {
-    console.log('Gracefully shutting down!');
+    logger.warn('Gracefully shutting down!!!');
     server.close(() => {
       db.sequelize.close().then(() => {
-        console.log('Database connection closed.');
+        logger.info('Database connection closed.');
         process.exit(0);
       });
     });
@@ -40,9 +39,9 @@ const startServer = () => {
 // Start database connection and then the server.
 startDatabase(db)
   .then(() => {
-    console.log('Database connected and synced successfully.');
+    logger.info('Database connected and synced successfully.');
     startServer();
   })
   .catch(err => {
-    console.error('Error connecting to database:', err);
+    logger.error(`Error connecting to database: ${err}`);
   });

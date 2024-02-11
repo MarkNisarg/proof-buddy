@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import logger from './logger.config.js';
 
 dotenv.config();
 
@@ -13,7 +14,7 @@ const authConfig = {
 
 // Validating essential authentication configuration.
 if (!authConfig.secret) {
-  console.error('Fatal Error: JWT secret is not defined.');
+  logger.error('Fatal Error: JWT secret is not defined.');
   process.exit(1);
 }
 

@@ -1,3 +1,4 @@
+import logger from '../config/logger.config.js';
 import userService from '../services/user.service.js';
 import { respondWithError, respondWithSuccess } from '../utils/response.util.js';
 import { isPasswordResetValid } from '../utils/validation.util.js';
@@ -13,7 +14,7 @@ const resetPassword = async (req, res) => {
   const { resetToken, password } = req.body;
 
   if (isPasswordResetValid(resetToken, password)) {
-    return res.status(400).send({ message: 'Some error occured! Please try again later.' });
+    return respondWithError(res, 400, 'Some error occured! Please try again later.');
   }
 
   try {
@@ -21,13 +22,13 @@ const resetPassword = async (req, res) => {
 
     const isPasswordSame = await userService.isPasswordValid(password, user);
     if (isPasswordSame) {
-      return res.status(400).send({ message: 'New password must be different from previously used.' });
+      return respondWithError(res, 400, 'New password must be different from previously used.');
     }
 
     await userService.resetPassword(password, user);
     respondWithSuccess(res, 200, 'Password has been successfully reset.');
   } catch (err) {
-    console.error('Error during password reset:', err);
+    logger.error(`Error during password reset: ${err}`);
     respondWithError(res, 500, 'Error resetting password. Please try again later.');
   }
 };

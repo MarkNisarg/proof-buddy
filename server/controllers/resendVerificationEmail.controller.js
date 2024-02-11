@@ -1,3 +1,4 @@
+import logger from '../config/logger.config.js';
 import emailService from '../services/email.service.js';
 import { respondWithError, respondWithSuccess } from '../utils/response.util.js';
 import { generateVerificationToken } from '../utils/token.util.js';
@@ -24,7 +25,7 @@ const resendVerificationEmail = async (req, res) => {
 
     respondWithSuccess(res, 200, 'Verification email resent successfully.');
   } catch (err) {
-    console.error('Error resending verification email:', err);
+    logger.error(`Error resending verification email: ${err}`);
     return respondWithError(res, 500, 'Error resending verification email. Please try again.');
   }
 };

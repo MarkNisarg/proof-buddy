@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import authConfig from '../config/auth.config.js';
+import logger from '../config/logger.config.js';
 
 /**
  * Generates a JWT for user verification, embedding the user's username.
@@ -25,13 +26,13 @@ const generateEmailResendToken = (user) => {
  * Verifies the provided email token.
  *
  * @param {string} token - The JWT string to be verified.
- * @returns {Object|null} - The decoded token if verification is successful, otherwise null.
+ * @returns {Object | null} - The decoded token if verification is successful, otherwise null.
  */
 const verifyEmailToken = (token) => {
   try {
     return jwt.verify(token, authConfig.secret);
-  } catch (error) {
-    console.error('Token verification error:', error.message);
+  } catch (err) {
+    logger.error(`Token verification error: ${err}`);
     return null;
   }
 };

@@ -1,3 +1,4 @@
+import logger from '../config/logger.config.js';
 import userService from '../services/user.service.js';
 import { respondWithError, respondWithSuccess } from '../utils/response.util.js';
 
@@ -24,6 +25,7 @@ const getUserProfile = async (req, res) => {
       is_instructor: user.is_instructor
     });
   } catch (err) {
+    logger.error(`Error getting use profile: ${err}`);
     respondWithError(res, 500, err.message);
   }
 };

@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import Cookies from 'js-cookie';
 import userService from '../services/userService';
+import logger from '../utils/logger';
 
 // Creating a context for authentication data.
 const AuthContext = createContext(null);
@@ -20,7 +21,7 @@ const AuthProvider = ({ children }) => {
         const userData = await userService.getUserProfile();
         setUser(userData);
       } catch (error) {
-        console.error('Error fetching user data:', error);
+        logger.error('Error fetching user data', error);
       }
     }
   };

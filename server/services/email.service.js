@@ -1,4 +1,5 @@
 import createTransporter from '../config/email.config.js';
+import logger from '../config/logger.config.js';
 import { verificationEmailTemplate, passwordResetEmailTemplate } from '../templates/emailTemplates.js';
 
 /**
@@ -19,10 +20,10 @@ const sendEmail = async (to, subject, html) => {
 
   transporter.sendMail(mailConfigurations)
     .then(info => {
-      console.log(`Email Sent Successfully: `, info);
+      logger.info(`Email Sent Successfully to ${info.envelope.to}.`);
     })
-    .catch(error => {
-      console.error(`Error Sending Email: `, error);
+    .catch(err => {
+      logger.error(`Error Sending Email: ${err}`);
       return;
     });
 };

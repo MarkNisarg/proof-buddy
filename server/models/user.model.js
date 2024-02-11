@@ -1,5 +1,9 @@
 import { DataTypes } from 'sequelize';
 
+/**
+ * Define the attributes for the userModel.
+ * Each attribute corresponds to a column in the database table.
+ */
 const userModelAttributes = {
   id: {
     type: DataTypes.INTEGER,

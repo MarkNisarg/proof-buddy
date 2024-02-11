@@ -1,6 +1,7 @@
 import { verifyEmailToken } from '../utils/token.util.js';
 import { respondWithError, respondWithSuccess } from '../utils/response.util.js';
 import userService from '../services/user.service.js';
+import logger from '../config/logger.config.js';
 
 /**
  * Verify an email using token verification.
@@ -34,8 +35,8 @@ const verifyEmail = async (req, res) => {
 
     await userService.activateUser(user);
     respondWithSuccess(res, 200, 'Account verified successfully!');
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    logger.error(`Failed to verify account: ${err}`);
     respondWithError(res, 500, 'Failed to verify account.');
   }
 };

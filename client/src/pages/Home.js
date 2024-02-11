@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -50,38 +50,38 @@ const Home = () => {
                               setProofType(e.target.value);
                             }}
                           >
-                            <option 
-                              id='EquationalReasoningRacket' 
+                            <option
+                              id='EquationalReasoningRacket'
                               value='/EquationalReasoningRacket'>
                                 Equational Reasoning: Racket
                             </option>
-                            <option 
+                            <option
                               id='NaturalDeductionPropositionalLogic'
                               value='/NaturalDeductionPropositionalLogic'>
                                 Natural Deduction: Propositional Logic
                             </option>
                             <option
-                              id='NaturalDeductionFirstOrderLogic' 
+                              id='NaturalDeductionFirstOrderLogic'
                               value='/NaturalDeductionFirstOrderLogic'>
                                 Natural Deduction: First Order Logic
                             </option>
-                            
+
                           </Form.Select>
-                        
+
                         </Col>
-                        
-                      </Form.Floating>   
+
+                      </Form.Floating>
                     </Form.Group>
                   </Form>
-                
+
                 </Col>
-               
+
                 <Link to={proofType}>
                   <Button>
                     Lets Begin
                   </Button>
                 </Link>
-                
+
               </>
             ) : (
               <>

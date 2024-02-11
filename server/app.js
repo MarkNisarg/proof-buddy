@@ -7,6 +7,7 @@ import profileRoutes from './routes/profile.routes.js';
 import { router as welcomeRouter } from './routes/welcome.routes.js';
 import { router as oauthRouter } from './routes/oauth.routes.js';
 import errorHandler from './middlewares/errorHandler.middleware.js';
+import morganAPILogger from './middlewares/morgan.middleware.js';
 
 dotenv.config();
 
@@ -16,6 +17,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Apply Morgan middleware configuration.
+morganAPILogger(app);
 
 // API Versioning.
 const apiVersion = '/api/v1';

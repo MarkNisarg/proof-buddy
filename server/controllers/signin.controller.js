@@ -6,6 +6,7 @@ import { generateVerificationToken, generateEmailResendToken } from '../utils/to
 import { validateCredentials } from '../utils/validation.util.js';
 import { respondWithError, respondWithSuccess } from '../utils/response.util.js';
 import userService from '../services/user.service.js';
+import logger from '../config/logger.config.js';
 
 /**
  * The user sign-in process handler.
@@ -62,6 +63,7 @@ const signin = async (req, res) => {
     });
 
   } catch (err) {
+    logger.error(`Error logining user: ${err}`);
     return respondWithError(res, 500, 'Error logining user. Please try again later.');
   }
 };

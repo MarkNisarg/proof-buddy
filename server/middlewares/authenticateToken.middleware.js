@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import util from 'util';
 import authConfig from '../config/auth.config.js';
 import { respondWithError } from '../utils/response.util.js';
+import logger from '../config/logger.config.js';
 
 const promisifiedJwtVerify = util.promisify(jwt.verify);
 
@@ -37,6 +38,7 @@ const verifyToken = async (req, res, next) => {
     req.username = decoded.username;
     next();
   } catch (err) {
+    logger.error(`Error verifying token: ${err}`);
     respondWithError(res, 401, 'Unauthorized token provided. ' + err.message);
   }
 };

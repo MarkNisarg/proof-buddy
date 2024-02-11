@@ -19,7 +19,7 @@ const NaturalDeductionFirstOrderLogic = () => {
             <Button>Back</Button>
           </Link>
         </Col>
-        
+
       </Container>
     </MainLayout>
   );
