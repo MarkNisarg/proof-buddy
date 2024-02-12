@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import authService from '../services/authService';
+import authService from '../services/AuthService';
 
 /**
  * A higher-order component (HOC) designed to wrap around components that
