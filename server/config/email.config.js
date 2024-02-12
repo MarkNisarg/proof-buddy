@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import { google } from 'googleapis';
 import nodemailer from 'nodemailer';
+import logger from './logger.config.js';
 
 dotenv.config();
 
@@ -45,9 +46,9 @@ const createTransporter = async () => {
     });
 
     return transporter;
-  } catch (error) {
-    console.error('Error creating transporter: ', error);
-    throw error;
+  } catch (err) {
+    logger.error(`Error creating transporter using OAuth2: ${err}`);
+    throw err;
   }
 };
 
@@ -55,7 +56,7 @@ const createTransporter = async () => {
  * Validate essential email configuration.
  */
 if (!process.env.GMAIL_USERNAME || !process.env.GMAIL_CLIENT_ID || !process.env.GMAIL_CLIENT_SECRET || !process.env.GMAIL_REFRESH_TOKEN) {
-  console.error('Fatal Error: Email configuration is incomplete.');
+  logger.error('Fatal Error: Email configuration is incomplete.');
   process.exit(1);
 }
 

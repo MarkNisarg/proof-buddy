@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import logger from './logger.config.js';
 
 dotenv.config();
 
@@ -16,7 +17,7 @@ const DB_CONFIG = {
 
 // Validating essential database configuration.
 if (!DB_CONFIG.HOST || !DB_CONFIG.USER || DB_CONFIG.PASSWORD === undefined || !DB_CONFIG.DB) {
-  console.error('Fatal Error: Database configuration is incomplete.');
+  logger.error('Fatal Error: Database configuration is incomplete.');
   process.exit(1);
 }
 
@@ -28,12 +29,12 @@ if (!DB_CONFIG.HOST || !DB_CONFIG.USER || DB_CONFIG.PASSWORD === undefined || !D
 const startDatabase = async (db) => {
   try {
     await db.sequelize.authenticate();
-    console.log('Database connection has been established successfully.');
+    logger.info('Database connection has been established successfully.');
     await db.sequelize.sync({ force: false });
-    console.log('Database synced.');
-  } catch (error) {
-    console.error('Unable to connect to the database:', error);
-    throw error;
+    logger.info('Database synced.');
+  } catch (err) {
+    logger.error(`Unable to connect to the database: ${err}`);
+    throw err;
   }
 };
 

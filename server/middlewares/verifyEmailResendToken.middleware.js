@@ -1,6 +1,7 @@
 import { verifyEmailToken } from '../utils/token.util.js';
 import { respondWithError } from '../utils/response.util.js';
 import userService from '../services/user.service.js';
+import logger from '../config/logger.config.js';
 
 /**
  * Middleware to verify the email resend token from the request body.
@@ -35,8 +36,8 @@ const verifyEmailResendToken = async (req, res, next) => {
 
     req.user = user;
     next();
-  } catch (error) {
-    console.log('Error resending verification email:', error);
+  } catch (err) {
+    logger.error(`Error resending verification email: ${err}`);
     respondWithError(res, 500, 'Error resending verification email. Please try again.');
   }
 };

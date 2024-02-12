@@ -1,3 +1,5 @@
+import logger from './logger';
+
 /**
  * Handles service layer errors, logging additional information if necessary.
  *
@@ -5,9 +7,9 @@
  * @param {string} message - Custom error message for logging.
  */
 const handleServiceError = (error, message) => {
-  console.error(message, error);
+  logger.error(message, error.response.data.message);
   if (!error.response) {
-    console.error('Network error or server is down.');
+    logger.error('Network error or server is down.');
   }
 };
 

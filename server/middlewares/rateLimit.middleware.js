@@ -1,3 +1,4 @@
+import logger from '../config/logger.config.js';
 import { rateLimit } from 'express-rate-limit';
 
 /**
@@ -27,7 +28,7 @@ const loginAttemptLimiter = rateLimit({
   message: { message: 'Too many failed login attempts. Please try again after an hour.' },
   handler: (request, response, next, options) => {
     if (request.rateLimit.used === request.rateLimit.limit + 1) {
-      console.log(`Login rate limit reached for IP: ${request.ip}, Username: ${request.body.username}`);
+      logger.warn(`Login rate limit reached for IP: ${request.ip}, Username: ${request.body.username}`);
     }
     response.status(options.statusCode).send(options.message)
   },
@@ -42,6 +43,12 @@ const sendEmailLimiter = rateLimit({
   windowMs: RATE_LIMIT_WINDOW_MS,
   limit: RATE_LIMIT_MAX_EMAIL_REQUESTS,
   message: { message: 'Too many requests, please try again later.' },
+  handler: (request, response, next, options) => {
+    if (request.rateLimit.used === request.rateLimit.limit + 1) {
+      logger.warn(`Email sending rate limit reached for IP: ${request.ip}`);
+    }
+    response.status(options.statusCode).send(options.message)
+  },
   standardHeaders: true,
   legacyHeaders: false
 });

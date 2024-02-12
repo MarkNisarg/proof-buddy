@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import logger from '../utils/logger';
 
 /**
  * ErrorBoundary component that listens for errors in its children components.
@@ -11,7 +12,7 @@ const ErrorBoundary = ({ children }) => {
   const handleError = (error, errorInfo) => {
     setHasError(true);
     setErrorInfo(errorInfo);
-    console.error('Caught an error:', error, errorInfo);
+    logger.error('Caught an error:', error, errorInfo);
   };
 
   // Setting up the error boundary using useEffect and ErrorBoundary.

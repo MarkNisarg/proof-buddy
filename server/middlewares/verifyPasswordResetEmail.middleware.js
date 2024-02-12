@@ -1,3 +1,4 @@
+import logger from '../config/logger.config.js';
 import userService from '../services/user.service.js';
 import { respondWithError } from '../utils/response.util.js';
 
@@ -24,8 +25,8 @@ const verifyPasswordResetEmail = async (req, res, next) => {
 
     req.user = user;
     next();
-  } catch (error) {
-    console.log('Error sending password reset email:', error);
+  } catch (err) {
+    logger.error(`Error sending password reset email: ${err}`);
     respondWithError(res, 500, 'Error sending password reset email. Please try again.');
   }
 };

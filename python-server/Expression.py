@@ -1,18 +1,12 @@
-#from ExpressionType import ExpressionType
 from Token import Token, TokenIdentifier
 
-
 class Expression(Token):
-    def __init__(self, id:'ExpressionType', subcomponents:list=[], token:str=''):
+    def __init__(self, id:'ExpressionIdentifier', subcomponents:list=[], token:str=''):
         self.id = id
         self.token = token
         self.isRoot = False
         self.subcomponents = []
         
-        # self.type = 
-        # if subcomponents and not subcomponents.T == 'Expression':
-        #     print('Error')
-        # else:
         self.subcomponents = subcomponents
 
     def __str__(self):
@@ -37,7 +31,7 @@ class Expression(Token):
             return True
 
 
-class ExpressionType(TokenIdentifier):
+class ExpressionIdentifier(TokenIdentifier):
 
     def __init__(self, name:str, structure:list):
         self.name = name
@@ -46,7 +40,7 @@ class ExpressionType(TokenIdentifier):
             if isinstance(e,TokenIdentifier):
                 self.structure.append(e)
     
-    def match(self:'ExpressionType', inputLine:list[Token|Expression]) -> (bool, int):
+    def match(self:'ExpressionIdentifier', inputLine:list[Token|Expression]) -> (bool, int):
         for i in range(len(inputLine)-len(self.structure)+1):
             hasMatch = True
             for j in range(len(self.structure)):
@@ -59,7 +53,6 @@ class ExpressionType(TokenIdentifier):
             if hasMatch:
                 return Expression(self, inputLine[i:i+len(self.structure)])
         return None
-
 
     def __str__(self):
         return self.name

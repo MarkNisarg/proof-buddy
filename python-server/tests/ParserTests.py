@@ -8,7 +8,7 @@ parent = os.path.dirname(current)
 
 sys.path.append(parent)
 from Token import Token, TokenType
-from Expression import Expression, ExpressionType
+from Expression import Expression, ExpressionIdentifier
 import Parser
 
 # class ParserTestInstance(NamedTuple):
@@ -32,11 +32,11 @@ def defineER():
 
     eExpression = TokenType.getGeneric('Expression')
     # eInteger = ExpressionType('Integer',TList(TokenType,[tNumber]))
-    eBoolean1 = ExpressionType('Boolean',[tTrue])
-    eBoolean2 = ExpressionType('Boolean',[tFalse])
-    eTerminal = ExpressionType('Terminal',[tSymbol])
+    eBoolean1 = ExpressionIdentifier('Boolean',[tTrue])
+    eBoolean2 = ExpressionIdentifier('Boolean',[tFalse])
+    eTerminal = ExpressionIdentifier('Terminal',[tSymbol])
     # For ER, parentheses are necessarily part of every expression and not a wrapper
-    eAdd = ExpressionType('Add',[tOpenParens,tPlus,tNumber,tNumber,tClosedParens])
+    eAdd = ExpressionIdentifier('Add',[tOpenParens,tPlus,tNumber,tNumber,tClosedParens])
     expressionList = [eExpression, eBoolean1, eBoolean2, eTerminal, eAdd]
     return tokenList, expressionList
 

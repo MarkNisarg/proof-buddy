@@ -8,11 +8,11 @@ parent = os.path.dirname(current)
 
 sys.path.append(parent)
 
-from Expression import Expression, ExpressionType
+from Expression import Expression, ExpressionIdentifier
 from Token import Token, TokenIdentifier
 
 class ExpressionTestInstance(NamedTuple):
-    expressionType: ExpressionType
+    expressionType: ExpressionIdentifier
     valid_unparsed: list[list[Token | Expression]]
     valid_parsed: list[list[Expression]]
     invalid_unparsed: list[list[Token | Expression]]
@@ -23,8 +23,8 @@ class ExpressionTests(unittest.TestCase):
         tokenTrue = tTrue.parse('#t')
         tSymbol = TokenIdentifier('Symbol',r'([A-Z])',r'\g<1>')
         tokenSymbol = tSymbol.parse('A')
-        eTerminal = ExpressionType('Terminal',[tSymbol])
-        eBoolean = ExpressionType('Boolean',[tTrue])
+        eTerminal = ExpressionIdentifier('Terminal',[tSymbol])
+        eBoolean = ExpressionIdentifier('Boolean',[tTrue])
         self.expressionTypeList = list[ExpressionTestInstance]()
         self.expressionTypeList.append(ExpressionTestInstance(
             eBoolean,

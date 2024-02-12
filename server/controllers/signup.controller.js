@@ -3,6 +3,7 @@ import { generateVerificationToken, generateEmailResendToken } from '../utils/to
 import { validateUserInput } from '../utils/validation.util.js';
 import { respondWithError, respondWithSuccess } from '../utils/response.util.js';
 import userService from '../services/user.service.js';
+import logger from '../config/logger.config.js';
 
 /**
  * Create user account and send verification email.
@@ -35,6 +36,7 @@ const createUser = async (req, res) => {
       { emailResendToken }
     );
   } catch (err) {
+    logger.error(`Error creating user account: ${err}`);
     return respondWithError(res, 500, 'Error creating user account. Please try again.');
   }
 };

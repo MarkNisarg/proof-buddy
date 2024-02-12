@@ -1,3 +1,4 @@
+import logger from '../config/logger.config.js';
 import { respondWithError } from '../utils/response.util.js';
 
 /**
@@ -8,7 +9,7 @@ import { respondWithError } from '../utils/response.util.js';
  * @param {Object} res - The HTTP response object.
  */
 const errorHandler = (err, req, res, next) => {
-  console.error(err.stack);
+  logger.error(`Global server error: ${err.stack}`);
 
   respondWithError(res, 500, 'Internal Server Error', {
     stack: err.stack

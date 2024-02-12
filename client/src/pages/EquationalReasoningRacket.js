@@ -15,20 +15,20 @@ const EquationalReasoningRacket = () => {
   const [isLeftHandActive, setIsLeftHandActive] = useState(true);
 
   const [currentRacket, setCurrentRacket] = useState('')
-  
+
   const [proofName, setProofName] = useState('');
 
   const [LHSGoal, setLHSGoal] = useState('');
 
-  const [RHSGoal, setRHSGoal] = useState(''); 
+  const [RHSGoal, setRHSGoal] = useState('');
 
   const [currentLHS, setCurrentLHS] = useState('');
 
   const [currentRHS, setCurrentRHS] = useState('');
-  
-  const [leftHandSideProofLineList, setLeftHandSideProofLineList] = useState([{proofLineRacket: '', proofLineRule: ''}]);
-  
-  const[rightHandSideProofLineList, setRightHandSideProofLineList] = useState([{proofLineRacket: '', proofLineRule: ''}]);
+
+  const [leftHandSideProofLineList, setLeftHandSideProofLineList] = useState([{ proofLineRacket: '', proofLineRule: '' }]);
+
+  const[rightHandSideProofLineList, setRightHandSideProofLineList] = useState([{ proofLineRacket: '', proofLineRule: '' }]);
 
   const gradient = {
     orange_gradient: 'linear-gradient(135deg, #ffc600 0, #ff8f1c 100%)',
@@ -44,12 +44,12 @@ const EquationalReasoningRacket = () => {
   }
 
   const handleToggleLAndR = () => {
-    setIsLeftHandActive(!isLeftHandActive); 
+    setIsLeftHandActive(!isLeftHandActive);
   }
 
   const handleSaveProofRequest = () => {
     alert('Saving Current Proof!')
-    
+
   }
 
   const handleUploadPoofRequest = () => {
@@ -69,7 +69,7 @@ const EquationalReasoningRacket = () => {
       throw new Error('Error in creating racket and rules from input field.');
     }
   }
-  
+
   //Creates JSON object of the target incoming parameter (which should be a JavaScript Object)
   const convertToJSON = (target) => {
     alert(JSON.stringify(target)); //Testing Based Alert
@@ -86,12 +86,12 @@ const EquationalReasoningRacket = () => {
   }
 
   const addNewProofLineRightHandSide = () => {
-    setRightHandSideProofLineList([...rightHandSideProofLineList, {proofLineRacket: '', proofLineRule: ''}]);
+    setRightHandSideProofLineList([...rightHandSideProofLineList, { proofLineRacket: '', proofLineRule: '' }]);
     setCurrentRHS(rightHandSideProofLineList[rightHandSideProofLineList.length - 1].proofLineRacket);
   }
 
   const addNewProofLineLeftHandSide = () => {
-    setLeftHandSideProofLineList([...leftHandSideProofLineList, {proofLineRacket: '', proofLineRule: ''}]);
+    setLeftHandSideProofLineList([...leftHandSideProofLineList, { proofLineRacket: '', proofLineRule: '' }]);
     setCurrentLHS(leftHandSideProofLineList[leftHandSideProofLineList.length -1].proofLineRacket);
   }
 
@@ -150,19 +150,19 @@ const EquationalReasoningRacket = () => {
 
   return (
     <MainLayout>
-      <Container fluid style={{paddingLeft: 10}} className='equational-reasoning-racket-container'>
+      <Container fluid style={{ paddingLeft: 10 }} className='equational-reasoning-racket-container'>
         <Form className='special-form' >
           <Form.Group id='er-proof-creation'>
             <Form.Floating>
-              <Row id='fixed-row' style={isLeftHandActive ? {background: gradient.orange_gradient} : {background: gradient.orange_gradient_reverse}}>
+              <Row id='fixed-row' style={isLeftHandActive ? { background: gradient.orange_gradient } : { background: gradient.orange_gradient_reverse }}>
                 <Row >
                   <Col className='text-center'>
                     <h2 className='title-blue'>Equational Reasoning: Racket</h2>
                   </Col>
                 </Row>
-                
+
                 <Row className='button-group-one'>
-                  <Col className='text-center' md={{span: 2, offset: 2}}>
+                  <Col className='text-center' md={{ span: 2, offset: 2 }}>
                     <Link to='/'>
                       <Button variant='danger'>Close Proof</Button>
                     </Link>
@@ -171,13 +171,13 @@ const EquationalReasoningRacket = () => {
                     <Button>Definitions</Button>
                   </Col>
                   <Col className='text-center' md={2}>
-                    <Button>View Rule Set</Button>  
+                    <Button>View Rule Set</Button>
                   </Col>
                   <Col className='text-center' md={2}>
-                    <Button>Assertions</Button>  
+                    <Button>Assertions</Button>
                   </Col>
                 </Row>
-                
+
                 <Row>
                   <Col md={1}>
                     <FormLabel>
@@ -193,7 +193,7 @@ const EquationalReasoningRacket = () => {
                     />
                   </Col>
                 </Row>
-                
+
                 <Row>
                   <Col md={1}>
                     <h4 className='title-blue'>Goal:</h4>
@@ -225,7 +225,7 @@ const EquationalReasoningRacket = () => {
                       <h4 className='title-blue'>Current LHS:</h4>
                     </FormLabel>
                     <Form.Control
-                      style={isLeftHandActive ? {background: goalHighlightColors.drexel_yellow, borderWidth: 4, borderColor: goalHighlightColors.plain_white} : {background: goalHighlightColors.plain_white}}
+                      style={isLeftHandActive ? { background: goalHighlightColors.drexel_yellow, borderWidth: 4, borderColor: goalHighlightColors.plain_white } : { background: goalHighlightColors.plain_white }}
                       id='current-lhs'
                       type='text'
                       placeholder=''
@@ -240,7 +240,7 @@ const EquationalReasoningRacket = () => {
                       <h4 className='title-blue'>Current RHS:</h4>
                     </FormLabel>
                     <Form.Control
-                      style={!isLeftHandActive ? {background: goalHighlightColors.drexel_yellow, borderWidth: 4, borderColor: goalHighlightColors.plain_white} : {background: goalHighlightColors.plain_white}}
+                      style={!isLeftHandActive ? { background: goalHighlightColors.drexel_yellow, borderWidth: 4, borderColor: goalHighlightColors.plain_white } : { background: goalHighlightColors.plain_white }}
                       id='current-rhs'
                       type='text'
                       placeholder=''
@@ -258,19 +258,19 @@ const EquationalReasoningRacket = () => {
                   <Col id='lhs-rhs-toggle'>
                     Currently Showing
                     <Button id='lhs-rhs-toggle-button' onClick={handleToggleLAndR}>Left Hand Side</Button>
-                  </Col>  
+                  </Col>
                 }
                 { !isLeftHandActive &&
                   <Col id='lhs-rhs-toggle'>
                     Currently Showing
                     <Button id='lhs-rhs-toggle-button' onClick={handleToggleLAndR}>Right Hand Side</Button>
-                  </Col> 
+                  </Col>
                 }
-                
+
               </Col>
-              
+
               <br></br>
-              
+
               <Row>
                 <Col md={1} className='small-col'>
                 </Col>
@@ -288,7 +288,7 @@ const EquationalReasoningRacket = () => {
               <Row className='text-center'>
                 { !isLeftHandActive && rightHandSideProofLineList.map((racket, index) => (
                   <Row key={index}>
-                    
+
                     {
                       index == 0 &&
                       <Col className='small-col' md={1}>
@@ -341,7 +341,7 @@ const EquationalReasoningRacket = () => {
                           placeholder='Enter Rule for RHS'
                           onChange={element => handleProofLineListChange(index, element, rightHandSideProofLineList)}
                         />
-                      } 
+                      }
                     </Col>
                   </Row>
                 ))}
@@ -380,7 +380,7 @@ const EquationalReasoningRacket = () => {
                             //readOnly
                           />
                       }
-                    </Col> 
+                    </Col>
                     {/* if LHS is active, then render LHS Form.Control */}
                     <Col md={3}>
                       {
@@ -414,26 +414,26 @@ const EquationalReasoningRacket = () => {
                   {
                     !isLeftHandActive &&
                     <Button onClick={addNewProofLineRightHandSide}>Add</Button>
-                  } 
+                  }
                 </Col>
                 <Col md={1}>
                   <Button  variant='danger' onClick={removeProofLines}>Delete Line</Button>
                 </Col>
-                <Col md={{span: 2, offset: 6}} >
+                <Col md={{ span: 2, offset: 6 }} >
                   <Button variant='success' onClick={handlePythonGeneration}>Generate & Check</Button>
                 </Col>
-                <Col md={{span: 1, offset: 0}}>
+                <Col md={{ span: 1, offset: 0 }}>
                   <Button variant='success'>Substitution</Button>
                 </Col>
-               
+
               </Row>
             </Form.Floating>
           </Form.Group>
-          
+
           <br></br>
-          
+
           <Row className='text-center'>
-            <Col md={{span: 1, offset: 4}}>
+            <Col md={{ span: 1, offset: 4 }}>
               <Button>
                 Download
               </Button>
@@ -448,14 +448,14 @@ const EquationalReasoningRacket = () => {
                 Save
               </Button>
             </Col>
-            <Col md={{span: 1, offset: 2}}>
+            <Col md={{ span: 1, offset: 2 }}>
               <Button onClick={handleFormSubmission}>
                 Submit
               </Button>
             </Col>
           </Row>
-        </Form>   
-        
+        </Form>
+
       </Container>
     </MainLayout>
   );

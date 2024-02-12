@@ -1,3 +1,4 @@
+import logger from '../config/logger.config.js';
 import userService from '../services/user.service.js';
 import { respondWithError } from '../utils/response.util.js';
 
@@ -40,9 +41,8 @@ const checkDuplicateUsernameOrEmail = async (req, res, next) => {
     }
 
     next();
-  } catch (error) {
-    console.log(error);
-
+  } catch (err) {
+    logger.error(`Error verifying sign-up information: ${err}`);
     respondWithError(res, 500, 'Error verifying sign-up information.');
   }
 };
