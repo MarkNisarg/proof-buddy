@@ -10,7 +10,7 @@ class Parser:
         self.expressionTypes = expressionTypes
 
     def tokenize(self, inputLine:str) -> list[Token]:
-        tokens = list[Token]
+        tokens = list[Token]()
         cursor = 0
         while cursor < len(inputLine):
             for t in self.tokenIdentifiers:
@@ -21,7 +21,7 @@ class Parser:
                     tokens.append(Token(t,match))
         return tokens
 
-    def parse(self, inputLine:str, debug:bool=False) -> Expression:
+    def parse(self, inputLine:str, debug:bool=False) -> tuple[Expression,list[Token|Expression]]:
         # tokenize str->list[Token]
         # Match list[Token] to list[ExpressionType] (recursively) to create Expression tree
         tokenList = list(self.tokenize(inputLine))
@@ -33,16 +33,9 @@ class Parser:
                 tokenList[t_i] = Expression(ExpressionIdentifier(t.tokenIdentifier.name, [t.tokenIdentifier]), f'{t}')
         while len(tokenList) > 1:
             for e in self.expressionTypes:
-                found, index = e.match(tokenList)
-                if found:
-                    if debug:
-                        print(f'{e.name}: {tokenList[index:index+len(e.structure)]!s}')
-                    new_expr = Expression(e, tokenList[index:index+len(e.structure)])
-                    # I couldn't figure out how to pass a slice to __delitem__ for some reason
-                    # It should support it
-                    for i in range(len(e.structure)):
-                        tokenList.__delitem__(index)
-                    tokenList.insert(index, new_expr)
+                found, new_list = e.match(tokenList)
+                if found != None:
+                    tokenList = new_list
                     break
         return tokenList[0]
 
