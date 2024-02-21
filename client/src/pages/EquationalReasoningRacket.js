@@ -76,7 +76,7 @@ const EquationalReasoningRacket = () => {
   }
 
   const convertFormToJSON = () => { // returns a JSON object of the present form
-    let EquationalReasoningObject = {
+    let EquationalReasoningObject = { //basic form Object in JavaScript
       name: proofName, //String Proof Name
       leftRacketsAndRules: leftHandSideProofLineList, //Array of JavaScript Objects {proofline: '', proofRule: ''}
       rightRacketsAndRules: rightHandSideProofLineList //Array of JavaScript Objects {proofline: '', proofRule: ''}
