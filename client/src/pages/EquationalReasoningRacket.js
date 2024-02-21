@@ -71,7 +71,7 @@ const EquationalReasoningRacket = () => {
 
   //Creates JSON object of the target incoming parameter (which should be a JavaScript Object)
   const convertToJSON = (target) => {
-    alert(JSON.stringify(target)); //Testing Based Alert
+    //alert(JSON.stringify(target)); //Testing Based Alert delete after testing is complete
     return JSON.stringify(target);
   }
 
