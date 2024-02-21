@@ -42,7 +42,7 @@ const EquationalReasoningRacket = () => {
 
   }
 
-  const handleToggleLAndR = () => {
+  const handleToggleLAndR = () => { //changes the state of wether left hand side is active or not. If true, then 'Left Hand Side' is active. If Fasle, then 'Rights Hand Side' is active
     setIsLeftHandActive(!isLeftHandActive);
   }
 
@@ -55,7 +55,7 @@ const EquationalReasoningRacket = () => {
     alert('Uploading Current Proof!')
   }
 
-  const handleProofLineListChange = (index, element, targetList) => {
+  const handleProofLineListChange = (index, element, targetList) => {// this function essentially makes sure that any user change to the input fields updates the corresponding ProofList
     let newProofLineList = [...targetList];
 
     if (element.target.id == 'left-racket' || element.target.id == 'right-racket'){
@@ -110,20 +110,20 @@ const EquationalReasoningRacket = () => {
     }
   }
 
-  const removeEmptyLines = (targetList, setterMethod) => {
+  const removeEmptyLines = (targetList, setterMethod) => { //helper function deletes the lines, creates shallow copy of spliced list, then sets new state to re-render react components
     for (let index = 0; index < targetList.length; index++) {
       let currentElement = targetList[index];
       if (index > 0){
         if (!currentElement.proofLineRacket || !currentElement.proofLineRule){
           let newList = targetList.slice(0, index);
-          setterMethod(newList);
+          setterMethod(newList); //setter method initiates a re-render of react component
           break;
         }
       }
     }
   }
 
-  const findFirstBlankLine = (targetList) => {
+  const findFirstBlankLine = (targetList) => { // helper function that finds the fist instance of a blank line
     for (let index = 0; index < targetList.length; index++) {
       let currentElement = targetList[index];
       if (index > 0){
@@ -135,27 +135,27 @@ const EquationalReasoningRacket = () => {
 
   }
 
-  const handlePythonGeneration = async () => {
+  const handlePythonGeneration = async () => {//function wraps the logic for communicating 'Client's' 'Rule' to python-server for 'Racket' code generation
     if (isLeftHandActive) {
       if (leftHandSideProofLineList.length - 1 > 0) {
         handlePromiseWithPythonServer(leftHandSideProofLineList); 
       } else {
-        addLine();
+        addLine(); //we use else here to add a new line so that we do not communicate null for the first line of the proof
       }
     } else {
       if (rightHandSideProofLineList.length - 1 > 0) {
         handlePromiseWithPythonServer(rightHandSideProofLineList);
       } else {
-        addLine();
+        addLine(); //we use else here to add a new line so that we do not communicate null for the first line of the proof
       }
     }
   }
 
-  const handlePromiseWithPythonServer = async (targetList) => {
+  const handlePromiseWithPythonServer = async (targetList) => { //sends client 'Rule' to the python-server for 'Racket' code generation
     try {
-      let response = await racketGeneration({ rule: targetList[targetList.length - 1].proofLineRule });
+      let response = await racketGeneration({ rule: targetList[targetList.length - 1].proofLineRule }); //we await a response from the python-server
       targetList[targetList.length - 1].proofLineRacket = response.racket;
-      addLine();
+      addLine(); //After a succesful response, we add a new line for the client to add more 'Rules' for 'Racket' code generation
     } catch (error) {
       logger.error('Error in front-end client and python-server communication when retrieving racket code from user generation', error);
     }
