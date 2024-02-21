@@ -14,10 +14,6 @@ const EquationalReasoningRacket = () => {
 
   const [isLeftHandActive, setIsLeftHandActive] = useState(true);
 
-  //const [currentRacket, setCurrentRacket] = useState('');
-
-  const [currentLeftSideIndex, setCurrentLeftSideIndex] = useState(0); 
-
   const [proofName, setProofName] = useState('');
 
   const [LHSGoal, setLHSGoal] = useState('');
@@ -63,7 +59,7 @@ const EquationalReasoningRacket = () => {
 
     if (element.target.id == 'left-racket' || element.target.id == 'right-racket'){
       newProofLineList[index].proofLineRacket = element.target.value;
-      console.log('Racket: ' + newProofLineList[index].proofLineRacket);
+      //console.log('Racket: ' + newProofLineList[index].proofLineRacket);
     } else if(element.target.id == 'left-rule' || element.target.id == 'right-rule') {
       newProofLineList[index].proofLineRule = element.target.value;
       //console.log('Rule: ' + newProofLineList[index].proofLineRule);
@@ -96,19 +92,7 @@ const EquationalReasoningRacket = () => {
       setCurrentRHS(rightHandSideProofLineList[rightHandSideProofLineList.length - 1].proofLineRacket);
     }
   }
-
-  //delete refractored code for the method above.
-
-  const addNewProofLineRightHandSide = () => {
-    setRightHandSideProofLineList([...rightHandSideProofLineList, { proofLineRacket: '', proofLineRule: '' }]);
-    setCurrentRHS(rightHandSideProofLineList[rightHandSideProofLineList.length - 1].proofLineRacket);
-  }
-
-  const addNewProofLineLeftHandSide = () => {
-    setLeftHandSideProofLineList([...leftHandSideProofLineList, { proofLineRacket: '', proofLineRule: '' }]);
-    setCurrentLHS(leftHandSideProofLineList[leftHandSideProofLineList.length -1].proofLineRacket);
-  }
-
+  
   const removeProofLines = () => {
     if (isLeftHandActive) {
       let target = findFirstBlankLine(leftHandSideProofLineList);
@@ -139,7 +123,6 @@ const EquationalReasoningRacket = () => {
   }
 
   const findFirstBlankLine = (targetList) => {
-    //let emptyIndex = 0
     for (let index = 0; index < targetList.length; index++) {
       let currentElement = targetList[index];
       if (index > 0){
@@ -152,25 +135,29 @@ const EquationalReasoningRacket = () => {
   }
 
   const handlePythonGeneration = async () => {
+
     if (isLeftHandActive) {
-      let response = await racketGeneration({ rule: leftHandSideProofLineList[1].proofLineRule });
-      leftHandSideProofLineList[1].proofLineRule = response.racket;
-      
-      //console.log('LHS Rule: ' + leftHandSideProofLineList[1].proofLineRule);
-      //console.log('Racket: ' + response.racket);
-      
-      let element = document.getElementById('left-racket-1');
-      element.value = response.racket;
-  
+      if (leftHandSideProofLineList.length - 1 > 0) {
+        handlePromiseWithPythonServer(leftHandSideProofLineList); 
+      } else {
+        addLine();
+      }
     } else {
-      let response = await racketGeneration({ rule: rightHandSideProofLineList[1].proofLineRule });
-      console.log('Racket: ' + response.racket);
+      if (rightHandSideProofLineList.length - 1 > 0) {
+        handlePromiseWithPythonServer(rightHandSideProofLineList);
+      } else {
+        addLine();
+      }
     }
-    addLine();
-    //console.log('Current Racket: ' + currentRacket);
-    //console.log('Racket: ' + currentRacket);
+    //handlePromiseWithPythonServer(isLeftHandActive, leftHandSideProofLineList, rightHandSideProofLineList);
   }
 
+  const handlePromiseWithPythonServer = async (targetList) => {
+    let response = await racketGeneration({ rule: targetList[targetList.length - 1].proofLineRule });
+    targetList[targetList.length - 1].proofLineRacket = response.racket;
+    addLine();
+  }
+    
   return (
     <MainLayout>
       <Container fluid style={{ paddingLeft: 10 }} className='equational-reasoning-racket-container'>
@@ -340,6 +327,7 @@ const EquationalReasoningRacket = () => {
                             id='right-racket'
                             type='text'
                             placeholder='RHS Racket'
+                            value={racket.proofLineRacket}
                             onChange={element => handleProofLineListChange(index, element, rightHandSideProofLineList)}
                             //readOnly
                           />
@@ -396,9 +384,11 @@ const EquationalReasoningRacket = () => {
                       {
                         index > 0 &&
                           <Form.Control
-                            id={'left-racket-' + index}
+                            id='left-racket'
+                            className={'left-racket-' + index}
                             type='text'
                             placeholder='Racket for LHS'
+                            value={racket.proofLineRacket}
                             onChange={element => handleProofLineListChange(index, element, leftHandSideProofLineList)}
                             //readOnly
                           />
@@ -429,17 +419,7 @@ const EquationalReasoningRacket = () => {
                 ))}
 
                 <br></br>
-                <Col md={1}>
-                  { isLeftHandActive &&
-                    <Button onClick={addNewProofLineLeftHandSide}>Add</Button>
-                  }
-
-                  {
-                    !isLeftHandActive &&
-                    <Button onClick={addNewProofLineRightHandSide}>Add</Button>
-                  }
-                </Col>
-                <Col md={1}>
+                <Col md={{ span: 2, offset: 0 }}>
                   <Button  variant='danger' onClick={removeProofLines}>Delete Line</Button>
                 </Col>
                 <Col md={{ span: 2, offset: 6 }} >
