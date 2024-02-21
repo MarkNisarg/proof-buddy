@@ -84,17 +84,17 @@ const EquationalReasoningRacket = () => {
     convertToJSON(EquationalReasoningObject);
   }
 
-  const addLine = () => {
-    if(isLeftHandActive){
+  const addLine = () => { //function that simply adds a new line to the list, and updates the react component accordingly
+    if(isLeftHandActive){ //looks to see if left hand side is active
       setLeftHandSideProofLineList([...leftHandSideProofLineList, { proofLineRacket: '', proofLineRule: '' }]);
       setCurrentLHS(leftHandSideProofLineList[leftHandSideProofLineList.length -1].proofLineRacket);
-    } else {
+    } else { //if right hand side is active
       setRightHandSideProofLineList([...rightHandSideProofLineList, { proofLineRacket: '', proofLineRule: '' }]);
       setCurrentRHS(rightHandSideProofLineList[rightHandSideProofLineList.length - 1].proofLineRacket);
     }
   }
   
-  const removeProofLines = () => {
+  const removeProofLines = () => { //deletes lines from 
     if (isLeftHandActive) {
       let target = findFirstBlankLine(leftHandSideProofLineList);
       if (confirm('Do you want to delete line number ' + target + ' and all lines after it')){
@@ -106,7 +106,7 @@ const EquationalReasoningRacket = () => {
         removeEmptyLines(rightHandSideProofLineList, setRightHandSideProofLineList);
       }
     } else {
-      throw new Error('Error Deleting Lines that are Empty');
+      logger.error('Error in deleting proof lines from client-side react component.', new Error('Deleting Lines Error'));
     }
   }
 
@@ -136,7 +136,6 @@ const EquationalReasoningRacket = () => {
   }
 
   const handlePythonGeneration = async () => {
-
     if (isLeftHandActive) {
       if (leftHandSideProofLineList.length - 1 > 0) {
         handlePromiseWithPythonServer(leftHandSideProofLineList); 
