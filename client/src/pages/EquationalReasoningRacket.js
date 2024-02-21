@@ -75,13 +75,20 @@ const EquationalReasoningRacket = () => {
     return JSON.stringify(target);
   }
 
-  const handleFormSubmission = () => {
+  const convertFormToJSON = () => { // returns a JSON object of the present form
     let EquationalReasoningObject = {
       name: proofName, //String Proof Name
       leftRacketsAndRules: leftHandSideProofLineList, //Array of JavaScript Objects {proofline: '', proofRule: ''}
       rightRacketsAndRules: rightHandSideProofLineList //Array of JavaScript Objects {proofline: '', proofRule: ''}
     }
-    convertToJSON(EquationalReasoningObject);
+    return convertToJSON(EquationalReasoningObject);
+  }
+
+  const exportFormToLocalMachine = () => {
+    //Phat, here you should call convertFormToJSON(), and use some kind of functionality to export this to a local machine.
+    let forToExport = convertFormToJSON(); // should return a JSON Object of the form
+    // 1) The first goal is to do this in JSON
+    // 2) The second goal is to do this in Latex
   }
 
   const addLine = () => { //function that simply adds a new line to the list, and updates the react component accordingly
@@ -456,7 +463,7 @@ const EquationalReasoningRacket = () => {
               </Button>
             </Col>
             <Col md={{ span: 1, offset: 2 }}>
-              <Button onClick={handleFormSubmission}>
+              <Button>
                 Submit
               </Button>
             </Col>
