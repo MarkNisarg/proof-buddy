@@ -8,6 +8,7 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import { Link } from 'react-router-dom';
 import racketGeneration from '../services/erService';
+import logger from '../utils/logger'
 import '../scss/_equational-reasoning.scss'
 
 const EquationalReasoningRacket = () => {
@@ -149,13 +150,17 @@ const EquationalReasoningRacket = () => {
         addLine();
       }
     }
-    //handlePromiseWithPythonServer(isLeftHandActive, leftHandSideProofLineList, rightHandSideProofLineList);
   }
 
   const handlePromiseWithPythonServer = async (targetList) => {
-    let response = await racketGeneration({ rule: targetList[targetList.length - 1].proofLineRule });
-    targetList[targetList.length - 1].proofLineRacket = response.racket;
-    addLine();
+    try {
+      let response = await racketGeneration({ rule: targetList[targetList.length - 1].proofLineRule });
+      targetList[targetList.length - 1].proofLineRacket = response.racket;
+      addLine();
+    } catch (error) {
+      logger.error('Error in front-end client and python-server communication when retrieving racket code from user generation', error);
+    }
+    
   }
     
   return (
