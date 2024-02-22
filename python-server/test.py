@@ -56,7 +56,10 @@ test_strings_tfl = [
 # ER isn't ready yet but should in theory be handled similarly
 test_strings_er = [
     # '(λ (n) (if (zero? n) 1 (* n (fact (- n 1)))))',
-    '(#t)'
+    '(name)', # << test string only works for a list containing one item, need to add whitespace management and case insensitivity
+    '(#t)', # test for booleans
+    '(34)', # test for numbers
+    '()' # test for the empty list
 ]
 for test in test_strings_er:
     print(f"'{test}'")

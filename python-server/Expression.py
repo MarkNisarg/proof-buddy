@@ -12,9 +12,10 @@ class RacketType(Enum):
     Any = 4
 
 class Expression(Token):
-    def __init__(self, id:ExpressionIdentifier, components:list[Token|Expression]):
-        self.id = id
-        self.components = components
+    def __init__(self, id:ExpressionIdentifier, components:list[str]):
+        # consolidated elements of Expression into Token super class
+        super().__init__(id, components)
+        
         # self.output_type = id.output_type
         # self.input_types = id.input_types
         # self.eval = id.eval
@@ -24,38 +25,27 @@ class Expression(Token):
         # return self.id.eval(self.components[2:len(self.components)-2])
         raise NotImplementedError()
 
-    def __str__(self):
-        s = ''
-        for c in self.components:
-            s += f'{c}'
-        return s
-    
-    def __repr__(self):
-        return f'{type(self).__name__}({self.id},{self.components})'
-
     def __eq__(self, other:Expression):
         if other == None:
             return False
-        elif len(self.components) != len(other.components):
+        elif len(self.regexMatch) != len(other.regexMatch):
             return False
         else:
-            if len(self.components) == 0:
+            if len(self.regexMatch) == 0:
                 return self.id == other.id
 
-            for i in range(len(self.components)):
-                if self.components[i] != other.components[i]:
+            for i in range(len(self.regexMatch)):
+                if self.regexMatch[i] != other.regexMatch[i]:
                     return False
             return True
 
 
 class ExpressionIdentifier(TokenIdentifier):
-    def __init__(self, name:str, structure:list[ExpressionIdentifier|TokenIdentifier]):
+    def __init__(self, name:str, structure:list[list[TokenIdentifier|str]]):
         self.name = name
         self.structure = structure
-        if isinstance(structure,list) and not isinstance(structure[0],list):
-            self.structure = [self.structure]
         # This property is for handling ORing multiple identifiers together
-        self.ORing_operands = [self]
+
         # self.output_type = output_type
         # self.input_types = input_types
         # self.eval = eval
@@ -80,28 +70,45 @@ class ExpressionIdentifier(TokenIdentifier):
     #                 structure:list['ExpressionIdentifier'])-> 'ExpressionIdentifier':
     #     return ExpressionIdentifier(name,structure,RacketType.List,input_types,None,RacketType.List)
 
-    def match(self:ExpressionIdentifier, inputLine:list[Token|Expression]) -> Expression|None:
-        if len(self.ORing_operands) == 1:
-            for seq in self.structure:
-                for i in range(len(inputLine)-len(seq)+1):
-                    hasMatch = True
-                    for j in range(len(seq)):
-                        if isinstance(inputLine[i+j],Expression) and seq[j] == 'Any':
+    def match(self:ExpressionIdentifier, inputLine:list[Token|Expression]) -> list[Token|Expression] | Expression:
+        # go through each structure of list of TokenIdentifiers or 'Any'
+        for seq in self.structure:
+            # number of characters matched, need to fix for debug accuracy but does not affect final output
+            charCount = 0
+            for i in range(len(seq)):
+                # assume not matched a portion of the sequence of TokenIdentifiers or 'Any' string
+                hasMatch = False
+
+                # iterate over each Token object
+                for j in range(len(inputLine)):
+                    if not isinstance(inputLine[j], Expression):
+
+                        # 'Any' should be only be in between the first and last token of the list
+                        if seq[i] == 'Any' and j != 0 and j !=len(inputLine)-1:
+                            charCount += 1
                             continue
-                        if isinstance(inputLine[i+j],Expression) or seq[j] == 'Any' or \
-                            inputLine[i+j].id != seq[j]:
-                                hasMatch = False
-                                break
-                    if hasMatch:
-                        found_expr = Expression(self, inputLine[i:i+len(seq)])
-                        new_line = inputLine[0:i] + [found_expr] + inputLine[i+len(seq):len(inputLine)]
-                        return found_expr, new_line
-            return None, None
-        for operand in self.ORing_operands:
-            retVal = operand.match(inputLine)
-            if retVal != None:
-                return retVal
-        return None, None
+                        # TokenIdentifier object checks if the current Token matches its pattern
+                        elif seq[i].hasMatch(str(inputLine[j])):
+
+                            # update if match is found
+                            hasMatch = True
+                            charCount += 1
+                            break
+                # we found a match, create an expression                   
+                if hasMatch:
+
+                    # create Expression object with its new label and string it matched
+                    found_expr = Expression(self, [str(token) for token in inputLine[j:j+len(seq)]])
+
+                    # if we matched the entire list, then we've created our final expression, return it
+                    if charCount >= len(inputLine):
+                        return [found_expr]
+                    else:
+                        # update the list of tokens to replace matched part with a single Expression object
+                        inputLine = inputLine[0:j] + [found_expr] + inputLine[j+len(seq):len(inputLine)]
+                        # print(inputLine) # print tokenList updates
+        # if we have passed over every possible structure, return the current status of the list of Token/Expression objects
+        return inputLine
 
     def __str__(self):
         return self.name
@@ -109,9 +116,9 @@ class ExpressionIdentifier(TokenIdentifier):
     def __repr__(self):
         return f'{type(self).__name__}({self.name},{self.structure})'
     
-    def __or__(self, other:ExpressionIdentifier|TokenIdentifier):
-        ORed_expressionIdentifier = ExpressionIdentifier(f'{self.name}|{other.name}',None)
-        ORed_expressionIdentifier.ORing_operands = [deepcopy(self),deepcopy(other)]
+    def __or__(self, other:ExpressionIdentifier):
+        # flattened out nested ExpressionIdentifiers
+        ORed_expressionIdentifier = ExpressionIdentifier(f'{self.name}',self.structure + other.structure)
         return ORed_expressionIdentifier
     
     # def __eq__(self,other:ExpressionIdentifier|TokenIdentifier):
