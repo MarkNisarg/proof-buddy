@@ -5,20 +5,24 @@ from copy import deepcopy
 class Token():
     # regexMatch is now a list of strings/characters, full matching string is printed with __str__
     # moved isTerminal out of TokenIdentifier
-    def __init__(self:'Token', tokenIdentifier:'TokenIdentifier', regexGroups:list[str], isTerminal:bool=False):
+    def __init__(self:'Token', tokenIdentifier:'TokenIdentifier', regexMatch:re.Match, printRegex:str, isTerminal:bool=False, debug=False):
         self.id = tokenIdentifier
-        self.regexMatch = regexGroups
+        self.regexMatch = regexMatch
         self.isTerminal = isTerminal
+        self.debug = debug
     
     def __str__(self:'Token'):
-        return ''.join(self.regexMatch)
+        if self.debug:
+            return self.regexMatch[0]
+        else:
+            return self.regexMatch.expand(self.id.printRegex)
     
     def __repr__(self:'Token'):
-        return f'{type(self).__name__}({self.id},{self.__str__()},{self.isTerminal})'
+        return f'{type(self).__name__}({self.id},matchObject,{self.isTerminal})'
 
 
 class TokenIdentifier():
-    def __init__(self, name:str, recognizeRegex:list[re.Pattern], printRegex:str):
+    def __init__(self, name:str, recognizeRegex:re.Pattern, printRegex:str):
         self.name = name
         self.recognizeRegex = recognizeRegex
         self.printRegex = printRegex
@@ -44,7 +48,7 @@ class TokenIdentifier():
 
     # added boolean function to detect matches for tokenIdentfiers
     def hasMatch(self, input: str) -> bool:
-        regex = re.compile('|'.join(self.recognizeRegex))
+        regex = re.compile(self.recognizeRegex)
         match = regex.match(input)
         
         return match != None

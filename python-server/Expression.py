@@ -11,10 +11,11 @@ class RacketType(Enum):
     Function = 3
     Any = 4
 
-class Expression(Token):
-    def __init__(self, id:ExpressionIdentifier, components:list[str]):
+class Expression():
+    def __init__(self, id:ExpressionIdentifier, components:list[Token]):
         # consolidated elements of Expression into Token super class
-        super().__init__(id, components)
+        self.id = id
+        self.components = components
         
         # self.output_type = id.output_type
         # self.input_types = id.input_types
@@ -24,20 +25,28 @@ class Expression(Token):
     def evaluate(self):
         # return self.id.eval(self.components[2:len(self.components)-2])
         raise NotImplementedError()
+    
+    def __str__(self):
+        if self.id is None:
+            return ' '.join([str(char) for char in self.components])
+        else:
+            return ''.join([str(char) for char in self.components])
 
-    def __eq__(self, other:Expression):
+    def __eq__(self, other:Expression|str):
+        if isinstance(other, str):
+            return True
         if other == None:
             return False
-        elif len(self.regexMatch) != len(other.regexMatch):
+        if len(self.components) != len(other.components):
             return False
         else:
-            if len(self.regexMatch) == 0:
-                return self.id == other.id
-
-            for i in range(len(self.regexMatch)):
-                if self.regexMatch[i] != other.regexMatch[i]:
+            for i in range(len(self.components)):
+                if self.components[i] != other.components[i]:
                     return False
             return True
+        
+    def __repr__(self):
+        return f'{type(self).__name__}({self.id},{self.__str__()})'
 
 
 class ExpressionIdentifier(TokenIdentifier):
@@ -74,34 +83,26 @@ class ExpressionIdentifier(TokenIdentifier):
         # go through each structure of list of TokenIdentifiers or 'Any'
         for seq in self.structure:
             # number of characters matched, need to fix for debug accuracy but does not affect final output
-            charCount = 0
-            for i in range(len(seq)):
+            for j in range(len(inputLine)):
                 # assume not matched a portion of the sequence of TokenIdentifiers or 'Any' string
                 hasMatch = False
-
                 # iterate over each Token object
-                for j in range(len(inputLine)):
+                for i in range(len(seq)):
                     if not isinstance(inputLine[j], Expression):
-
-                        # 'Any' should be only be in between the first and last token of the list
-                        if seq[i] == 'Any' and j != 0 and j !=len(inputLine)-1:
-                            charCount += 1
-                            continue
                         # TokenIdentifier object checks if the current Token matches its pattern
-                        elif seq[i].hasMatch(str(inputLine[j])):
-
-                            # update if match is found
-                            hasMatch = True
-                            charCount += 1
-                            break
+                        if seq[i] != 'Any':
+                            if seq[i].hasMatch(str(inputLine[j])):
+                                # update if match is found
+                                hasMatch = True
+                                break
                 # we found a match, create an expression                   
                 if hasMatch:
 
                     # create Expression object with its new label and string it matched
-                    found_expr = Expression(self, [str(token) for token in inputLine[j:j+len(seq)]])
+                    found_expr = Expression(self, inputLine[j:j+len(seq)])
 
                     # if we matched the entire list, then we've created our final expression, return it
-                    if charCount >= len(inputLine):
+                    if len(found_expr.components) >= len(inputLine):
                         return [found_expr]
                     else:
                         # update the list of tokens to replace matched part with a single Expression object
