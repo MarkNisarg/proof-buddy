@@ -4,6 +4,11 @@ from Justification import Justification
 from Proof import Proof
 
 class ProofLine:
+    """
+    The ProofLine class is just a helper container class that holds an Expression object and a
+    Justification object (containing a Rule and reference line numbers). This will help the Proof
+    facilitate validation checks between lines of Expressions to ensure the entire Proof is valid.
+    """
     def __init__(self, line_no:LineNumber=LineNumber(), argument:Expression=Expression(), justification:Justification=Justification()):
         # This should probably be replaced with a single int and the string
         # representation just be constructed from the layering of subproofs

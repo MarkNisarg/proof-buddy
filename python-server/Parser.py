@@ -4,7 +4,17 @@ import re
 
 
 class Parser:
-
+    """
+    The Parser class is used to construct a single Expression tree structure from the original input
+    string that the user enters on the frontend. This Expression object is then passed back to the
+    ProofEngine that called it for it to then handle the application of Rules etc. The 'language'
+    is defined as a list of ExpressionIdentifiers and TokenIdentifiers that the ProofEngine will pass
+    to the Parser upon construction. The TokenIdentifiers instruct the Parser how to recognize sections
+    of the input string as Tokens within the tokenize method, and ExpressionIdentifiers instruct it how
+    to turn this sequence of Tokens (or possibly subcontaining Expression objects) into yet larger Expression
+    objects in the parse method. If it cannot parse the string successfully, it should throw some error that
+    can be sent back to the ProofEngine, and then to the frontend to inform the user.
+    """
     def __init__(self, tokenIdentifiers: list[TokenIdentifier], expressionTypes: list[ExpressionIdentifier]):
         self.tokenIdentifiers = tokenIdentifiers
         self.expressionTypes = expressionTypes

@@ -3,7 +3,7 @@ from Token import Token, TokenIdentifier
 from enum import Enum
 from copy import deepcopy
 
-
+# This will need to be replaced later
 class RacketType(Enum):
     Error = 0
     Literal = 1
@@ -12,6 +12,12 @@ class RacketType(Enum):
     Any = 4
 
 class Expression(Token):
+    """
+    An Expression is a group on Tokens that holds a particular value as a collection. They are typically
+    created by the Parser class in the parse method where a list of ExpressionIdentifiers are matched against
+    a sequence of Tokens. If a match is found, an Expression object is made with these Tokens stored in the
+    components field, and the EI that identified the sequence as the id.
+    """
     def __init__(self, id:ExpressionIdentifier, components:list[Token|Expression]):
         self.id = id
         self.components = components
@@ -49,6 +55,15 @@ class Expression(Token):
 
 
 class ExpressionIdentifier(TokenIdentifier):
+    """
+    The ExpressionIdentifier defines a sequence (or possibly multiple sequences) of TokenIdentifiers
+    or othe EIs that collectively can be grouped to form an Expression object. These can be ORed together,
+    like with TIs, so that another EI can be defined as a sequence such as [open_parens, eBool|eInt, closed_parens]
+    including the ORed state as a single subexpression in the sequence, a single element. The Parser class should
+    call hasMatch on each EI that it knows on the sequence of Tokens that it has and the method should
+    return the EI that identified it so that in the case of ORed EIs or TIs it knows which specific one was
+    the one that identified.
+    """
     def __init__(self, name:str, structure:list[ExpressionIdentifier|TokenIdentifier]):
         self.name = name
         self.structure = structure

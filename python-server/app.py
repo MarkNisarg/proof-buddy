@@ -2,6 +2,14 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from ProofEngine import ProofEngine
 
+# This file will accept all communication with the frontend and send any action requests to a ProofEngine
+# object to perform and send a reply back. Currently it will need to call create_ProofEngine from the
+# 'language' definition file EquationalReasoning.py in order to instantiate an ERProofEngine that handles
+# these requests. Eventually, a mechanism will need to be implemented to switch out engines for ones defined
+# in other language definition files such as FirstOrderLogic.py and TruthFunctionalLogic.py that have yet to
+# be written.
+
+
 #Instantiate the app
 app = Flask(__name__)
 app.config.from_object(__name__)

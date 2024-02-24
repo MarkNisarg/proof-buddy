@@ -3,6 +3,15 @@ from Expression import ExpressionIdentifier, RacketType, Expression
 # from ERType import ERType,ERTypeIdentifier
 from ERProofEngine import ERProofEngine
 
+# This file defines the Equational Reasoning 'language' and grammar that instructs
+# the Parser how to construct Expressions. It also creates the ERProofEngine that will
+# handle all actions called by the frontend through app.py. The method create_ProofEngine
+# will need to be called within app.py in order to instantiate an instance of ERProofEngine
+# that knows the ER language and has the corresponding Parser object. Other 'languages' such
+# as TFL and FOL will need to be defined in their own similaly named files and called within
+# app.py somehow in order to switch proof engines.
+
+
 # def parseInt(erType:ERType) -> int:
 #     try:
 #         num = int(f'{erType}')

@@ -3,6 +3,12 @@ from Expression import Expression
 # This class might not be necessary if we simply make the string representation
 # construct itself from the layering of subproofs
 class LineNumber(list):
+    """
+    This class will likely not be needed because I overcomplicated things by creating a TList that
+    can only contain a single type of object. This will likely be replaced by a simple list of ints
+    as there is no unique functionality that is required of this part that the Justification object
+    cannot handle instead. I leave this explanation for completeness.
+    """
     def __init__(self, iterable=None):
         super(LineNumber, self).__init__()
         if iterable:

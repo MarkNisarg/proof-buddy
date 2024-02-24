@@ -3,6 +3,13 @@ import re
 from copy import deepcopy
 
 class Token():
+    """
+    Holds each element that makes up an Expression. Can be a name, a symbol, or a value.
+    Tokens are created by the Parser when tokenizing an expression string and hold the value of
+    an element, along with the TokenIdentifier that defined how to identify it. These can be printed
+    back out using regex either as the literal string that was originally captured, or a set string
+    value such as a nontypable character 'λ'
+    """
     def __init__(self:'Token', tokenIdentifier:'TokenIdentifier', regexMatch:re.Match[str]):
         self.id = tokenIdentifier
         self.regexMatch = regexMatch
@@ -16,6 +23,15 @@ class Token():
 
 
 class TokenIdentifier():
+    """
+    A TokenIdentifier holds the regex string the identifies a string as a particular element within an
+    Expression. The Parser class uses this to generate a list of Tokens from the raw Expression string.
+    Terminals are immediately wrapped in an Expression object before ExpressionIdentifiers are processed.
+    These can be ORed together so that you can define a sequence in an ExpressionIdentifier such as
+    [open_parens, tTrue|tFalse, closed_parens] that allows a single token to be either of multiple options.
+    This is done by creating a joint TI, say TI_o, that holds each TI being ORed together in the ORing_operands
+    field. The match method only has to satisfy one of these and return which one is satisfied.
+    """
     def __init__(self, name:str, recognizeRegex:str, printRegex:str, isTerminal:bool=False):
         self.name = name
         self.recognizeRegex = recognizeRegex

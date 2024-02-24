@@ -6,6 +6,12 @@ _T = TypeVar("_T")
 # linter the class (the first int) and allow python to know the class for actual type
 # checking (the second int)
 class TList(list[_T]):
+    """
+    This is meant to be an extention of list that can enforce a property that the list is homogeneous
+    and only contains objects of a single set assigned type, in order to help with type safety,
+    however this is considered bad practice within Python and is generally boiler plate that will not
+    be needed as long as we pass the right objects to the right methods.
+    """
     def __init__(self, type:_T, iterable=None):
         self.T = type
         super().__init__()

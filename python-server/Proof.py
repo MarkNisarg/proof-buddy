@@ -15,6 +15,16 @@ from GUID import GUID
 # expressions separately and have them fill out each other as needed
 
 class Proof:
+    """
+    The Proof class holds all of the information within a proof displayed on the frontend and
+    facilitates a ProofEngine in performing operations such as validating the Proof from line
+    to line and applying Rules. A Proof generally contains a list of ProofLines, each containing
+    an Expression object and a Justification (Rule and reference line numbers). It also has fields
+    holding the premises and conclusion of the Proof, any Rules allowed to be used within it, and
+    any other information a ProofEngine might need to know. A ProofEngine can also turn a Proof into
+    a Rule which can be applied to other Proofs, but will still need to check the validity of the
+    Proof when used as a Justification, unless the Proof simply contains the Justification FIAT.
+    """
     def __init__(self):
         self.premises : TList(Expression) = None
         self.conclusion : Expression = None
