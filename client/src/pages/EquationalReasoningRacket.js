@@ -2,18 +2,23 @@ import React, { useState } from 'react';
 import MainLayout from '../layouts/MainLayout';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
+import OffCanvas from 'react-bootstrap/Offcanvas'
+import Table from 'react-bootstrap/Table'
 import FormLabel from 'react-bootstrap/esm/FormLabel';
 import Button from 'react-bootstrap/esm/Button';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import { Link } from 'react-router-dom';
 import racketGeneration from '../services/erService';
+import ruleSet from '../components/RuleSet';
 import logger from '../utils/logger'
 import '../scss/_equational-reasoning.scss'
 
 const EquationalReasoningRacket = () => {
 
   const [isLeftHandActive, setIsLeftHandActive] = useState(true);
+  
+  const [isOffcanvasActive, setIsOffcanvasActive] = useState(false);
 
   const [proofName, setProofName] = useState('');
 
@@ -27,8 +32,16 @@ const EquationalReasoningRacket = () => {
 
   const [leftHandSideProofLineList, setLeftHandSideProofLineList] = useState([{ proofLineRacket: '', proofLineRule: '' }]);
 
-  const[rightHandSideProofLineList, setRightHandSideProofLineList] = useState([{ proofLineRacket: '', proofLineRule: '' }]);
-  
+  const [rightHandSideProofLineList, setRightHandSideProofLineList] = useState([{ proofLineRacket: '', proofLineRule: '' }]);
+
+  // const [ruleList, setRuleList] = useState([
+  //   { toFrom: '(cons (first L) (rest L))', fromTo: 'L', name: 'cons', tags: 'test' },
+  //   { toFrom: '(first (cons x L))', fromTo: 'x', name: 'first', tags: 'test' }
+  // ]);
+
+  const ruleList = ruleSet();
+  console.log(ruleSet);
+
   const gradient = {
     orange_gradient: 'linear-gradient(135deg, #ffc600 0, #ff8f1c 100%)',
     orange_gradient_reverse: 'linear-gradient(135deg, #ff8f1c 0, #ffc600 100%)'
@@ -40,6 +53,14 @@ const EquationalReasoningRacket = () => {
     drexel_light_blue: '#6CACE4',
     plain_white: '#FFFFFF'
 
+  }
+
+  const enableOffcanvas = () => {
+    setIsOffcanvasActive(true);
+  }
+
+  const disableOffcanvas = () => {
+    setIsOffcanvasActive(false);
   }
 
   const handleToggleLAndR = () => { //changes the state of wether left hand side is active or not. If true, then 'Left Hand Side' is active. If Fasle, then 'Rights Hand Side' is active
@@ -86,7 +107,7 @@ const EquationalReasoningRacket = () => {
 
   const exportFormToLocalMachine = () => {
     //Phat, here you should call convertFormToJSON(), and use some kind of functionality to export this to a local machine.
-    let forToExport = convertFormToJSON(); // should return a JSON Object of the form
+    let formToExport = convertFormToJSON(); // should return a JSON Object of the form
     // 1) The first goal is to do this in JSON
     // 2) The second goal is to do this in Latex
   }
@@ -139,7 +160,6 @@ const EquationalReasoningRacket = () => {
         }
       }
     }
-
   }
 
   const handlePythonGeneration = async () => {//function wraps the logic for communicating 'Client's' 'Rule' to python-server for 'Racket' code generation
@@ -160,18 +180,70 @@ const EquationalReasoningRacket = () => {
 
   const handlePromiseWithPythonServer = async (targetList) => { //sends client 'Rule' to the python-server for 'Racket' code generation
     try {
-      let response = await racketGeneration({ rule: targetList[targetList.length - 1].proofLineRule }); //we await a response from the python-server
-      targetList[targetList.length - 1].proofLineRacket = response.racket;
-      addLine(); //After a succesful response, we add a new line for the client to add more 'Rules' for 'Racket' code generation
+      if(!targetList[targetList.length - 1].proofLineRule) {
+        alert(new Error('ProofBuddy cannot generate Racket Code from an empty Rule field. Please fill in valid rule.'));
+      } else {
+        let response = await racketGeneration({ rule: targetList[targetList.length - 1].proofLineRule }); //we await a response from the python-server
+        targetList[targetList.length - 1].proofLineRacket = response.racket;
+        addLine(); //After a succesful response, we add a new line for the client to add more 'Rules' for 'Racket' code generation
+      }  
     } catch (error) {
-      logger.error('Error in front-end client and python-server communication when retrieving racket code from user generation', error);
+      alert('Error in front-end client and python-server communication. ' + error);
+      logger.error('Error in front-end client and python-server communication. ', error);
     }
     
   }
-    
+ 
   return (
     <MainLayout>
       <Container fluid style={{ paddingLeft: 10 }} className='equational-reasoning-racket-container'>
+        
+        <OffCanvas id='rule-set' show={isOffcanvasActive} onHide={disableOffcanvas} scroll='true' placement='bottom'>
+          <OffCanvas.Body>
+
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>
+                    To/From
+                  </th>
+                  <th>
+                    From/To
+                  </th>
+                  <th>
+                    Name
+                  </th>
+                  <th>
+                    Tag
+                  </th>
+                </tr> 
+              </thead>
+              <tbody>
+                {
+                  ruleList.map((rule, index) => (
+                    <tr key={index}>
+                      <td>
+                        { rule.toFrom }
+                      </td>
+                      <td>
+                        { rule.fromTo }
+                      </td>
+                      <td>
+                        { rule.name }
+                      </td>
+                      <td>
+                        { rule.tags }
+                      </td>
+                    </tr>
+                  ))
+                }
+              </tbody>
+
+            </Table>
+            
+          </OffCanvas.Body>
+        </OffCanvas>
+
         <Form className='special-form' >
           <Form.Group id='er-proof-creation'>
             <Form.Floating>
@@ -192,7 +264,7 @@ const EquationalReasoningRacket = () => {
                     <Button>Definitions</Button>
                   </Col>
                   <Col className='text-center' md={2}>
-                    <Button>View Rule Set</Button>
+                    <Button onClick={enableOffcanvas}>View Rule Set</Button>
                   </Col>
                   <Col className='text-center' md={2}>
                     <Button>Assertions</Button>

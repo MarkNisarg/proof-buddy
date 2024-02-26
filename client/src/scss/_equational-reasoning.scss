@@ -29,6 +29,19 @@
   text-align: center;
 }
 
+#rule-set {
+  //text-align: center;
+  //color: $color-white;
+  //background-color: $color-drexel-blue;
+  height: 235px;
+  border-top: 20px;
+}
+
+.tr, th {
+  align-content: center;
+  text-align: center;
+}
+
 .title-blue {
   color: $color-drexel-blue;
 }
