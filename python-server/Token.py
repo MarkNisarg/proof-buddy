@@ -34,63 +34,57 @@ class TokenIdentifier():
     """
     def __init__(self, name:str, recognizeRegex:str, printRegex:str, isTerminal:bool=False):
         self.name = name
-        self.recognizeRegex = recognizeRegex
+        self.recognizeRegex = None
         self.printRegex = printRegex
         self.generic = False
         self.isTerminal = isTerminal
         self.ORing_operands = [self]
+        if recognizeRegex != None:
+            self.recognizeRegex = re.compile(recognizeRegex)
     
     # This method is for creating a dummy "token" that takes the place of a subexpression
-    def getGeneric(name:str):
+    def getGeneric(name:str) -> TokenIdentifier:
         genericToken = TokenIdentifier(name,'','')
         genericToken.generic = True
         return genericToken
     
-    def get_ORed_state(operands:list[TokenIdentifier]):
-        name = operands[0].name
-        for o in operands[1:len(operands)]:
-            name += f'/{o.name}'
-        ORed_tokenIdentifier = TokenIdentifier(name,None,None)
-        for o in operands:
-            ORed_tokenIdentifier.ORing_operands.append(deepcopy(o))
-        return ORed_tokenIdentifier
-    
-    def match(self, input: str) -> Token|None:
+    def match(self, input: str) -> tuple[Token|None, str]:
         if len(self.ORing_operands) == 1:
-            regex = re.compile(self.recognizeRegex)
-            match = regex.match(input)
+            match = self.recognizeRegex.match(input)
             
             if match != None:
-                return Token(self,match)
-            return None
+                rest_of_line = input[len(match.group(0)):len(input)]
+                return Token(self,match), rest_of_line
+            return None, input
         else:
             for operand in self.ORing_operands:
-                found = operand.match(input)
+                found, rest_of_line = operand.match(input)
                 if found != None:
-                    return found
-            return None
+                    return found, rest_of_line
+            return None, input
 
     # For creating ExpressionTypes where a token can be of multiple types
     # This will probably need to be implemented with a list for each property
-    def __or__(self, other:TokenIdentifier):
+    def __or__(self, other:TokenIdentifier) -> TokenIdentifier:
         ORed_tokenIdentifier = TokenIdentifier(f'{self.name}|{other.name}',None,None)
         ORed_tokenIdentifier.ORing_operands = [deepcopy(self),deepcopy(other)]
         return ORed_tokenIdentifier
     
-    def __eq__(self,other:TokenIdentifier):
-        if isinstance(self,str) or isinstance(other,str):
-            return True
+    def __eq__(self,other:TokenIdentifier) -> bool:
+        # Matching against 'Any' should be false because it needs to be an Expression first
+        if isinstance(other,str):
+            return False
         elif len(self.ORing_operands) == 1 and len(other.ORing_operands) == 1:
             return self.name == other.name
-        for e in self.ORing_operands:
-            for e2 in other.ORing_operands:
-                if e == e2:
+        for t in self.ORing_operands:
+            for t2 in other.ORing_operands:
+                if t == t2:
                     return True
         return False
     
-    def __str__(self):
+    def __str__(self) -> str:
         return f'{self.name}'
     
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f'{type(self).__name__}({self.name},{self.recognizeRegex},{self.printRegex},{self.isTerminal})'
     

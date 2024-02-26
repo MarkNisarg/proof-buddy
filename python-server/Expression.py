@@ -3,6 +3,8 @@ from Token import Token, TokenIdentifier
 from enum import Enum
 from copy import deepcopy
 
+_DEBUG = False
+
 # This will need to be replaced later
 class RacketType(Enum):
     Error = 0
@@ -30,16 +32,19 @@ class Expression(Token):
         # return self.id.eval(self.components[2:len(self.components)-2])
         raise NotImplementedError()
 
-    def __str__(self):
-        s = ''
-        for c in self.components:
-            s += f'{c}'
-        return s
+    def __str__(self) -> str:
+        if _DEBUG:
+            return f'{self.components}'
+        else:
+            s = ''
+            for c in self.components:
+                s += f'{c}'
+            return s
     
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f'{type(self).__name__}({self.id},{self.components})'
 
-    def __eq__(self, other:Expression):
+    def __eq__(self, other:Expression) -> bool:
         if other == None:
             return False
         elif len(self.components) != len(other.components):
@@ -67,75 +72,67 @@ class ExpressionIdentifier(TokenIdentifier):
     def __init__(self, name:str, structure:list[ExpressionIdentifier|TokenIdentifier]):
         self.name = name
         self.structure = structure
+        # structure is only a single depth list and needs to be wrapped to form a double list
         if isinstance(structure,list) and not isinstance(structure[0],list):
             self.structure = [self.structure]
         # This property is for handling ORing multiple identifiers together
         self.ORing_operands = [self]
-        # self.output_type = output_type
-        # self.input_types = input_types
-        # self.eval = eval
-        # self.baseType = baseType
-    
-    # @staticmethod
-    # def create_Error(name:str,eval:function) -> 'ExpressionIdentifier':
-    #     return ExpressionIdentifier(name,None,RacketType.Error,None,eval,RacketType.Error)
-        
-    # @staticmethod
-    # def create_Literal(name:str,structure:list['ExpressionIdentifier'],type:RacketType,
-    #                    eval:function) -> 'ExpressionIdentifier':
-    #     return ExpressionIdentifier(name,structure,type,None,eval,RacketType.Literal)
-    
-    # @staticmethod
-    # def create_Function(name:str,structure:list['ExpressionIdentifier'],input_types:list['ExpressionIdentifier'],
-    #                     output_type:'ExpressionIdentifier',eval:function) -> 'ExpressionIdentifier':
-    #     return ExpressionIdentifier(name,structure,output_type,input_types,eval,RacketType.Function)
-    
-    # @staticmethod
-    # def create_List(name:str,input_types:list['ExpressionIdentifier'],
-    #                 structure:list['ExpressionIdentifier'])-> 'ExpressionIdentifier':
-    #     return ExpressionIdentifier(name,structure,RacketType.List,input_types,None,RacketType.List)
 
-    def match(self:ExpressionIdentifier, inputLine:list[Token|Expression]) -> Expression|None:
+    def match(self:ExpressionIdentifier, inputLine:list[Token|Expression])\
+        -> tuple[Expression|None, list[Token|Expression]]:
+        # If this is not a ORed EI and we can perform a regular match
         if len(self.ORing_operands) == 1:
+            # Has to match at least one of the sequences that defines this EI
             for seq in self.structure:
-                for i in range(len(inputLine)-len(seq)+1):
-                    hasMatch = True
-                    for j in range(len(seq)):
-                        if isinstance(inputLine[i+j],Expression) and seq[j] == 'Any':
-                            continue
-                        if isinstance(inputLine[i+j],Expression) or seq[j] == 'Any' or \
-                            inputLine[i+j].id != seq[j]:
-                                hasMatch = False
-                                break
-                    if hasMatch:
-                        found_expr = Expression(self, inputLine[i:i+len(seq)])
-                        new_line = inputLine[0:i] + [found_expr] + inputLine[i+len(seq):len(inputLine)]
-                        return found_expr, new_line
-            return None, None
+                hasMatch = True
+                for j in range(len(seq)):
+                    # If the current element in inputLine has to match 'Any', just skip and check the next
+                    # if isinstance(inputLine[j],Expression) and seq[j] == 'Any':
+                    #     continue
+                    # If the current element in inputLine is a subexpression and the sequence is not expecting one
+                    # (implied from previous check), or the current element just simply doesn't match the sequence'
+                    # expected item, break and say we failed
+                    if inputLine[j].id != seq[j]:
+                        hasMatch = False
+                        break
+                # If we found a match, extract and return it and the rest of the line
+                if hasMatch:
+                    found_expr = Expression(self, inputLine[0:len(seq)])
+                    rest_of_line = inputLine[len(seq):len(inputLine)]
+                    return found_expr, rest_of_line
+            return None, inputLine
+        # This is then an ORed EI and we need to see if at least one of the operands has a match
         for operand in self.ORing_operands:
-            retVal = operand.match(inputLine)
-            if retVal != None:
-                return retVal
-        return None, None
+            if isinstance(operand,ExpressionIdentifier):
+                match, rest_of_line = operand.match(inputLine)
+            elif isinstance(operand,TokenIdentifier):
+                if inputLine[0].id == operand:
+                    match = operand
+                    rest_of_line = inputLine[1:len(inputLine)]
+                else:
+                    match = None
+            if match != None:
+                return match, rest_of_line
+        return None, inputLine
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
     
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f'{type(self).__name__}({self.name},{self.structure})'
     
-    def __or__(self, other:ExpressionIdentifier|TokenIdentifier):
-        ORed_expressionIdentifier = ExpressionIdentifier(f'{self.name}|{other.name}',None)
-        ORed_expressionIdentifier.ORing_operands = [deepcopy(self),deepcopy(other)]
-        return ORed_expressionIdentifier
+    def __or__(self, other:ExpressionIdentifier|TokenIdentifier) -> ExpressionIdentifier:
+        # ORed_expressionIdentifier = ExpressionIdentifier(f'{self.name}|{other.name}',self.structure+other.structure)
+        # ORed_expressionIdentifier.ORing_operands = [deepcopy(self),deepcopy(other)]
+        return ExpressionIdentifier(f'{self.name}|{other.name}',self.structure+other.structure)
     
-    # def __eq__(self,other:ExpressionIdentifier|TokenIdentifier):
-    #     if self == 'Any' or other == 'Any':
-    #         return True
-    #     elif len(self.ORing_operands) == 1 and len(other.ORing_operands) == 1:
-    #         return self.name == other.name
-    #     for e in self.ORing_operands:
-    #         for e2 in other.ORing_operands:
-    #             if e == e2:
-    #                 return True
-    #     return False
+    def __eq__(self,other:ExpressionIdentifier|TokenIdentifier) -> bool:
+        if other == 'Any':
+            return True
+        elif len(self.ORing_operands) == 1 and len(other.ORing_operands) == 1:
+            return self.name == other.name
+        for e in self.ORing_operands:
+            for e2 in other.ORing_operands:
+                if e == e2:
+                    return True
+        return False
