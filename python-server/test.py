@@ -58,9 +58,46 @@ test_strings_er = [
     # '(λ (n) (if (zero? n) 1 (* n (fact (- n 1)))))',
     '(#t)'
 ]
-for test in test_strings_er:
+good_er = [
+    '(#f)',
+    '  (   #t   )',
+    '#t',
+    '((#t))',
+    '(#t #t)',
+    '((#t)#t)',
+    '((#t) #t)',
+    '((#t)(#t))',
+    '(#t     #t)'
+]
+bad_er = [
+    '(#t#t)',
+    '(#x)',
+    '(#t)(#t)',
+    '(##t)',
+    '(#tt)',
+    '(#)',
+    '(t)',
+    '(#t',
+    '#t)'
+]
+
+print('Good Tests:')
+for test in good_er:
     print(f"'{test}'")
-    test_expr = EREngine.parse_expression(test)
-    print(test_expr)
+    try:
+        test_expr = EREngine.parse_expression(test)
+        print(test_expr)
+    except Exception as e:
+        print(e)
+    print()
+
+print('Bad Tests:')
+for test in bad_er:
+    print(f"'{test}'")
+    try:
+        test_expr = EREngine.parse_expression(test)
+        print(test_expr)
+    except Exception as e:
+        print(e)
     print()
 

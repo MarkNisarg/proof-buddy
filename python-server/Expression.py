@@ -85,6 +85,9 @@ class ExpressionIdentifier(TokenIdentifier):
             # Has to match at least one of the sequences that defines this EI
             for seq in self.structure:
                 hasMatch = True
+                if len(seq) > len(inputLine):
+                    hasMatch = False
+                    break
                 for j in range(len(seq)):
                     # If the current element in inputLine has to match 'Any', just skip and check the next
                     # if isinstance(inputLine[j],Expression) and seq[j] == 'Any':

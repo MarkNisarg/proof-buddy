@@ -1,5 +1,7 @@
 from Token import Token, TokenIdentifier
 from Expression import Expression, ExpressionIdentifier
+import re
+from copy import deepcopy
 
 class Parser:
     """
@@ -20,13 +22,28 @@ class Parser:
     def tokenize(self, inputLine:str) -> list[Token]:
         tokens = list[Token]()
         working_line = inputLine
-        while len(working_line) > 0:
+        try:
+            while len(working_line) > 0:
+                old_working_line = deepcopy(working_line)
+                for t in self.tokenIDs:
+                    whitespace = re.compile(r'(\s*)').match(working_line)
+                    working_line = working_line[len(whitespace.group(0)):]
+                    match, rest_of_line = t.match(working_line)
+                    if match != None:
+                        tokens.append(match)
+                        working_line = rest_of_line
+                        break
+                if working_line == old_working_line:
+                    raise FileNotFoundError()
+                del old_working_line
+        except Exception as e:
+            invalid_token = working_line
             for t in self.tokenIDs:
-                match, rest_of_line = t.match(working_line)
+                match = t.recognizeRegex.search(working_line)
                 if match != None:
-                    tokens.append(match)
-                    working_line = rest_of_line
-                    break
+                    invalid_token = invalid_token[:match.start()]
+            print(f"ERROR: invalid parsing '{invalid_token}'")
+            raise FileNotFoundError()
         return tokens
 
     def parse(self, inputLine:str, debug:bool=False) -> Expression:
@@ -42,19 +59,33 @@ class Parser:
                 t = Expression(ExpressionIdentifier(t.id.name, [t.id]), [t])
         # Check all EIs against the list of Token|Expressions until it only contains a single node
         # The outermost Expression
+        offset = 0
+        working_EIs = self.expressionIDs[0:len(self.expressionIDs)-1]
+        any_EI = self.expressionIDs[len(self.expressionIDs)-1]
         while len(tokenList) > 1:
-            for i in range(len(tokenList)):
-                hasMatch = False
-                for e in self.expressionIDs:
-                    match, rest_of_list = e.match(tokenList[i:len(tokenList)])
-                    if match != None:
-                        # If match is found, construct new list and start again
-                        tokenList = tokenList[0:i] + [match] + rest_of_list
-                        hasMatch = True
-                        break
-                # Break both loops and start checking first position again
-                if hasMatch:
+            old_tokenList = deepcopy(tokenList)
+            hasMatch = False
+            for e in working_EIs:
+                match, rest_of_list = e.match(tokenList[offset:len(tokenList)])
+                if match != None:
+                    # If match is found, construct new list and start again
+                    tokenList = tokenList[0:offset] + [match] + rest_of_list
+                    hasMatch = True
                     break
+            # Break both loops and start checking first position again
+            if not hasMatch:
+                offset +=1
+            else:
+                offset = 0
+            if tokenList == old_tokenList or offset == len(tokenList):
+                expr_list = [e.id.name for e in tokenList]
+                # for e in tokenList:
+                #     a = e.id
+                #     b = a.name
+                #     expr_list.append(b)
+                print(f'ERROR: Ill formed expression: {expr_list}')
+                raise FileNotFoundError()
+            del old_tokenList
         return tokenList[0]
 
     def addTokenIdentifier(self, tokenIdentifier:TokenIdentifier) -> None:

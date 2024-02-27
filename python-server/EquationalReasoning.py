@@ -46,17 +46,17 @@ def create_proofEngine() -> ERProofEngine:
     tFalse = TokenIdentifier('False',r'#f|#F','#f')
     tLambda = TokenIdentifier('Lambda',r'Lambda|λ|#L','λ')
     #tError = TokenIdentifier('Error',r'ERROR|error',r'ERROR')
-    tName = TokenIdentifier('Name',r'(\w+)',r'\g<1>')
+    # tName = TokenIdentifier('Name',r'(\w+)',r'\g<1>')
     #tPlus = TokenIdentifier('Plus',r'\+',r'\+')
     #tMinus = TokenIdentifier('Minus',r'\-',r'\-')
-    tokenIdentifiers = [tOpenParens,tClosedParens,tNumber,tTrue,tFalse,tLambda,tName]
+    tokenIdentifiers = [tOpenParens,tClosedParens,tNumber,tTrue,tFalse,tLambda]
 
     eInt = ExpressionIdentifier('Int',[tNumber])
     eBool = ExpressionIdentifier('Bool',[tTrue|tFalse])
-    eName = ExpressionIdentifier('Name',[tName|tLambda])
-    eList = ExpressionIdentifier('List',[tOpenParens,'Any',tClosedParens])
-    eAny = ExpressionIdentifier('Any',[[eInt|eBool|eList|eName],['Any','Any']])
-    expressionIdentifiers = [eInt,eBool,eName,eList,eAny]
+    # eName = ExpressionIdentifier('Name',[tName|tLambda])
+    eList = ExpressionIdentifier('List',[[tOpenParens,'Any',tClosedParens],[tOpenParens,'Any','Any',tClosedParens]])
+    eAny = ExpressionIdentifier('Any',[[eInt|eBool|eList]])
+    expressionIdentifiers = [eInt,eBool,eList,eAny]
 
     # rNumber = ERTypeIdentifier.create_Literal('Number',[eNumber],parseInt)
     # rBool = ERTypeIdentifier.create_Literal('Bool',[eBoolean],parseBool)
