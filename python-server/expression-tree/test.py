@@ -1,5 +1,5 @@
 import Parser
-
+import Labeler
 # This should probably be removed from the git repo later, but is used as a scratch pad for
 # testing functionality. Later we will add unit tests.
 
@@ -55,15 +55,18 @@ test_strings_tfl = [
 test_strings_er = [
     '(λ (n) (if (zero? n) 1 (* n (fact (- n 1)))))',
     
-    '(name?)', # << test string only works for a list containing one item, need to add whitespace management and case insensitivity
+    '(name?)', # test for variables
     '(#t)', # test for booleans
     '(3 4)', # test for numbers
     '()', # test for the empty list
     '(#t #T)',
-    '(#t (#t))'
+    '(#t (#t))',
+    '#t'
 ]
 for test in test_strings_er:
     print(f"'{test}'")
-    exprList = Parser.preProcess(test)
-    exprTree = Parser.buildTree(exprList)[0] 
-    print(exprTree)
+    debugStatus = False
+    exprList = Parser.preProcess(test,debug=debugStatus)
+    exprTree = Parser.buildTree(exprList, debug=debugStatus)[0]
+    labeledTree = Labeler.labelTree(exprTree)
+    print(labeledTree)

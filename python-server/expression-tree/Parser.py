@@ -1,14 +1,19 @@
 import re
 
 class Node:
-    def __init__(self, children=[], parent=None, data=''):
+    def __init__(self, children=[], parent=None, data='', name=None, tokenType=None, debug=False):
         self.children = children
         self.parent = parent
         self.data = data
+        self.name = name
+        self.type = tokenType
+        self.debug = debug
 
     def __str__(self):
-        # return f'{self.children}, {self.parent}, {self.data}'
-        ans = self.data
+        if self.debug:
+            ans = self.name # also will print tree tags for each '(' character
+        else:
+            ans = self.data # print standardized syntax
         if len(self.children) > 0:
             for i in range(len(self.children)):
                 if i == len(self.children)-1:
@@ -19,7 +24,7 @@ class Node:
         return ans
         
 
-def preProcess(inputString:str) -> list:
+def preProcess(inputString:str, debug=False) -> list:
     inputString = inputString.lower()
     parenPairing = 0
     for char in inputString:
@@ -44,42 +49,41 @@ def findMatchingParenthesis(tokenList, index):
         if count == 0:
             return i
 
-def buildTree(inputList:list[str]) -> list:
-
+def buildTree(inputList:list[str], debug=False) -> list:
     # if inputList == [], return the empty list
     if len(inputList) == 0:
         return []
     
     # we have something in inputList, create a Node
-    node = Node([]) # need [] inside Node init to ensure empty children list when created
+    node = Node([], debug=debug) # need [] inside Node init to ensure empty children list when created
     node.data = inputList[0]
 
     # if the first token is not '(', it is a single literal
     if inputList[0] != '(':
 
         # create Node where Node.data is the literal and continue processing the rest of input
-        return [node] + buildTree(inputList[1:len(inputList)])
+        return [node] + buildTree(inputList[1:len(inputList)], debug)
     
     if inputList[0] == '(' and inputList[1] == ')':
         
         # special case for the empty list '()', just modify Node.data == '()'
-        node.data += inputList[1]
+        node.data = 'null'
 
         # continue processing the rest of input
-        return [node] + buildTree(inputList[2:len(inputList)])
+        return [node] + buildTree(inputList[2:len(inputList)], debug)
     
     # we have '(' as the first token, find the index of its matching ')'
     matchIndex = findMatchingParenthesis(inputList,0)
 
     # if everything else is contained within our parenthesis pair, they will be contained in Node.children
     if matchIndex + 1 == len(inputList):
-        node.children = buildTree(inputList[1:-1])
+        node.children = buildTree(inputList[1:-1], debug)
         return [node]
     
     # there are multiple elements in our list, create a Node/subtree for things in that list, append all to Node.children
-    node.children += buildTree(inputList[1:matchIndex])
+    node.children += buildTree(inputList[1:matchIndex], debug)
 
     # continue processing the rest of input
-    return [node] + buildTree(inputList[matchIndex+1:len(inputList)])
+    return [node] + buildTree(inputList[matchIndex+1:len(inputList)], debug)
         
     
