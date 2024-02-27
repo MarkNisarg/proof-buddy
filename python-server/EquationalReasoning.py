@@ -38,7 +38,7 @@ def subtract(minuend:Expression, subtrahend:Expression):
 def identity(expr:Expression):
     pass
 
-def create_proofEngine() -> ERProofEngine:
+def define_identifiers() -> tuple[list[TokenIdentifier], list[ExpressionIdentifier]]:
     tOpenParens = TokenIdentifier('Open_parens',r'\(','(')
     tClosedParens = TokenIdentifier('Closed_parens',r'\)',')')
     tNumber = TokenIdentifier('Number',r'(\d+)',r'\g<1>')
@@ -46,23 +46,21 @@ def create_proofEngine() -> ERProofEngine:
     tFalse = TokenIdentifier('False',r'#f|#F','#f')
     tLambda = TokenIdentifier('Lambda',r'Lambda|λ|#L','λ')
     #tError = TokenIdentifier('Error',r'ERROR|error',r'ERROR')
-    # tName = TokenIdentifier('Name',r'(\w+)',r'\g<1>')
+    tName = TokenIdentifier('Name',r'(\w+)',r'\g<1>')
     #tPlus = TokenIdentifier('Plus',r'\+',r'\+')
     #tMinus = TokenIdentifier('Minus',r'\-',r'\-')
-    tokenIdentifiers = [tOpenParens,tClosedParens,tNumber,tTrue,tFalse,tLambda]
+    tokenIdentifiers = [tOpenParens,tClosedParens,tNumber,tTrue,tFalse,tLambda,tName]
 
     eInt = ExpressionIdentifier('Int',[tNumber])
     eBool = ExpressionIdentifier('Bool',[tTrue|tFalse])
-    # eName = ExpressionIdentifier('Name',[tName|tLambda])
-    eList = ExpressionIdentifier('List',[[tOpenParens,'Any',tClosedParens],[tOpenParens,'Any','Any',tClosedParens]])
-    eAny = ExpressionIdentifier('Any',[[eInt|eBool|eList]])
-    expressionIdentifiers = [eInt,eBool,eList,eAny]
+    eName = ExpressionIdentifier('Name',[tName|tLambda])
+    eList = ExpressionIdentifier('List',[tOpenParens,'Any',tClosedParens])
+    eAny = ExpressionIdentifier('Any',[[eInt|eBool|eList|eName],['Any','Any']])
+    expressionIdentifiers = [eInt,eBool,eName,eList,eAny]
 
-    # rNumber = ERTypeIdentifier.create_Literal('Number',[eNumber],parseInt)
-    # rBool = ERTypeIdentifier.create_Literal('Bool',[eBoolean],parseBool)
-    # rError = ERTypeIdentifier.create_Error('Error',throwError)
-    # rList = ERTypeIdentifier.create_List('List',['any'],None)
-    # erTypes = [rNumber,rBool,rError,rList]
+    return (tokenIdentifiers,expressionIdentifiers)
 
-    erProofEngine = ERProofEngine(tokenIdentifiers,expressionIdentifiers)
+def create_proofEngine() -> ERProofEngine:
+    TIs, EIs = define_identifiers()
+    erProofEngine = ERProofEngine(TIs,EIs)
     return erProofEngine

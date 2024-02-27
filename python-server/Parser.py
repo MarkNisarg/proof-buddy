@@ -77,7 +77,7 @@ class Parser:
                 offset +=1
             else:
                 offset = 0
-            if tokenList == old_tokenList or offset == len(tokenList):
+            if ((tokenList == old_tokenList) and offset != 1) or offset == len(tokenList):
                 expr_list = [e.id.name for e in tokenList]
                 # for e in tokenList:
                 #     a = e.id

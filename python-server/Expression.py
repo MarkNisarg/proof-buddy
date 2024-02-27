@@ -45,7 +45,7 @@ class Expression(Token):
         return f'{type(self).__name__}({self.id},{self.components})'
 
     def __eq__(self, other:Expression) -> bool:
-        if other == None:
+        if not isinstance(other, Expression):
             return False
         elif len(self.components) != len(other.components):
             return False

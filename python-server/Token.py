@@ -20,6 +20,11 @@ class Token():
     
     def __repr__(self:'Token'):
         return f'{type(self).__name__}({self.id},Match object,{self.isTerminal})'
+    
+    def __eq__(self:Token, other:Token):
+        if not isinstance(other, Token):
+            return False
+        return self.id == other.id
 
 
 class TokenIdentifier():
