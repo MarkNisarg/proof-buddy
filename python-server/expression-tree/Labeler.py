@@ -44,6 +44,7 @@ def labelTree(inputTree:Node):
                 if operator.data == builtInFunctionsList[i]:
                     #print('match ', builtInFunctionsList[i])
                     operator.name = builtInFunctionsList[i]
+                    operator.type = 'e_' + builtInFunctionsList[i]
                     root.name = 'e_' + builtInFunctionsList[i] + ' '
                     root.type = 'e_' + builtInFunctionsList[i]
                     root.children[0] = operator # ensure proper replacement

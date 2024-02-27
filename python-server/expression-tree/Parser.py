@@ -10,6 +10,10 @@ class Node:
         self.debug = debug
 
     def __str__(self):
+        # will print stuff if there is missing label or type information
+        if (self.name == None or self.type == None) and self.debug:
+            outStr = f'{self.children}, {self.data}'
+            print(outStr)
         if self.debug:
             ans = self.name # also will print tree tags for each '(' character
         else:
