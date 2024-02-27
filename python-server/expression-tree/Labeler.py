@@ -6,7 +6,7 @@ class Label:
         self.dataType = dataType
 
 literalLibrary = {
-    '_null': Label(r'(?:^)null(?:$)', None),
+    '_null': Label(r'(?:^)null(?:$)', type(None)),
     '#t': Label(r'#t|#T', bool),
     '#f': Label(r'#f|#F', bool),
     '_num': Label(r'(\d+)', int),
@@ -33,6 +33,7 @@ def labelTree(inputTree:Node):
                 if matcher.match(root.data) != None:
                     root.name = label
                     root.type = literalLibrary[label].dataType
+                    #print(literalLibrary[label].dataType)
     else:
         # we are at a node where Node.data == '('
         operator = root.children[0]
