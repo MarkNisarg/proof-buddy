@@ -105,6 +105,16 @@
           }
         }
       }
+
+      input[id='lr']::selection {
+        background-color: rgb(255, 242, 0);
+      }
+
+      input[id='lr'] {
+        font-family: monospace;
+        caret-color: black;
+      }
+  
   
       label {
         font-size: 18px;
