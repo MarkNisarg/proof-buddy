@@ -28,7 +28,7 @@ test_strings_err = [
     '(#t) (#t)',
     '(#t)(#t)',
     '(#t))',
-    '($))'
+    '($))' #testing having two errors in one (bad char )
 ]
 
 for test in test_strings_ok+test_strings_err:
