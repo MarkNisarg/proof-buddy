@@ -56,7 +56,7 @@ def findMatchingParenthesis(tokenList, index):
 def buildTree(inputList:list[str], debug=False) -> list:
     # if inputList == [], return the empty list
     if len(inputList) == 0:
-        return []
+        return [] #steve made a comment
     
     # we have something in inputList, create a Node
     node = Node([], debug=debug) # need [] inside Node init to ensure empty children list when created
