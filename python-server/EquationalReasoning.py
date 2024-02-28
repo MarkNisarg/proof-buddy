@@ -44,12 +44,12 @@ def define_identifiers() -> tuple[list[TokenIdentifier], list[ExpressionIdentifi
     tNumber = TokenIdentifier('Number',r'(\d+)',r'\g<1>',True)
     tTrue = TokenIdentifier('True',r'#t|#T','#t')
     tFalse = TokenIdentifier('False',r'#f|#F','#f')
-    tLambda = TokenIdentifier('Lambda',r'Lambda|λ|#L','λ')
+    # tLambda = TokenIdentifier('Lambda',r'Lambda|λ|#L','λ')
     #tError = TokenIdentifier('Error',r'ERROR|error',r'ERROR')
-    tName = TokenIdentifier('Name',r'(\w+)',r'\g<1>')
+    # tName = TokenIdentifier('Name',r'(\w+)',r'\g<1>')
     #tPlus = TokenIdentifier('Plus',r'\+',r'\+')
     #tMinus = TokenIdentifier('Minus',r'\-',r'\-')
-    tokenIdentifiers = [tOpenParens,tClosedParens,tNumber,tTrue,tFalse,tLambda,tName]
+    tokenIdentifiers = [tOpenParens,tClosedParens,tNumber,tTrue,tFalse]
 
     eAny = ExpressionIdentifier.getGeneric('Any')
     # eInt = ExpressionIdentifier('Int',[tNumber])
