@@ -41,7 +41,7 @@ def identity(expr:Expression):
 def define_identifiers() -> tuple[list[TokenIdentifier], list[ExpressionIdentifier]]:
     tOpenParens = TokenIdentifier('Open_parens',r'\(','(')
     tClosedParens = TokenIdentifier('Closed_parens',r'\)',')')
-    tNumber = TokenIdentifier('Number',r'(\d+)',r'\g<1>')
+    tNumber = TokenIdentifier('Number',r'(\d+)',r'\g<1>',True)
     tTrue = TokenIdentifier('True',r'#t|#T','#t')
     tFalse = TokenIdentifier('False',r'#f|#F','#f')
     tLambda = TokenIdentifier('Lambda',r'Lambda|λ|#L','λ')
@@ -51,12 +51,13 @@ def define_identifiers() -> tuple[list[TokenIdentifier], list[ExpressionIdentifi
     #tMinus = TokenIdentifier('Minus',r'\-',r'\-')
     tokenIdentifiers = [tOpenParens,tClosedParens,tNumber,tTrue,tFalse,tLambda,tName]
 
-    eInt = ExpressionIdentifier('Int',[tNumber])
+    eAny = ExpressionIdentifier.getGeneric('Any')
+    # eInt = ExpressionIdentifier('Int',[tNumber])
     eBool = ExpressionIdentifier('Bool',[tTrue|tFalse])
-    eName = ExpressionIdentifier('Name',[tName|tLambda])
-    eList = ExpressionIdentifier('List',[tOpenParens,'Any',tClosedParens])
-    eAny = ExpressionIdentifier('Any',[[eInt|eBool|eList|eName],['Any','Any']])
-    expressionIdentifiers = [eInt,eBool,eName,eList,eAny]
+    # eName = ExpressionIdentifier('Name',[tName|tLambda])
+    eList = ExpressionIdentifier('List',[[tOpenParens,eAny,tClosedParens],[tOpenParens,eAny,eAny,tClosedParens]])
+    # eAny = ExpressionIdentifier('Any',[[eBool|eList]])
+    expressionIdentifiers = [eBool,eList,eAny]
 
     return (tokenIdentifiers,expressionIdentifiers)
 

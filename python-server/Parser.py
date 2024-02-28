@@ -59,30 +59,26 @@ class Parser:
                 t = Expression(ExpressionIdentifier(t.id.name, [t.id]), [t])
         # Check all EIs against the list of Token|Expressions until it only contains a single node
         # The outermost Expression
-        offset = 0
         working_EIs = self.expressionIDs[0:len(self.expressionIDs)-1]
         any_EI = self.expressionIDs[len(self.expressionIDs)-1]
         while len(tokenList) > 1:
             old_tokenList = deepcopy(tokenList)
             hasMatch = False
             for e in working_EIs:
-                match, rest_of_list = e.match(tokenList[offset:len(tokenList)])
-                if match != None:
-                    # If match is found, construct new list and start again
-                    tokenList = tokenList[0:offset] + [match] + rest_of_list
-                    hasMatch = True
-                    break
-            # Break both loops and start checking first position again
-            if not hasMatch:
-                offset +=1
-            else:
                 offset = 0
-            if ((tokenList == old_tokenList) and offset != 1) or offset == len(tokenList):
+                while offset < len(tokenList):
+                    match, rest_of_list = e.match(tokenList[offset:len(tokenList)])
+                    if match != None:
+                        # If match is found, construct new list and start again
+                        tokenList = tokenList[0:offset] + [match] + rest_of_list
+                        hasMatch = True
+                        break
+                    else:
+                        offset += 1
+                if hasMatch:
+                    break
+            if tokenList == old_tokenList:
                 expr_list = [e.id.name for e in tokenList]
-                # for e in tokenList:
-                #     a = e.id
-                #     b = a.name
-                #     expr_list.append(b)
                 print(f'ERROR: Ill formed expression: {expr_list}')
                 raise FileNotFoundError()
             del old_tokenList

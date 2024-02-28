@@ -41,17 +41,10 @@ class TokenIdentifier():
         self.name = name
         self.recognizeRegex = None
         self.printRegex = printRegex
-        self.generic = False
         self.isTerminal = isTerminal
         self.ORing_operands = [self]
         if recognizeRegex != None:
             self.recognizeRegex = re.compile(recognizeRegex)
-    
-    # This method is for creating a dummy "token" that takes the place of a subexpression
-    def getGeneric(name:str) -> TokenIdentifier:
-        genericToken = TokenIdentifier(name,'','')
-        genericToken.generic = True
-        return genericToken
     
     def match(self, input: str) -> tuple[Token|None, str]:
         if len(self.ORing_operands) == 1:
@@ -76,11 +69,11 @@ class TokenIdentifier():
         return ORed_tokenIdentifier
     
     def __eq__(self,other:TokenIdentifier) -> bool:
-        # Matching against 'Any' should be false because it needs to be an Expression first
-        if isinstance(other,str):
+        # This should be true for both TokenIdentifier and ExpressionIdentifier
+        if not isinstance(other,TokenIdentifier):
             return False
         elif len(self.ORing_operands) == 1 and len(other.ORing_operands) == 1:
-            return self.name == other.name
+            return self.name == other.name and type(self) == type(other)
         for t in self.ORing_operands:
             for t2 in other.ORing_operands:
                 if t == t2:

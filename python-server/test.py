@@ -81,15 +81,15 @@ bad_er = [
     '#t)'
 ]
 
-print('Good Tests:')
-for test in good_er:
-    print(f"'{test}'")
-    try:
-        test_expr = EREngine.parse_expression(test)
-        print(test_expr)
-    except Exception as e:
-        print(e)
-    print()
+# print('Good Tests:')
+# for test in good_er:
+#     print(f"'{test}'")
+#     try:
+#         test_expr = EREngine.parse_expression(test)
+#         print(test_expr)
+#     except Exception as e:
+#         print(e)
+#     print()
 
 print('Bad Tests:')
 for test in bad_er:

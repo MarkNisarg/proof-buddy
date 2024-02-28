@@ -3,7 +3,7 @@ from Token import Token, TokenIdentifier
 from enum import Enum
 from copy import deepcopy
 
-_DEBUG = False
+_DEBUG = True
 
 # This will need to be replaced later
 class RacketType(Enum):
@@ -38,7 +38,10 @@ class Expression(Token):
         else:
             s = ''
             for c in self.components:
-                s += f'{c}'
+                if isinstance(c,Token):
+                    s += f"'{c}'"
+                else:
+                    s += f'{c}'
             return s
     
     def __repr__(self) -> str:
@@ -58,7 +61,6 @@ class Expression(Token):
                     return False
             return True
 
-
 class ExpressionIdentifier(TokenIdentifier):
     """
     The ExpressionIdentifier defines a sequence (or possibly multiple sequences) of TokenIdentifiers
@@ -73,10 +75,16 @@ class ExpressionIdentifier(TokenIdentifier):
         self.name = name
         self.structure = structure
         # structure is only a single depth list and needs to be wrapped to form a double list
-        if isinstance(structure,list) and not isinstance(structure[0],list):
+        if len(structure) != 0 and isinstance(structure,list) and not isinstance(structure[0],list):
             self.structure = [self.structure]
         # This property is for handling ORing multiple identifiers together
         self.ORing_operands = [self]
+        self.generic = False
+    
+    def getGeneric(name:str) -> ExpressionIdentifier:
+        genericEI = ExpressionIdentifier(name,[])
+        genericEI.generic = True
+        return genericEI
 
     def match(self:ExpressionIdentifier, inputLine:list[Token|Expression])\
         -> tuple[Expression|None, list[Token|Expression]]:
@@ -89,12 +97,7 @@ class ExpressionIdentifier(TokenIdentifier):
                     hasMatch = False
                     break
                 for j in range(len(seq)):
-                    # If the current element in inputLine has to match 'Any', just skip and check the next
-                    # if isinstance(inputLine[j],Expression) and seq[j] == 'Any':
-                    #     continue
-                    # If the current element in inputLine is a subexpression and the sequence is not expecting one
-                    # (implied from previous check), or the current element just simply doesn't match the sequence'
-                    # expected item, break and say we failed
+                    # If the current element doesn't match the sequence's expected item, break and say we failed
                     if inputLine[j].id != seq[j]:
                         hasMatch = False
                         break
@@ -125,15 +128,15 @@ class ExpressionIdentifier(TokenIdentifier):
         return f'{type(self).__name__}({self.name},{self.structure})'
     
     def __or__(self, other:ExpressionIdentifier|TokenIdentifier) -> ExpressionIdentifier:
-        # ORed_expressionIdentifier = ExpressionIdentifier(f'{self.name}|{other.name}',self.structure+other.structure)
-        # ORed_expressionIdentifier.ORing_operands = [deepcopy(self),deepcopy(other)]
         return ExpressionIdentifier(f'{self.name}|{other.name}',self.structure+other.structure)
     
     def __eq__(self,other:ExpressionIdentifier|TokenIdentifier) -> bool:
-        if other == 'Any':
+        if not isinstance(other,ExpressionIdentifier) and not isinstance(other,TokenIdentifier):
+            return False
+        elif self.generic or (isinstance(other,ExpressionIdentifier) and other.generic):
             return True
         elif len(self.ORing_operands) == 1 and len(other.ORing_operands) == 1:
-            return self.name == other.name
+            return self.name == other.name and type(self) == type(other)
         for e in self.ORing_operands:
             for e2 in other.ORing_operands:
                 if e == e2:
