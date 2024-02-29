@@ -1,4 +1,5 @@
 import Parser, Labeler
+from typeFile import Type
 
 test_strings_ok = [
     '(λ (n) (if (zero? n) 1 (* n (fact (- n 1)))))',
@@ -41,3 +42,7 @@ for test in test_strings_ok+test_strings_err:
         print(labeledTree)
     else:
         print(errLog)
+
+for x in Type:
+    print(x.value)
+    

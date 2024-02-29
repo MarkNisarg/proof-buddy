@@ -1,15 +1,17 @@
 from Parser import Node
 import re
+from typeFile import Type
+
 class Label:
     def __init__(self, regex, dataType):
         self.regex = regex
         self.dataType = dataType
 
 literalLibrary = {
-    '_null': Label(r'(?:^)null(?:$)', type(None)),
-    '#t': Label(r'#t|#T', bool),
-    '#f': Label(r'#f|#F', bool),
-    '_num': Label(r'(\d+)', int),
+    '_null': Label(r'(?:^)null(?:$)', Type.NONE),
+    '#t': Label(r'#t|#T', Type.BOOL),
+    '#f': Label(r'#f|#F', Type.BOOL),
+    '_num': Label(r'(\d+)', Type.INT),
     '_var': Label(r'(\w+)', str)
 }
 
