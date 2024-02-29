@@ -12,7 +12,7 @@ literalLibrary = {
     '#t': Label(r'#t|#T', Type.BOOL),
     '#f': Label(r'#f|#F', Type.BOOL),
     '_num': Label(r'(\d+)', Type.INT),
-    '_var': Label(r'(\w+)', str)
+    '_var': Label(r'(\w+)', Type.TEMP)
 }
 
 builtInFunctionsList = ['if', 'cons', 'first', 'rest', 'null?', '+', '-', '*', 'quotient', 'remainder']

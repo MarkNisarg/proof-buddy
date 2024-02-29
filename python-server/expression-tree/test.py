@@ -29,7 +29,7 @@ test_strings_err = [
     '(#t) (#t)',
     '(#t)(#t)',
     '(#t))',
-    '($))' #testing having two errors in one (bad char )
+    '($))' #testing having two errors in one (bad char and paren mismatch)
 ]
 
 for test in test_strings_ok+test_strings_err:
@@ -42,6 +42,17 @@ for test in test_strings_ok+test_strings_err:
         print(labeledTree)
     else:
         print(errLog)
+
+#test = '((if #t + *) 3 4)'
+test='(+ 3 4)'
+exprList,errLog = Parser.preProcess(test,errLog=[],debug=debugStatus)
+exprTree = Parser.buildTree(exprList, errLog, debug=debugStatus)[0]
+labeledTree = Labeler.labelTree(exprTree)
+
+
+labeledTree.fullDebug(True)
+print(test)
+print(labeledTree)
 
 for x in Type:
     print(x.value)

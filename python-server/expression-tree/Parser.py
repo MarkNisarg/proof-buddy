@@ -34,16 +34,24 @@ class Node:
                     ans += str(self.children[i]) + ' '
             ans += ')'
         return ans
+    
+    def fullDebug(self, sett):  #this sets every node in the tree to the same debug setting
+        if self==None:
+            return
+        self.debug=sett
+        for c in self.children:
+            c.fullDebug(sett)
         
 #errLog is a list of strings of error msgs that will be passed at each step of the tree-building process
 def preProcess(inputString:str, errLog:List[str]=None, debug=False) -> list: #None will generate a warning since it's not a list of strings
     if errLog == None: #values assigned at func def, not each call, so need None vs []
         errLog = []
     #orig=inputString #saving original to refer to later, but might not be needed
-    # inputString = inputString.lower()  #decided to permit uppercase letters and make it case sensitive to allow M vs m. caution: now  "If" is not "if"inputString=inputString.replace("]",")").replace("[","(").replace("{","(").replace("}",")").replace("\t"," ").replace("\r"," ").replace("\n"," ").replace("("," ( ").replace(")"," ) ")
+    # inputString = inputString.lower()  #decided to permit uppercase letters and make it case sensitive to allow M vs m. caution: now  "If" is not "if"
+    inputString=inputString.replace("]",")").replace("[","(").replace("{","(").replace("}",")").replace("\t"," ").replace("\r"," ").replace("\n"," ").replace("("," ( ").replace(")"," ) ")
     inputString = " ".join(inputString.split()) #this will remove consecutive spaces and also strip whitespace from front&back
     if inputString == "": #needed to avoid an issue in checking first character as (
-        errLog.append("no input detected")
+        errLog.append("no input detected") # can't return the append directly since append changes in place and doesn't return a value!!
         return [], errLog
     # note that final replacement at end of next line attaches a \s to parens for list-splitting purposes
     
