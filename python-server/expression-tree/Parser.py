@@ -118,10 +118,14 @@ def buildTree(inputList:list[str], errLog, debug=False) -> list:
     # if everything else is contained within our parenthesis pair, they will be contained in Node.children
     if matchIndex + 1 == len(inputList):
         node.children = buildTree(inputList[1:-1], debug)
+        for child in node.children:
+            child.parent = node
         return [node]
     
     # there are multiple elements in our list, create a Node/subtree for things in that list, append all to Node.children
     node.children += buildTree(inputList[1:matchIndex], debug)
+    for child in node.children:
+        child.parent = node
 
     # continue processing the rest of input
     return [node] + buildTree(inputList[matchIndex+1:len(inputList)], debug)
