@@ -6,6 +6,7 @@ class AutoName(Enum):
         return name
     
 class Type(AutoName):
+    TEMP = auto() # a temporary place-holder type, until we distinguish strings as either functions or parameters
     BOOL = auto()
     INT = auto()
     LIST = auto()
