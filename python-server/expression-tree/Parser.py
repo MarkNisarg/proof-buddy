@@ -19,16 +19,17 @@ class Node:
 
     def __str__(self):
         # will print stuff if there is missing label or type information
-        if (self.name == None or self.type == None) and self.debug:
+        if self.type == None and self.debug:
             outStr = f'{self.children}, {self.data}'
             print(outStr)
         if self.debug:
-            ans = self.name # also will print tree tags for each '(' character
+            # will print value and type of each Node object, and a whitespace character for readability
+            ans = f'{self.data},{self.type} '
         else:
             ans = self.data # print standardized syntax
         if len(self.children) > 0:
             for i in range(len(self.children)):
-                if i == len(self.children)-1:
+                if i == len(self.children)-1 or self.debug:
                     ans += str(self.children[i])
                 else:
                     ans += str(self.children[i]) + ' '
@@ -117,10 +118,14 @@ def buildTree(inputList:list[str], errLog, debug=False) -> list:
     # if everything else is contained within our parenthesis pair, they will be contained in Node.children
     if matchIndex + 1 == len(inputList):
         node.children = buildTree(inputList[1:-1], debug)
+        for child in node.children:
+            child.parent = node
         return [node]
     
     # there are multiple elements in our list, create a Node/subtree for things in that list, append all to Node.children
     node.children += buildTree(inputList[1:matchIndex], debug)
+    for child in node.children:
+        child.parent = node
 
     # continue processing the rest of input
     return [node] + buildTree(inputList[matchIndex+1:len(inputList)], debug)
