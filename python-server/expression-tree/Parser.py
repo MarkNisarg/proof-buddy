@@ -19,16 +19,17 @@ class Node:
 
     def __str__(self):
         # will print stuff if there is missing label or type information
-        if (self.name == None or self.type == None) and self.debug:
+        if self.type == None and self.debug:
             outStr = f'{self.children}, {self.data}'
             print(outStr)
         if self.debug:
-            ans = self.name # also will print tree tags for each '(' character
+            # will print value and type of each Node object, and a whitespace character for readability
+            ans = f'{self.data},{self.type} '
         else:
             ans = self.data # print standardized syntax
         if len(self.children) > 0:
             for i in range(len(self.children)):
-                if i == len(self.children)-1:
+                if i == len(self.children)-1 or self.debug:
                     ans += str(self.children[i])
                 else:
                     ans += str(self.children[i]) + ' '

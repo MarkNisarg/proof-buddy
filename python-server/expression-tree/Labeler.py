@@ -15,7 +15,7 @@ literalLibrary = {
     '_var': Label(r'(\w+)', Type.TEMP)
 }
 
-builtInFunctionsList = ['if', 'cons', 'first', 'rest', 'null?', '+', '-', '*', 'quotient', 'remainder']
+builtInFunctionsList = ['if', 'cons', 'first', 'rest', 'null?', '+', '-', '*', 'quotient', 'remainder','zero?']
 
 def labelTree(inputTree:Node):
     # if inputTree is empty, return the empty list
