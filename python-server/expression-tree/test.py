@@ -44,7 +44,7 @@ for test in test_strings_ok+test_strings_err:
     debugStatus = False
     exprList,errLog = Parser.preProcess(test,errLog=[],debug=debugStatus)
     if not errLog:
-        exprTree = Parser.buildTree(exprList, errLog, debug=debugStatus)[0]
+        exprTree = Parser.buildTree(exprList, debug=debugStatus)[0]
         labeledTree = Labeler.labelTree(exprTree)
         treeStr = printLabeledTree(labeledTree)
         print(treeStr)
@@ -53,17 +53,17 @@ for test in test_strings_ok+test_strings_err:
 
 #test = '((if #t + *) 3 4)'
 #test='(+ 3 4)'
-test = '(+ null #f abc 345 () 6)'
+test = '(+ null #f ab#c 345 () 6)'
 exprList,errLog = Parser.preProcess(test,errLog=[],debug=debugStatus)
-exprTree = Parser.buildTree(exprList, errLog, debug=debugStatus)[0]
+exprTree = Parser.buildTree(exprList,debug=debugStatus)[0] # might not need to pass errLog
 labeledTree = Labeler.labelTree(exprTree)
-#decTree, errLog = decorateTree(labeledTree,errLog), errLog  # *** why can't decTree to a fullDebug?? it's a node, right?
-#print(decTree)
-#exit()
+decTree, errLog = decorateTree(labeledTree,errLog)
 
-labeledTree.fullDebug(True)
+print(isinstance(decTree,Parser.Node))
+decTree.fullDebug(True)
 print(test)
 print(labeledTree)
+print(errLog)
 
 for x in Type:
     print(x.value)

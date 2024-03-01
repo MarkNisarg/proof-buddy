@@ -13,7 +13,7 @@ literalLibrary = [
     Label(r'#t|#T', Type.BOOL),
     Label(r'#f|#F', Type.BOOL),
     Label(r'(\d+)', Type.INT),
-    Label(r'^[a-zA-Z]+$', Type.PARAM)
+    #Label(r'^[a-zA-Z]+$', Type.PARAM) # this is the new default. the Decorator catches invalid names
 ]
 
 builtInFunctionsList = ['if', 'cons', 'first', 'rest', 'null?', '+', '-', '*', 'quotient', 'remainder','zero?',\
@@ -37,7 +37,7 @@ def labelTree(inputTree:Node):
                 break
 
     if root.type == None:
-        root.type = Type.ERROR
+        root.type = Type.PARAM
 
     for child in root.children:
         labelTree(child)

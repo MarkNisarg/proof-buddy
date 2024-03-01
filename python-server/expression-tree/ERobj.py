@@ -31,6 +31,7 @@ def ERcopy(orig:ERobj)->ERobj:
 # unwrapped before being passed, and then wrapped up after the return before use.
 # these ERobjects are what will be in the data attribute of the RacTree nodes
 
+plist = ERobj("(", Type.LIST)
 pcons = ERobj("cons", Type.FUNCTION, (Type.ANY,Type.LIST),Type.LIST,None,2)
 prest = ERobj("rest", Type.FUNCTION, (Type.LIST),Type.LIST,None,1)
 pfirst = ERobj("first", Type.FUNCTION, (Type.LIST),Type.ANY,None,1)
@@ -78,7 +79,7 @@ pfact = ERobj("fact",Type.FUNCTION,(Type.INT,),Type.INT,None, 1)
 perr = ERobj("Error", Type.ERROR) # can use perr.value to store a string of specific error msg
 
 # TODO: list of the core racket-lite functions (will need to change if add more )
-pcore = [pcons, prest, pfirst, padd, psubtr, pmult, pexpt, peq, pgtr, pgtreq,\
+pcore = [plist, pcons, prest, pfirst, padd, psubtr, pmult, pexpt, peq, pgtr, pgtreq,\
     pless, plesseq, pquotient, prem, pand, por, pnot, pxor, pimp, pnullPred,\
         pzeroPred,pintPred, plistPred, pnull, ptrue,pfalse,pquote,plambda,pif,perr]
 ptests = [pfact]

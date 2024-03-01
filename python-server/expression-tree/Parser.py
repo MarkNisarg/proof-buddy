@@ -20,6 +20,7 @@ class Node:
         self.outtype = outType # for functions, it's the output type
         self.numArgs = numArgs # for functions, it's the number of inputs
         self.length = length # for lists, it's the length 
+        self.position = -1
 
 
     def __str__(self):
@@ -29,7 +30,7 @@ class Node:
             print(outStr)
         if self.debug:
             # will print value and type of each Node object, and a whitespace character for readability
-            ans = f'{self.data},{self.type} '
+            ans = f'{self.name},{self.type} '
         else:
             ans = self.data # print standardized syntax
         if len(self.children) > 0:
@@ -94,7 +95,7 @@ def findMatchingParenthesis(tokenList, index)->int:
         if count == 0:
             return i
 
-def buildTree(inputList:list[str], errLog:List[str], debug=False) -> list:
+def buildTree(inputList:list[str], debug=False) -> list:
     # if inputList == [], return the empty list
     if len(inputList) == 0:
         return [] 
