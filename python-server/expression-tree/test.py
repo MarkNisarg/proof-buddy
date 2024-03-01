@@ -1,8 +1,15 @@
 import Parser, Labeler
 from typeFile import Type
 
+def printLabeledTree(tree):
+    retStr = f'Data: {tree.data}, Type: {tree.type}\n'
+    for child in tree.children:
+        retStr += printLabeledTree(child)
+    
+    return retStr
+
 test_strings_ok = [
-    '(λ (n) (if (zero? n) 1 (* n (fact (- n 1)))))',
+    # '(λ (n) (if (zero? n) 1 (* n (fact (- n 1)))))',
     '(name?)', # test for variables
     '(#t)', # test for booleans
     '(3 4)', # test for numbers
@@ -39,7 +46,8 @@ for test in test_strings_ok+test_strings_err:
     if not errLog:
         exprTree = Parser.buildTree(exprList, errLog, debug=debugStatus)[0]
         labeledTree = Labeler.labelTree(exprTree)
-        print(labeledTree)
+        treeStr = printLabeledTree(labeledTree)
+        print(treeStr)
     else:
         print(errLog)
 
