@@ -1,21 +1,26 @@
 import string #no longer using re
-from typing import List #used to create a type hint for a list of strings
+from typing import List, Tuple #used to create a type hint for a list of strings
 
 #perhaps in future allow square brackets and braces. 
 whitespace = ["\n","\t","\r"," "] #permits linebreak and indents for conditionals. all become \s in pre-processing step
-arithSymbols = ["+","*","-"] # other math uses ascii, such as expt, quotient, remainder. Note: "/" not permitted
+arithSymbols = ["+","*","-","=",">","<"] # other math uses ascii, such as expt, quotient, remainder. Note: "/" not permitted
 openGroupSymb = ["(","[","{"] # needed to separate open from closed for more precision with error messaging
 closeGroupSymb = [")","]","}"] # possibly cond might be implemented one day with square brackets. presently, all these replaced by parens in pre-processing
-specialChars = ["#","?","\u03BB","'"] #hashtag for bools,? for predicate suffix,unicode is for lambda (currently not in language), final item is single quote
+specialChars = ["#","?","\u03BB","'"] #hashtag for bools,? for pred suffix,unicode is for λ (currently not in language),final item is single quote
 AllowedChars = list(string.ascii_letters) + list(string.digits) + whitespace + arithSymbols + openGroupSymb + closeGroupSymb + specialChars
 class Node:
-    def __init__(self, children=[], parent=None, data='', name=None, tokenType=None, debug=False):
-        self.children = children
+    def __init__(self, children=[], parent=None, data='', name=None, tokenType=None, debug=False, ins=None, outType=None, numArgs=None, length=None):
+        self.children = children # possibly we might later refactor children[0] as the "operator"
         self.parent = parent
-        self.data = data
-        self.name = name
+        self.data = data # this is the string name to be displayed (what used to be called "name" in the old PB)
+        self.name = name # this is what used to be called "value" in the old PB
         self.type = tokenType
         self.debug = debug
+        self.ins = ins #for functions, it's the tuple of input types
+        self.outtype = outType # for functions, it's the output type
+        self.numArgs = numArgs # for functions, it's the number of inputs
+        self.length = length # for lists, it's the length 
+
 
     def __str__(self):
         # will print stuff if there is missing label or type information
@@ -36,15 +41,15 @@ class Node:
             ans += ')'
         return ans
     
-    def fullDebug(self, sett):  #this sets every node in the tree to the same debug setting
-        if self==None:
-            return
-        self.debug=sett
-        for c in self.children:
-            c.fullDebug(sett)
+    def fullDebug(self, sett:bool):  #this sets every node in the tree to the same debug setting
+        if self!=None:
+            self.debug=sett
+            for c in self.children:
+                c.fullDebug(sett)
+        return
         
 #errLog is a list of strings of error msgs that will be passed at each step of the tree-building process
-def preProcess(inputString:str, errLog:List[str]=None, debug=False) -> list: #None will generate a warning since it's not a list of strings
+def preProcess(inputString:str, errLog:List[str]=None, debug=False) -> Tuple[List[str],List[str]]: #None will generate a warning since it's not a list of strings
     if errLog == None: #values assigned at func def, not each call, so need None vs []
         errLog = []
     #orig=inputString #saving original to refer to later, but might not be needed
@@ -79,7 +84,7 @@ def preProcess(inputString:str, errLog:List[str]=None, debug=False) -> list: #No
     #    inputString = [element for element in inputString if element != ''] 
     return inputString.split(),errLog
     
-def findMatchingParenthesis(tokenList, index):
+def findMatchingParenthesis(tokenList, index)->int:
     count = 1
     for i in range(index+1, len(tokenList)):
         if tokenList[i] == '(':
@@ -89,7 +94,7 @@ def findMatchingParenthesis(tokenList, index):
         if count == 0:
             return i
 
-def buildTree(inputList:list[str], errLog, debug=False) -> list:
+def buildTree(inputList:list[str], errLog:List[str], debug=False) -> list:
     # if inputList == [], return the empty list
     if len(inputList) == 0:
         return [] 

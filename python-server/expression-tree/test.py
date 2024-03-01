@@ -1,11 +1,11 @@
 import Parser, Labeler
 from typeFile import Type
+from Decorator import decorateTree
 
 def printLabeledTree(tree):
     retStr = f'Data: {tree.data}, Type: {tree.type}\n'
     for child in tree.children:
         retStr += printLabeledTree(child)
-    
     return retStr
 
 test_strings_ok = [
@@ -52,11 +52,14 @@ for test in test_strings_ok+test_strings_err:
         print(errLog)
 
 #test = '((if #t + *) 3 4)'
-test='(+ 3 4)'
+#test='(+ 3 4)'
+test = '(+ null #f abc 345 () 6)'
 exprList,errLog = Parser.preProcess(test,errLog=[],debug=debugStatus)
 exprTree = Parser.buildTree(exprList, errLog, debug=debugStatus)[0]
 labeledTree = Labeler.labelTree(exprTree)
-
+#decTree, errLog = decorateTree(labeledTree,errLog), errLog  # *** why can't decTree to a fullDebug?? it's a node, right?
+#print(decTree)
+#exit()
 
 labeledTree.fullDebug(True)
 print(test)

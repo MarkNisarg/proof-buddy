@@ -16,7 +16,8 @@ literalLibrary = [
     Label(r'^[a-zA-Z]+$', Type.PARAM)
 ]
 
-builtInFunctionsList = ['if', 'cons', 'first', 'rest', 'null?', '+', '-', '*', 'quotient', 'remainder','zero?']
+builtInFunctionsList = ['if', 'cons', 'first', 'rest', 'null?', '+', '-', '*', 'quotient', 'remainder','zero?',\
+                        "expt","=","<=",">=","<",">","and","or","not","xor","implies","list?","int?"]
 userDefinedFunctionsList = ['fact']
 
 def labelTree(inputTree:Node):
@@ -42,5 +43,3 @@ def labelTree(inputTree:Node):
         labelTree(child)
 
     return root
-    
-    
