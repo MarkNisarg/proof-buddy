@@ -9,8 +9,8 @@ def printLabeledTree(tree):
     return retStr
 
 test_strings_ok = [
-    # '(λ (n) (if (zero? n) 1 (* n (fact (- n 1)))))',
-    '(name?)', # test for variables
+    '(λ (n) (if (zero? n) 1 (* n (fact (- n 1)))))',   #### How should λ be treated? Is this of type function? Should it be in the built in list? ####
+    '(name?)', # test for variables   #### Should this be testing a variable or function? I thought only functions end in ?. Currently labeler will label this as an error ####
     '(#t)', # test for booleans
     '(3 4)', # test for numbers
     '(34 #t)',

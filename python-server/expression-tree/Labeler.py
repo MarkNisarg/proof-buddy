@@ -8,11 +8,12 @@ class Label:
         self.dataType = dataType
 
 literalLibrary = [
-    Label(r'(?:^)null(?:$)', Type.NONE),
+    Label(r'(?:^)null(?:$)', Type.LIST),
+    Label(r'^\($', Type.LIST),
     Label(r'#t|#T', Type.BOOL),
     Label(r'#f|#F', Type.BOOL),
     Label(r'(\d+)', Type.INT),
-    Label(r'([a-zA-Z]+\??)', Type.PARAM)
+    Label(r'^[a-zA-Z]+$', Type.PARAM)
 ]
 
 builtInFunctionsList = ['if', 'cons', 'first', 'rest', 'null?', '+', '-', '*', 'quotient', 'remainder','zero?']
@@ -27,13 +28,15 @@ def labelTree(inputTree:Node):
     data = root.data
     if data in builtInFunctionsList or data in userDefinedFunctionsList:
         root.type = Type.FUNCTION
-    elif data == '(':
-        root.type = Type.LIST
     else:
         for label in literalLibrary:
             matcher = re.compile(label.regex)
             if matcher.match(root.data) != None:
                 root.type = label.dataType
+                break
+
+    if root.type == None:
+        root.type = Type.ERROR
 
     for child in root.children:
         labelTree(child)

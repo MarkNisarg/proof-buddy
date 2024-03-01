@@ -104,6 +104,14 @@ def buildTree(inputList:list[str], errLog, debug=False) -> list:
         # create Node where Node.data is the literal and continue processing the rest of input
         return [node] + buildTree(inputList[1:len(inputList)], debug)
     
+    if inputList[0] == '(' and inputList[1] == ')':
+
+        # special case for the empty list '()', just modify Node.data == '()'
+        node.data = 'null'
+
+        # continue processing the rest of input
+        return [node] + buildTree(inputList[2:len(inputList)], debug)
+
     # we have '(' as the first token, find the index of its matching ')'
     matchIndex = findMatchingParenthesis(inputList,0)
 
