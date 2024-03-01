@@ -32,6 +32,36 @@ def decorateTree(inputTree:Node, errLog, debug=False) -> Tuple[Node,List[str]]:
         decorateTree(c, errLog,debug)        
     return inputTree, errLog
 
+
+def argQty(treeNode:Node) -> str:
+    func = treeNode.children[0]
+    erObj = pdict[func.data]
+    expectedCount = erObj.numArgs
+    providedCount = len(treeNode.children) - 1
+
+    if expectedCount != providedCount:
+        return f"{func.name} only takes {expectedCount} arguments, but {providedCount} {'was' if providedCount==1 else 'were'} provided"
+    
+    return None
+
+
+def checkFunctions(inputTree:Node, errLog, debug=False) -> Tuple[Node,List[str]]:
+    if inputTree == None:
+        return inputTree, errLog
+    
+    if len(inputTree.children) > 0 and (inputTree.type == Type.LIST and inputTree.children[0].type == Type.FUNCTION):
+        errMsg = argQty(inputTree)
+        
+        if errMsg:
+            errLog.append(errMsg)
+
+        # TODO: add call to typeCheck
+        
+    for child in inputTree.children:
+        checkFunctions(child, errLog, debug)
+    return inputTree, errLog
+
+
 '''
 two new functions in this file: argQty(inputree,errLog)->bool and typeCheck(inputTree, errLog)
 CAUTION:  (+ (+ 3 #t) 4 5) should give two errors. so do both before recursing to future nodes.
