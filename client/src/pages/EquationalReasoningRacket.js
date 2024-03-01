@@ -34,13 +34,7 @@ const EquationalReasoningRacket = () => {
 
   const [rightHandSideProofLineList, setRightHandSideProofLineList] = useState([{ proofLineRacket: '', proofLineRule: '' }]);
 
-  // const [ruleList, setRuleList] = useState([
-  //   { toFrom: '(cons (first L) (rest L))', fromTo: 'L', name: 'cons', tags: 'test' },
-  //   { toFrom: '(first (cons x L))', fromTo: 'x', name: 'first', tags: 'test' }
-  // ]);
-
   const ruleList = ruleSet();
-  console.log(ruleSet);
 
   const gradient = {
     orange_gradient: 'linear-gradient(135deg, #ffc600 0, #ff8f1c 100%)',
@@ -79,7 +73,7 @@ const EquationalReasoningRacket = () => {
   const handleProofLineListChange = (index, element, targetList) => {// this function essentially makes sure that any user change to the input fields updates the corresponding ProofList
     let newProofLineList = [...targetList];
 
-    if (element.target.id == 'left-racket' || element.target.id == 'right-racket'){
+    if (element.target.id == 'left-racket' || element.target.id == 'right-racket' || element.target.id == 'lr'){
       newProofLineList[index].proofLineRacket = element.target.value;
       //console.log('Racket: ' + newProofLineList[index].proofLineRacket);
     } else if(element.target.id == 'left-rule' || element.target.id == 'right-rule') {
@@ -193,6 +187,111 @@ const EquationalReasoningRacket = () => {
     }
     
   }
+
+  const highlightSelection = (element) => {
+
+    const textarea = document.getElementById('lr');
+    var fullText = textarea.value;
+    var selectedText = (textarea.value).substring(textarea.selectionStart, textarea.selectionEnd);
+    var caretPosition = textarea.selectionStart;
+
+    const keywords = ['length', 'rest', 'append', 'null?', 'null', 'if', 'first']; //d
+  
+    var keyword = '';
+    var sub = '';
+    var selectStart = 0;
+    var selectEnd = 0;
+  
+    for(let i = 0; i < keywords.length; i++){
+      keyword = keywords[i];
+      for(let j = 0; j < fullText.length - (keyword.length - 1); j++){
+        sub = fullText.substring(j, j + keyword.length);
+        if(sub == keyword && j <= caretPosition && caretPosition <= j + keyword.length - 1){
+          selectStart = j;
+          selectEnd = j + keyword.length;
+          textarea.setSelectionRange(selectStart, selectEnd);
+          break;
+        }
+      }
+      if(selectEnd != 0){
+        break;
+      }
+    } 
+  
+    var intermediate = 0;
+  
+    if(selectedText.toString() == ''){ //Lonely caret
+      if(fullText.substring(caretPosition, caretPosition + 1) == '(') {
+        console.log('OPEN P FOUND');
+        //textarea.setSelectionRange(caretPosition, caretPosition + 1);
+        for(let i = caretPosition + 1; i < fullText.length; i++){
+          sub = fullText.substring(i, i + 1);
+          if(sub == ')' && intermediate == 0){
+            textarea.setSelectionRange(i, i + 1);
+            break;
+          }
+          if(sub == '('){
+            intermediate++;
+          }
+          if(sub == ')'){
+            intermediate--;
+          }
+        }
+      }
+    }
+  
+    if(selectedText.toString() == ''){ //Lonely caret
+      if(fullText.substring(caretPosition, caretPosition + 1) == ')') {
+        console.log('CLOSED P FOUND');
+        //textarea.setSelectionRange(caretPosition, caretPosition + 1);
+        for(let i = caretPosition - 1; i >= 0; i--){
+          sub = fullText.substring(i, i + 1);
+          if(sub == '(' && intermediate == 0){
+            textarea.setSelectionRange(i, i + 1);
+            break;
+          }
+          if(sub == ')'){
+            intermediate++;
+          }
+          if(sub == '('){
+            intermediate--;
+          }
+        }
+      }
+    }
+  
+    const openParenthesesPositions = []; //d
+    const closedParenthesesPositions = []; //d
+    var numOpenParentheses = 0; //d
+    var numClosedParentheses = 0; //d
+    
+    for(let i = 0; i < fullText.length; i++){ //d
+      if(fullText.charAt(i) == '('){ //d
+        numOpenParentheses++; //d
+        openParenthesesPositions.push(i); //d
+  
+      } //d
+      if(fullText.charAt(i) == ')'){ //d
+        numClosedParentheses++; //d
+        closedParenthesesPositions.push(i); //d
+      } //d
+    } //d
+    if(selectedText == ('(')){ //d
+      console.log('OPEN PARENTHESIS SELECTED'); //d
+    } //d
+    if(selectedText == (')')){ //d
+      console.log('CLOSED PARENTHESIS SELECTED'); //d
+    } //d
+  
+    console.log('Full text:     ' + fullText); //d
+    console.log('Select text:   ' + selectedText); //d
+    console.log('Selection pos: ' + caretPosition); //d
+    console.log('#Open Ps:      ' + numOpenParentheses); //d
+    console.log('#ClosedPs:     ' + numClosedParentheses); //d
+    console.log('OpenParPos:    ' + openParenthesesPositions.toString()); //d
+    console.log('ClosedParPos:  ' + closedParenthesesPositions.toString()); //d
+    console.log('\n'); //d
+  } //d
  
   return (
     <MainLayout>
@@ -467,11 +566,12 @@ const EquationalReasoningRacket = () => {
                       {
                         index > 0 &&
                           <Form.Control
-                            id='left-racket'
+                            id='lr'
                             className={'left-racket-' + index}
                             type='text'
                             placeholder='Racket for LHS'
                             value={racket.proofLineRacket}
+                            onSelect={element => highlightSelection(element)}
                             onChange={element => handleProofLineListChange(index, element, leftHandSideProofLineList)}
                             //readOnly
                           />
