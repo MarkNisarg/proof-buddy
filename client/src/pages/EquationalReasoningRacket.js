@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import MainLayout from '../layouts/MainLayout';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
+import OffCanvas from 'react-bootstrap/Offcanvas'
+import Table from 'react-bootstrap/Table'
 import FormLabel from 'react-bootstrap/esm/FormLabel';
 import Button from 'react-bootstrap/esm/Button';
 import Dropdown from 'react-bootstrap/Dropdown';
@@ -10,12 +12,15 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import { Link } from 'react-router-dom';
 import racketGeneration from '../services/erService';
+import ruleSet from '../components/RuleSet';
 import logger from '../utils/logger'
 import '../scss/_equational-reasoning.scss'
 
 const EquationalReasoningRacket = () => {
 
   const [isLeftHandActive, setIsLeftHandActive] = useState(true);
+  
+  const [isOffcanvasActive, setIsOffcanvasActive] = useState(false);
 
   const [proofName, setProofName] = useState('');
 
@@ -29,8 +34,10 @@ const EquationalReasoningRacket = () => {
 
   const [leftHandSideProofLineList, setLeftHandSideProofLineList] = useState([{ proofLineRacket: '', proofLineRule: '' }]);
 
-  const[rightHandSideProofLineList, setRightHandSideProofLineList] = useState([{ proofLineRacket: '', proofLineRule: '' }]);
-  
+  const [rightHandSideProofLineList, setRightHandSideProofLineList] = useState([{ proofLineRacket: '', proofLineRule: '' }]);
+
+  const ruleList = ruleSet();
+
   const gradient = {
     orange_gradient: 'linear-gradient(135deg, #ffc600 0, #ff8f1c 100%)',
     orange_gradient_reverse: 'linear-gradient(135deg, #ff8f1c 0, #ffc600 100%)'
@@ -42,6 +49,14 @@ const EquationalReasoningRacket = () => {
     drexel_light_blue: '#6CACE4',
     plain_white: '#FFFFFF'
 
+  }
+
+  const enableOffcanvas = () => {
+    setIsOffcanvasActive(true);
+  }
+
+  const disableOffcanvas = () => {
+    setIsOffcanvasActive(false);
   }
 
   const handleToggleLAndR = () => { //changes the state of wether left hand side is active or not. If true, then 'Left Hand Side' is active. If Fasle, then 'Rights Hand Side' is active
@@ -60,7 +75,7 @@ const EquationalReasoningRacket = () => {
   const handleProofLineListChange = (index, element, targetList) => {// this function essentially makes sure that any user change to the input fields updates the corresponding ProofList
     let newProofLineList = [...targetList];
 
-    if (element.target.id == 'left-racket' || element.target.id == 'right-racket'){
+    if (element.target.id == 'left-racket' || element.target.id == 'right-racket' || element.target.id == 'lr'){
       newProofLineList[index].proofLineRacket = element.target.value;
       //console.log('Racket: ' + newProofLineList[index].proofLineRacket);
     } else if(element.target.id == 'left-rule' || element.target.id == 'right-rule') {
@@ -221,7 +236,6 @@ const EquationalReasoningRacket = () => {
         }
       }
     }
-
   }
 
   const handlePythonGeneration = async () => {//function wraps the logic for communicating 'Client's' 'Rule' to python-server for 'Racket' code generation
@@ -242,18 +256,175 @@ const EquationalReasoningRacket = () => {
 
   const handlePromiseWithPythonServer = async (targetList) => { //sends client 'Rule' to the python-server for 'Racket' code generation
     try {
-      let response = await racketGeneration({ rule: targetList[targetList.length - 1].proofLineRule }); //we await a response from the python-server
-      targetList[targetList.length - 1].proofLineRacket = response.racket;
-      addLine(); //After a succesful response, we add a new line for the client to add more 'Rules' for 'Racket' code generation
+      if(!targetList[targetList.length - 1].proofLineRule) {
+        alert(new Error('ProofBuddy cannot generate Racket Code from an empty Rule field. Please fill in valid rule.'));
+      } else {
+        let response = await racketGeneration({ rule: targetList[targetList.length - 1].proofLineRule }); //we await a response from the python-server
+        targetList[targetList.length - 1].proofLineRacket = response.racket;
+        addLine(); //After a succesful response, we add a new line for the client to add more 'Rules' for 'Racket' code generation
+      }  
     } catch (error) {
-      logger.error('Error in front-end client and python-server communication when retrieving racket code from user generation', error);
+      alert('Error in front-end client and python-server communication. ' + error);
+      logger.error('Error in front-end client and python-server communication. ', error);
     }
     
   }
+
+  const highlightSelection = (element) => {
+
+    const textarea = document.getElementById('lr');
+    var fullText = textarea.value;
+    var selectedText = (textarea.value).substring(textarea.selectionStart, textarea.selectionEnd);
+    var caretPosition = textarea.selectionStart;
+
+    const keywords = ['length', 'rest', 'append', 'null?', 'null', 'if', 'first']; //d
+  
+    var keyword = '';
+    var sub = '';
+    var selectStart = 0;
+    var selectEnd = 0;
+  
+    for(let i = 0; i < keywords.length; i++){
+      keyword = keywords[i];
+      for(let j = 0; j < fullText.length - (keyword.length - 1); j++){
+        sub = fullText.substring(j, j + keyword.length);
+        if(sub == keyword && j <= caretPosition && caretPosition <= j + keyword.length - 1){
+          selectStart = j;
+          selectEnd = j + keyword.length;
+          textarea.setSelectionRange(selectStart, selectEnd);
+          break;
+        }
+      }
+      if(selectEnd != 0){
+        break;
+      }
+    } 
+  
+    var intermediate = 0;
+  
+    if(selectedText.toString() == ''){ //Lonely caret
+      if(fullText.substring(caretPosition, caretPosition + 1) == '(') {
+        console.log('OPEN P FOUND');
+        //textarea.setSelectionRange(caretPosition, caretPosition + 1);
+        for(let i = caretPosition + 1; i < fullText.length; i++){
+          sub = fullText.substring(i, i + 1);
+          if(sub == ')' && intermediate == 0){
+            textarea.setSelectionRange(i, i + 1);
+            break;
+          }
+          if(sub == '('){
+            intermediate++;
+          }
+          if(sub == ')'){
+            intermediate--;
+          }
+        }
+      }
+    }
+  
+    if(selectedText.toString() == ''){ //Lonely caret
+      if(fullText.substring(caretPosition, caretPosition + 1) == ')') {
+        console.log('CLOSED P FOUND');
+        //textarea.setSelectionRange(caretPosition, caretPosition + 1);
+        for(let i = caretPosition - 1; i >= 0; i--){
+          sub = fullText.substring(i, i + 1);
+          if(sub == '(' && intermediate == 0){
+            textarea.setSelectionRange(i, i + 1);
+            break;
+          }
+          if(sub == ')'){
+            intermediate++;
+          }
+          if(sub == '('){
+            intermediate--;
+          }
+        }
+      }
+    }
+  
+    const openParenthesesPositions = []; //d
+    const closedParenthesesPositions = []; //d
+    var numOpenParentheses = 0; //d
+    var numClosedParentheses = 0; //d
     
+    for(let i = 0; i < fullText.length; i++){ //d
+      if(fullText.charAt(i) == '('){ //d
+        numOpenParentheses++; //d
+        openParenthesesPositions.push(i); //d
+  
+      } //d
+      if(fullText.charAt(i) == ')'){ //d
+        numClosedParentheses++; //d
+        closedParenthesesPositions.push(i); //d
+      } //d
+    } //d
+    if(selectedText == ('(')){ //d
+      console.log('OPEN PARENTHESIS SELECTED'); //d
+    } //d
+    if(selectedText == (')')){ //d
+      console.log('CLOSED PARENTHESIS SELECTED'); //d
+    } //d
+  
+    console.log('Full text:     ' + fullText); //d
+    console.log('Select text:   ' + selectedText); //d
+    console.log('Selection pos: ' + caretPosition); //d
+    console.log('#Open Ps:      ' + numOpenParentheses); //d
+    console.log('#ClosedPs:     ' + numClosedParentheses); //d
+    console.log('OpenParPos:    ' + openParenthesesPositions.toString()); //d
+    console.log('ClosedParPos:  ' + closedParenthesesPositions.toString()); //d
+    console.log('\n'); //d
+  } //d
+ 
   return (
     <MainLayout>
       <Container fluid style={{ paddingLeft: 10 }} className='equational-reasoning-racket-container'>
+        
+        <OffCanvas id='rule-set' show={isOffcanvasActive} onHide={disableOffcanvas} scroll='true' placement='bottom'>
+          <OffCanvas.Body>
+
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>
+                    To/From
+                  </th>
+                  <th>
+                    From/To
+                  </th>
+                  <th>
+                    Name
+                  </th>
+                  <th>
+                    Tag
+                  </th>
+                </tr> 
+              </thead>
+              <tbody>
+                {
+                  ruleList.map((rule, index) => (
+                    <tr key={index}>
+                      <td>
+                        { rule.toFrom }
+                      </td>
+                      <td>
+                        { rule.fromTo }
+                      </td>
+                      <td>
+                        { rule.name }
+                      </td>
+                      <td>
+                        { rule.tags }
+                      </td>
+                    </tr>
+                  ))
+                }
+              </tbody>
+
+            </Table>
+            
+          </OffCanvas.Body>
+        </OffCanvas>
+
         <Form className='special-form' >
           <Form.Group id='er-proof-creation'>
             <Form.Floating>
@@ -274,7 +445,7 @@ const EquationalReasoningRacket = () => {
                     <Button>Definitions</Button>
                   </Col>
                   <Col className='text-center' md={2}>
-                    <Button>View Rule Set</Button>
+                    <Button onClick={enableOffcanvas}>View Rule Set</Button>
                   </Col>
                   <Col className='text-center' md={2}>
                     <Button>Assertions</Button>
@@ -477,11 +648,12 @@ const EquationalReasoningRacket = () => {
                       {
                         index > 0 &&
                           <Form.Control
-                            id='left-racket'
+                            id='lr'
                             className={'left-racket-' + index}
                             type='text'
                             placeholder='Racket for LHS'
                             value={racket.proofLineRacket}
+                            onSelect={element => highlightSelection(element)}
                             onChange={element => handleProofLineListChange(index, element, leftHandSideProofLineList)}
                             //readOnly
                           />

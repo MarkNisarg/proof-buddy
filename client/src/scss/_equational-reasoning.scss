@@ -29,6 +29,19 @@
   text-align: center;
 }
 
+#rule-set {
+  //text-align: center;
+  //color: $color-white;
+  //background-color: $color-drexel-blue;
+  height: 235px;
+  border-top: 20px;
+}
+
+.tr, th {
+  align-content: center;
+  text-align: center;
+}
+
 .title-blue {
   color: $color-drexel-blue;
 }
@@ -92,6 +105,16 @@
           }
         }
       }
+
+      input[id='lr']::selection {
+        background-color: rgb(255, 242, 0);
+      }
+
+      input[id='lr'] {
+        font-family: monospace;
+        caret-color: black;
+      }
+  
   
       label {
         font-size: 18px;

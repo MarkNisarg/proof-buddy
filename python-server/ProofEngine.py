@@ -8,4 +8,4 @@ class ProofEngine():
         self._parser = None
 
     def generateRacketFromRule(self, rule:str):
-        return rule + '-x'
+        return rule
