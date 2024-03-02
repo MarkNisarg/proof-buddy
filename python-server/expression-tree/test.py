@@ -1,6 +1,6 @@
 import Parser, Labeler
 from typeFile import Type
-from Decorator import decorateTree, checkFunctions
+from Decorator import decorateTree, checkFunctions, typeCheck
 
 def printLabeledTree(tree):
     retStr = f'Data: {tree.data}, Type: {tree.type}\n'
@@ -91,5 +91,14 @@ print(test)
 print(labeledTree)
 print(errLog)
 
+
+
 for x in Type:
     print(x.value)   
+
+for i in test_strings_typeGood:
+    exprList,errLog = Parser.preProcess(i,errLog=[],debug=debugStatus)
+    exprTree = Parser.buildTree(exprList,debug=debugStatus)[0] # might not need to pass errLog
+    labeledTree = Labeler.labelTree(exprTree)
+    print(i)
+    print(typeCheck(labeledTree, errLog))

@@ -79,3 +79,109 @@ check types of those inputs
 
 '''
 
+env={} #env dictionary to keep track of params, having it out here so it stays across iterations temporarily
+
+
+###TODO: Recurse if an argument is a list to check the list's output type - check operator found in list, and run typeCheck on the list itself
+### to see if the operation is valid too
+###TODO: make this more readable
+def typeCheck(inputTree:Node, errLog, debug=False) -> str:  
+    if inputTree.type == Type.LIST:
+        operator = inputTree.children[0]
+        if operator.type == Type.FUNCTION:
+
+            #Math cases
+            if operator.data in ['+','-','*',"=","<=",">=","<",">"]:
+                if len(inputTree.children) != 3:
+                    return f"arithmetic takes 2 arguments, but {len(inputTree.children)-1} were provided"
+                
+                #First argument
+                if inputTree.children[1].type != Type.INT:
+                    if inputTree.children[1].type == Type.PARAM:
+                        if inputTree.children[1].data in env:
+                            if env[inputTree.children[1].data] != Type.INT: #If param is in env but param type is incorrect:
+                                return f"arithmetic should have argument 2 as int, but {str(env[inputTree.children[1].data])} was provided."
+                        else:
+                            env[inputTree.children[1].data] = Type.INT #If param not in env, add to env and designate as int
+                            if debug: 
+                                print(env)
+                    else:
+                        return f"arithmetic should have argument 2 as int, but {inputTree.children[1].type} was provided."
+                    
+                #Second argument
+                if inputTree.children[2].type != Type.INT:
+                    if inputTree.children[2].type == Type.PARAM:
+                        if inputTree.children[2].data in env:
+                            if env[inputTree.children[2].data] != Type.INT: #If param is in env but param type is incorrect:
+                                return f"arithmetic should have argument 3 as int, but {env[inputTree.children[2].data]} was provided."
+                        else:
+                            env[inputTree.children[2].data] = Type.INT #If param not in env, add to env and designate as int
+                            if debug:
+                                print(env)
+                    else:
+                        return f"arithmetic should have argument 3 as int, but {inputTree.children[2].type} was provided."
+
+            #If cases        
+            if operator.data == 'if':
+                if len(inputTree.children) != 4:
+                    return f"if takes 3 arguments, but {len(inputTree.children)-1} were provided"
+                
+                #First argument
+                if inputTree.children[1].type != Type.BOOL:
+                    if inputTree.children[1].type == Type.PARAM:
+                        if inputTree.children[1].data in env:
+                            if env[inputTree.children[1].data] != Type.BOOL: #If param is in env but param type is incorrect:
+                                return f"if should have argument 2 as bool, but {env[inputTree.children[1].data]} was provided."
+                        else:
+                            env[inputTree.children[1].data] = Type.BOOL #If param not in env, add to env and designate as int
+                            if debug:
+                                print(env)
+                    elif inputTree.children[1].type == Type.LIST:
+                        #recursive check output type of list
+                        pass
+                    else:
+                        return f"if should have argument 2 as bool, but {env[inputTree.children[1].data]} was provided."
+                
+                #Second and third arguments    
+                if inputTree.children[2].type != inputTree.children[3].type:
+                         return f"if should have arguments 2 and 3 same type, but arg 2 is {inputTree.children[2].type} and arg 3 is {inputTree.children[3].type}."
+
+            #Cons cases        
+            if operator.data == 'cons':
+                if len(inputTree.children) != 3:
+                    return f"cons takes 2 arguments, but {len(inputTree.children)-1} were provided"
+                if inputTree.children[1].type == Type.PARAM and inputTree.children[1].data not in env:
+                    env[inputTree.children[1].data] = Type.ANY #add param to env
+                elif inputTree.children[2].type != Type.LIST:
+                    return f"cons should have argument 2 as list, but {inputTree.children[2].type} was provided" #not complete, handle quote 
+        
+            #Not cases
+            if operator.data == 'not':
+                if len(inputTree.children) != 2:
+                    return f"not takes 1 argument, but {len(inputTree.children)-1} were provided"
+                if inputTree.children[1].type != Type.BOOL:
+                    if inputTree.children[1].type == Type.PARAM:
+                        if inputTree.children[1].data in env:
+                            if env[inputTree.children[1].data] != Type.BOOL: #If param is in env but param type is incorrect:
+                                return f"not should have argument 1 as bool, but {env[inputTree.children[1].data]} was provided."
+                        else:
+                            env[inputTree.children[1].data] = Type.BOOL #If param not in env, add to env and designate as int
+                            if debug:
+                                print(env)
+            
+            #First cases        
+            if operator.data == 'first':
+                if len(inputTree.children) != 2:
+                    return f"first takes 1 argument, but {len(inputTree.children)-1} were provided"
+                if inputTree.children[1].type != Type.LIST:
+                    return f"first should have argument 1 as list, but {inputTree.children[1].type} was provided" 
+                
+            #Rest cases        
+            if operator.data == 'rest':
+                if len(inputTree.children) != 2:
+                    return f"rest takes 1 argument, but {len(inputTree.children)-1} were provided"
+                if inputTree.children[1].type != Type.LIST:
+                    return f"rest should have argument 1 as list, but {inputTree.children[1].type} was provided" 
+                
+
+            
