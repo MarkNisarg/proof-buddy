@@ -96,9 +96,18 @@ print(errLog)
 for x in Type:
     print(x.value)   
 
+print("Good typecheck")
 for i in test_strings_typeGood:
     exprList,errLog = Parser.preProcess(i,errLog=[],debug=debugStatus)
     exprTree = Parser.buildTree(exprList,debug=debugStatus)[0] # might not need to pass errLog
     labeledTree = Labeler.labelTree(exprTree)
     print(i)
-    print(typeCheck(labeledTree, errLog))
+    print(typeCheck(labeledTree, True))
+
+print("Bad typecheck")
+for i in test_strings_typeBad:
+    exprList,errLog = Parser.preProcess(i,errLog=[],debug=debugStatus)
+    exprTree = Parser.buildTree(exprList,debug=debugStatus)[0] # might not need to pass errLog
+    labeledTree = Labeler.labelTree(exprTree)
+    print(i)
+    print(typeCheck(labeledTree, True))

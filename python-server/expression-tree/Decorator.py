@@ -54,8 +54,11 @@ def checkFunctions(inputTree:Node, errLog, debug=False) -> Tuple[Node,List[str]]
         
         if errMsg:
             errLog.append(errMsg)
-
-        # TODO: add call to typeCheck
+        
+        errMsg = typeCheck(inputTree)
+        
+        if errMsg:
+            errLog.append(errMsg)
         
     for child in inputTree.children:
         checkFunctions(child, errLog, debug)
@@ -85,7 +88,7 @@ env={} #env dictionary to keep track of params, having it out here so it stays a
 ###TODO: Recurse if an argument is a list to check the list's output type - check operator found in list, and run typeCheck on the list itself
 ### to see if the operation is valid too
 ###TODO: make this more readable
-def typeCheck(inputTree:Node, errLog, debug=False) -> str:  
+def typeCheck(inputTree:Node, debug=False) -> str:  
     if inputTree.type == Type.LIST:
         operator = inputTree.children[0]
         if operator.type == Type.FUNCTION:
@@ -168,6 +171,8 @@ def typeCheck(inputTree:Node, errLog, debug=False) -> str:
                             env[inputTree.children[1].data] = Type.BOOL #If param not in env, add to env and designate as int
                             if debug:
                                 print(env)
+                    else:
+                        return f"not should have argument 1 as bool, but {env[inputTree.children[1].data]} was provided."
             
             #First cases        
             if operator.data == 'first':
@@ -182,6 +187,33 @@ def typeCheck(inputTree:Node, errLog, debug=False) -> str:
                     return f"rest takes 1 argument, but {len(inputTree.children)-1} were provided"
                 if inputTree.children[1].type != Type.LIST:
                     return f"rest should have argument 1 as list, but {inputTree.children[1].type} was provided" 
+            
+            ##Or cases
+            if operator.data == 'or':
+                if len(inputTree.children) != 3:
+                    return f"or takes 2 arguments, but {len(inputTree.children)-1} were provided"
+                if inputTree.children[1].type != Type.BOOL:
+                    if inputTree.children[1].type == Type.PARAM:
+                        if inputTree.children[1].data in env:
+                            if env[inputTree.children[1].data] != Type.BOOL: #If param is in env but param type is incorrect:
+                                return f"or should have argument 1 as bool, but {env[inputTree.children[1].data]} was provided."
+                        else:
+                            env[inputTree.children[1].data] = Type.BOOL #If param not in env, add to env and designate as int
+                            if debug:
+                                print(env)
+                    else:
+                        return f"or should have argument 1 as bool, but {inputTree.children[1].type} was provided."
+                if inputTree.children[2].type != Type.BOOL:
+                    if inputTree.children[2].type == Type.PARAM:
+                        if inputTree.children[2].data in env:
+                            if env[inputTree.children[2].data] != Type.BOOL: #If param is in env but param type is incorrect:
+                                return f"or should have argument 2 as bool, but {env[inputTree.children[1].data]} was provided."
+                        else:
+                            env[inputTree.children[2].data] = Type.BOOL #If param not in env, add to env and designate as int
+                            if debug:
+                                print(env)
+                    else:
+                        return f"or should have argument 2 as bool, but {inputTree.children[1].type} was provided."
                 
 
             
