@@ -96,18 +96,11 @@ print(errLog)
 for x in Type:
     print(x.value)   
 
-print("Good typecheck")
-for i in test_strings_typeGood:
+for i in test_strings_typeGood + test_strings_typeBad:
     exprList,errLog = Parser.preProcess(i,errLog=[],debug=debugStatus)
     exprTree = Parser.buildTree(exprList,debug=debugStatus)[0] # might not need to pass errLog
     labeledTree = Labeler.labelTree(exprTree)
-    print(i)
-    print(typeCheck(labeledTree, True))
+    decTree, errLog = decorateTree(labeledTree,errLog)
+    decTree, errLog = checkFunctions(labeledTree,errLog)
+    print(errLog)
 
-print("Bad typecheck")
-for i in test_strings_typeBad:
-    exprList,errLog = Parser.preProcess(i,errLog=[],debug=debugStatus)
-    exprTree = Parser.buildTree(exprList,debug=debugStatus)[0] # might not need to pass errLog
-    labeledTree = Labeler.labelTree(exprTree)
-    print(i)
-    print(typeCheck(labeledTree, True))
