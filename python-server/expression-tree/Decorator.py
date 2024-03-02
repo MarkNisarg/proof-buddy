@@ -75,7 +75,7 @@ check number of inputs vs what's allowable.
 (+ 4 5 6) should produce an error msg (i.e. appended to errLog) "+ only takes 2 arguments, but 3 were provided"
 
 check types of those inputs
-(+ 3 #f) should produce an error msgs "+ should have argument #3 as an int but a bool was provided"
+(+ 3 #f) should produce an error msgs "+ should have argument #2 as an int but a bool was provided"
 
 '''
 

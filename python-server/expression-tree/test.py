@@ -38,6 +38,31 @@ test_strings_err = [
     '(#t))',
     '($))' #testing having two errors in one (bad char and paren mismatch)
 ]
+test_strings_typeGood=[ #all these should pass with no errors
+    "(cons 3 '(+ 4 5))", # would eval to '(3 + 4 5)
+    "(+ (+ 1 2) (if (= 3 3) 4 5))", # would eval to 7
+    "(if x #t (not x))",  # should contain env of x.type=bool
+    "(or (= x 1) y)", # env has x.type=int, y.type=bool
+    "(cons x null)", # env has x.type=any
+    "(> 3 5)", # this would eval to #f, but it's still a valid expr
+    "(first null)", # this PASSES type checking, but wouldn't eval!
+    "((if #t + *) 3 4)" # evals to 7
+    "(rest (cons 5 null))", # would eval to null
+    "(first (cons 5 null))", # would eval to 5
+]
+
+test_strings_typeBad=[ #these should all pass labeling and decorating,but fail the final function checks
+    "(+)", # "+ requires 2 arguments, but 0 were given"
+    "(+ 3)", # "+ requires 2 arguments, but 1 was given"
+    "(+ 4 5 6)", # "+ requires 2 arguments, but 3 were given"
+    "(if x 3 x)", # "x cannot be type bool and type int"
+    "(if #t 3 #t)", # "2nd and 3rd if arguments should be the same type, but argument#2 is int and argument#3 is bool". note: okay in real racket
+    "(cons 3 (+ 4 5))", #cons must have argument#2 LIST but an INT was provided"
+    "(+ 3 #t)", # + must have argument#2 int, but a bool was provided
+    "(+ 3 (not x))", # + must have argument#2 int, but a bool was provided (env: x=bool)
+    "(or #t 3)", # or must have argument#2 bool, but an int was provided
+    "(or #t (+ 1 x))", # or must have argument#2 bool, but an int was provided (env: x=int)
+]
 
 for test in test_strings_ok+test_strings_err:
     print(f"input = {test}")
@@ -67,5 +92,4 @@ print(labeledTree)
 print(errLog)
 
 for x in Type:
-    print(x.value)
-    
+    print(x.value)   
