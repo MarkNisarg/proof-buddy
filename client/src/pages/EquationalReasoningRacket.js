@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+//import { useAddLine } from '../hooks/useAddLine';
+import { useOffcanvas } from '../hooks/useOffcanvas';
 import MainLayout from '../layouts/MainLayout';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
@@ -32,9 +34,9 @@ const EquationalReasoningRacket = () => {
 
   const [currentRHS, setCurrentRHS] = useState('');
 
-  const [leftHandSideProofLineList, setLeftHandSideProofLineList] = useState([{ proofLineRacket: '', proofLineRule: '' }]);
+  const [leftHandSideProofLineList, setLeftHandSideProofLineList] = useState([{ proofLineRacket: '', proofLineRule: '' }]); // do we need a hook?
 
-  const [rightHandSideProofLineList, setRightHandSideProofLineList] = useState([{ proofLineRacket: '', proofLineRule: '' }]);
+  const [rightHandSideProofLineList, setRightHandSideProofLineList] = useState([{ proofLineRacket: '', proofLineRule: '' }]); // do we need a hook?
 
   const ruleList = ruleSet();
 
@@ -262,6 +264,7 @@ const EquationalReasoningRacket = () => {
         let response = await racketGeneration({ rule: targetList[targetList.length - 1].proofLineRule }); //we await a response from the python-server
         targetList[targetList.length - 1].proofLineRacket = response.racket;
         addLine(); //After a succesful response, we add a new line for the client to add more 'Rules' for 'Racket' code generation
+
       }  
     } catch (error) {
       alert('Error in front-end client and python-server communication. ' + error);
@@ -342,38 +345,40 @@ const EquationalReasoningRacket = () => {
       }
     }
   
-    const openParenthesesPositions = []; //d
-    const closedParenthesesPositions = []; //d
-    var numOpenParentheses = 0; //d
-    var numClosedParentheses = 0; //d
+    const openParenthesesPositions = []; 
+    const closedParenthesesPositions = []; 
+    var numOpenParentheses = 0; 
+    var numClosedParentheses = 0; 
     
-    for(let i = 0; i < fullText.length; i++){ //d
-      if(fullText.charAt(i) == '('){ //d
-        numOpenParentheses++; //d
-        openParenthesesPositions.push(i); //d
+    for(let i = 0; i < fullText.length; i++){ 
+      if(fullText.charAt(i) == '('){ 
+        numOpenParentheses++; 
+        openParenthesesPositions.push(i); 
   
       } //d
-      if(fullText.charAt(i) == ')'){ //d
-        numClosedParentheses++; //d
-        closedParenthesesPositions.push(i); //d
+      if(fullText.charAt(i) == ')'){ 
+        numClosedParentheses++; 
+        closedParenthesesPositions.push(i); 
       } //d
     } //d
-    if(selectedText == ('(')){ //d
-      console.log('OPEN PARENTHESIS SELECTED'); //d
+    if(selectedText == ('(')){ 
+      console.log('OPEN PARENTHESIS SELECTED'); 
     } //d
-    if(selectedText == (')')){ //d
-      console.log('CLOSED PARENTHESIS SELECTED'); //d
+    if(selectedText == (')')){ 
+      console.log('CLOSED PARENTHESIS SELECTED'); 
     } //d
   
-    console.log('Full text:     ' + fullText); //d
-    console.log('Select text:   ' + selectedText); //d
-    console.log('Selection pos: ' + caretPosition); //d
-    console.log('#Open Ps:      ' + numOpenParentheses); //d
-    console.log('#ClosedPs:     ' + numClosedParentheses); //d
-    console.log('OpenParPos:    ' + openParenthesesPositions.toString()); //d
-    console.log('ClosedParPos:  ' + closedParenthesesPositions.toString()); //d
+    /* For Testing
+    console.log('Full text:     ' + fullText); 
+    console.log('Select text:   ' + selectedText); 
+    console.log('Selection pos: ' + caretPosition); 
+    console.log('#Open Ps:      ' + numOpenParentheses); 
+    console.log('#ClosedPs:     ' + numClosedParentheses); 
+    console.log('OpenParPos:    ' + openParenthesesPositions.toString()); 
+    console.log('ClosedParPos:  ' + closedParenthesesPositions.toString()); 
     console.log('\n'); //d
-  } //d
+    */
+  } 
  
   return (
     <MainLayout>
@@ -655,6 +660,7 @@ const EquationalReasoningRacket = () => {
                             value={racket.proofLineRacket}
                             onSelect={element => highlightSelection(element)}
                             onChange={element => handleProofLineListChange(index, element, leftHandSideProofLineList)}
+                            //onChange={element => handleLeftHandChange(index, element)}
                             //readOnly
                           />
                       }
@@ -677,6 +683,7 @@ const EquationalReasoningRacket = () => {
                           type='text'
                           placeholder='Enter Rule for LHS'
                           onChange={element => handleProofLineListChange(index, element, leftHandSideProofLineList)}
+                          //onChange={element => handleLeftSideChange(element, index)}
                         />
                       }
                     </Col>
