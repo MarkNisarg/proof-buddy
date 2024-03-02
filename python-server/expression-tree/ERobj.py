@@ -33,8 +33,8 @@ def ERcopy(orig:ERobj)->ERobj:
 
 plist = ERobj("(", Type.LIST)
 pcons = ERobj("cons", Type.FUNCTION, (Type.ANY,Type.LIST),Type.LIST,None,2)
-prest = ERobj("rest", Type.FUNCTION, (Type.LIST),Type.LIST,None,1)
-pfirst = ERobj("first", Type.FUNCTION, (Type.LIST),Type.ANY,None,1)
+prest = ERobj("rest", Type.FUNCTION, (Type.LIST,),Type.LIST,None,1)
+pfirst = ERobj("first", Type.FUNCTION, (Type.LIST,),Type.ANY,None,1)
 padd = ERobj("+", Type.FUNCTION, (Type.INT,Type.INT),Type.INT,lambda x,y: x+y,2)
 psubtr = ERobj("-", Type.FUNCTION, (Type.INT,Type.INT),Type.INT,lambda x,y: x-y,2)
 pmult = ERobj("*", Type.FUNCTION, (Type.INT,Type.INT),Type.INT,lambda x,y: x*y,2)

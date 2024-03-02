@@ -42,7 +42,7 @@ def argQty(treeNode:Node) -> str:
     if expectedCount != providedCount:
         return f"{func.name} only takes {expectedCount} arguments, but {providedCount} {'was' if providedCount==1 else 'were'} provided"
     
-    return None
+    return typeCheck(treeNode) # only typeCheck if everything passes
 
 
 def checkFunctions(inputTree:Node, errLog, debug=False) -> Tuple[Node,List[str]]:
@@ -55,12 +55,6 @@ def checkFunctions(inputTree:Node, errLog, debug=False) -> Tuple[Node,List[str]]
         if errMsg:
             errLog.append(errMsg)
 
-    if len(inputTree.children) > 0:    
-        errMsg = typeCheck(inputTree)
-        
-        if errMsg:
-            errLog.append(errMsg)
-        
     for child in inputTree.children:
         checkFunctions(child, errLog, debug)
     return inputTree, errLog
@@ -89,11 +83,11 @@ env={} #env dictionary to keep track of params, having it out here so it stays a
 
 def typeCheck(inputTree:Node, debug=False) -> str:
     func = inputTree.children[0]
-    #erObj = pdict[func.data] # commented for same reason as in argQty()
     expectedIns = func.ins
     providedIns = tuple(child.type for child in inputTree.children[1:])
     if debug:
         print(f"expectedIns {expectedIns} providedIns {providedIns}")
+    
     if len(expectedIns) != len(providedIns):
         return f"{func.name} takes in types {expectedIns}, but provided inputs were {providedIns}"  
     else:
