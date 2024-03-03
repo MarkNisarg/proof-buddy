@@ -45,7 +45,8 @@ const ERRacket = () => {
   };
 
   const { handleSubmit } = useFormSubmit(isFormValid, setValidated, setAllTouched, handleERRacketSubmission);
-
+  
+  /* Present list of Rules for View Rule Set Offcanvas*/
   const ruleList = ruleSet();
 
   return (
