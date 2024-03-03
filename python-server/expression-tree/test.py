@@ -84,9 +84,11 @@ for test in test_strings_ok+test_strings_err + test_strings_typeGood + test_stri
     else:
         print(errLog)
 
-#test = '((if #t + *) 3 4)'
+test = '((if #t + *) 3 4)'
+#test = '(if #t + *)'
 #test='(+ 3 4)'
 #test = '(+ null #f ab#c 345 () 6)'
+print("START " + test)
 exprList,errLog = Parser.preProcess(test,errLog=[],debug=debugStatus)
 exprTree = Parser.buildTree(exprList,debug=debugStatus)[0] # might not need to pass errLog
 labeledTree = Labeler.labelTree(exprTree)
@@ -95,6 +97,18 @@ if not errLog:
     errLog = remTemps(decTree, errLog)
 print(printLabeledTree(decTree))
 print(errLog)
+nt=decTree
+n0 = decTree.children[0]
+def checknode(x):
+    print(f"data={x.data} type={x.type} ins={x.ins} out={x.outtype} num={x.numArgs}")
+print(nt)
+checknode(n0)
+for c in n0.children:
+    checknode(c)
+for d in nt.children[1:]:
+    checknode(d)
+
+
 #decTree, errLog = checkFunctions(labeledTree,errLog)
 '''
 print(isinstance(decTree,Parser.Node))
