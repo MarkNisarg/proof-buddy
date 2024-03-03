@@ -74,20 +74,21 @@ def remTemps(inputTree:Node, errLog, debug=False) -> List[str]:
                 inputTree.children[1].type = Type.BOOL
             if inputTree.children[1].type != Type.BOOL:
                 errLog.append("argument #1 of an if function must be Boolean")
-            typ1, typ2 = inputTree.children[2].type, inputTree.children[3].type
+            n1, n2 = inputTree.children[2], inputTree.children[3]
+            typ1, typ2 = n1.type, n2.type
             if typ1 in flexTypes and typ2 not in flexTypes: #overriding some anys/param/temps
-                copyDeets(inputTree.children[3], inputTree.children[2])
+                copyDeets(n2, n1)
             elif typ1 not in flexTypes and typ2 in flexTypes:
-                copyDeets(inputTree.children[2],inputTree.children[3])
+                copyDeets(n1,n2)
             if  typ1!=typ2:
                 errLog.append(f"final arguments of an if function must match, but {typ1} and {typ2} provided")
             elif typ1==Type.FUNCTION:
-                if typ1.ins != typ2.ins:
+                if n1.ins != n2.ins:
                     errLog.append("function domains must match for both if branches")
-                elif typ1.outtype != typ2.outtype: #note: range err not caught if domains don't match. but ok
+                elif n1.outtype != n2.outtype: #note: range err not caught if domains don't match. but ok
                     errLog.append("function ranges must match for both if branches")
                 else:
-                    copyDeets(typ1, inputTree) #both if branchs are functions with same ins/outs
+                    copyDeets(n1, inputTree) #both if branchs are functions with same ins/outs
             else: #both if branch types are the same, but aren't functions
                 inputTree.type = typ1 #TODO: potential problem if both ANYs. for now, just propogate ANY up.     
     elif operator.type==Type.FUNCTION: # at this point, ifs are taken care of, so after the ( it's either a Temp/Any/Param or non-if function 
