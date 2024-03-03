@@ -52,7 +52,7 @@ const ERRacket = () => {
   return (
     <MainLayout>
       <Container className='er-racket-container'>
-        <OffCanvas id='rule-set' show={isOffcanvasActive} onHide={toggleOffcanvas}  scroll='true' placement='bottom'>
+        <OffCanvas className='OffCanvas' id='rule-set' show={isOffcanvasActive} onHide={toggleOffcanvas}  scroll='true' placement='bottom'>
           <OffCanvas.Body>
             <Table striped bordered hover>
               <thead>
