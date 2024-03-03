@@ -8,12 +8,16 @@ import Row from 'react-bootstrap/Row';
 import Alert from 'react-bootstrap/Alert';
 import MainLayout from '../layouts/MainLayout';
 import validateField from '../utils/eRFormValidationUtils';
+import OffCanvas from 'react-bootstrap/Offcanvas'
+import Table from 'react-bootstrap/Table'
 import { useToggleSide } from '../hooks/useToggleSide';
+import { useOffcanvas } from '../hooks/useOffcanvas';
 import { useInputState } from '../hooks/useInputState';
 import { useFormValidation } from '../hooks/useFormValidation';
 import { useRacketRuleFields } from '../hooks/useRacketRuleFields';
 import { useCurrentRacketValues } from '../hooks/useCurrentRacketValues';
 import { useFormSubmit } from '../hooks/useFormSubmit';
+import ruleSet from '../components/RuleSet';
 import '../scss/_forms.scss';
 import '../scss/_er-racket.scss';
 
@@ -34,6 +38,7 @@ const ERRacket = () => {
   const [validated, setValidated] = useState(false);
   const [racketRuleFields, addFieldWithApiCheck, removeEmptyLines, handleFieldChange, validationErrors, serverError] = useRacketRuleFields();
   const [currentLHS, currentRHS] = useCurrentRacketValues(racketRuleFields);
+  const [isOffcanvasActive, toggleOffcanvas] = useOffcanvas();
 
   const handleERRacketSubmission = async () => {
     alert('We are stilling working on proof submission!');
@@ -41,9 +46,53 @@ const ERRacket = () => {
 
   const { handleSubmit } = useFormSubmit(isFormValid, setValidated, setAllTouched, handleERRacketSubmission);
 
+  const ruleList = ruleSet();
+
   return (
     <MainLayout>
       <Container className='er-racket-container'>
+        <OffCanvas id='rule-set' show={isOffcanvasActive} onHide={toggleOffcanvas}  scroll='true' placement='bottom'>
+          <OffCanvas.Body>
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>
+                    To/From
+                  </th>
+                  <th>
+                    From/To
+                  </th>
+                  <th>
+                    Name
+                  </th>
+                  <th>
+                    Tag
+                  </th>
+                </tr> 
+              </thead>
+              <tbody>
+                {
+                  ruleList.map((rule, index) => (
+                    <tr key={index}>
+                      <td>
+                        { rule.toFrom }
+                      </td>
+                      <td>
+                        { rule.fromTo }
+                      </td>
+                      <td>
+                        { rule.name }
+                      </td>
+                      <td>
+                        { rule.tags }
+                      </td>
+                    </tr>
+                  ))
+                }
+              </tbody>
+            </Table>
+          </OffCanvas.Body>
+        </OffCanvas>
         <Form noValidate validated={validated} className='er-racket-form' onSubmit={handleSubmit}>
           <div className='form-top-section'>
             <Row className='page-header-row'>
@@ -94,7 +143,7 @@ const ERRacket = () => {
                 <Dropdown.Menu>
                   <Dropdown.Item href="#">Assertions</Dropdown.Item>
                   <Dropdown.Item href="#">Definitions</Dropdown.Item>
-                  <Dropdown.Item href="#">View Rule Set</Dropdown.Item>
+                  <Dropdown.Item onClick={toggleOffcanvas} href="#">View Rule Set</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
             </Row>
