@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-//import { useAddLine } from '../hooks/useAddLine';
 import { useOffcanvas } from '../hooks/useOffcanvas';
 import MainLayout from '../layouts/MainLayout';
 import Container from 'react-bootstrap/Container';
@@ -22,8 +21,6 @@ const EquationalReasoningRacket = () => {
 
   const [isLeftHandActive, setIsLeftHandActive] = useState(true);
   
-  const [isOffcanvasActive, setIsOffcanvasActive] = useState(false);
-
   const [proofName, setProofName] = useState('');
 
   const [LHSGoal, setLHSGoal] = useState('');
@@ -37,6 +34,8 @@ const EquationalReasoningRacket = () => {
   const [leftHandSideProofLineList, setLeftHandSideProofLineList] = useState([{ proofLineRacket: '', proofLineRule: '' }]); // do we need a hook?
 
   const [rightHandSideProofLineList, setRightHandSideProofLineList] = useState([{ proofLineRacket: '', proofLineRule: '' }]); // do we need a hook?
+
+  const [isOffcanvasActive, toggleOffcanvas] = useOffcanvas();
 
   const ruleList = ruleSet();
 
@@ -53,6 +52,7 @@ const EquationalReasoningRacket = () => {
 
   }
 
+  /*
   const enableOffcanvas = () => {
     setIsOffcanvasActive(true);
   }
@@ -60,6 +60,7 @@ const EquationalReasoningRacket = () => {
   const disableOffcanvas = () => {
     setIsOffcanvasActive(false);
   }
+  */
 
   const handleToggleLAndR = () => { //changes the state of wether left hand side is active or not. If true, then 'Left Hand Side' is active. If Fasle, then 'Rights Hand Side' is active
     setIsLeftHandActive(!isLeftHandActive);
@@ -384,7 +385,7 @@ const EquationalReasoningRacket = () => {
     <MainLayout>
       <Container fluid style={{ paddingLeft: 10 }} className='equational-reasoning-racket-container'>
         
-        <OffCanvas id='rule-set' show={isOffcanvasActive} onHide={disableOffcanvas} scroll='true' placement='bottom'>
+        <OffCanvas id='rule-set' show={isOffcanvasActive} onHide={toggleOffcanvas}  scroll='true' placement='bottom'>
           <OffCanvas.Body>
 
             <Table striped bordered hover>
@@ -450,7 +451,7 @@ const EquationalReasoningRacket = () => {
                     <Button>Definitions</Button>
                   </Col>
                   <Col className='text-center' md={2}>
-                    <Button onClick={enableOffcanvas}>View Rule Set</Button>
+                    <Button onClick={toggleOffcanvas}>View Rule Set</Button>
                   </Col>
                   <Col className='text-center' md={2}>
                     <Button>Assertions</Button>
