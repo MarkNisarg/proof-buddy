@@ -31,7 +31,7 @@ def ERcopy(orig:ERobj)->ERobj:
 # unwrapped before being passed, and then wrapped up after the return before use.
 # these ERobjects are what will be in the data attribute of the RacTree nodes
 
-plist = ERobj("(", Type.LIST)
+plist = ERobj("'(", Type.LIST) # this is a change to handle how we do quotes
 pcons = ERobj("cons", Type.FUNCTION, (Type.ANY,Type.LIST),Type.LIST,None,2)
 prest = ERobj("rest", Type.FUNCTION, (Type.LIST),Type.LIST,None,1)
 pfirst = ERobj("first", Type.FUNCTION, (Type.LIST),Type.ANY,None,1)
@@ -91,3 +91,5 @@ for x in pcore:
     pdict[x.name]=x
 for x in ptests:
     testDict[x.name]=x
+
+

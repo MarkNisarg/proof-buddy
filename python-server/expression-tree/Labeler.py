@@ -9,7 +9,8 @@ class Label:
 
 literalLibrary = [
     Label(r'(?:^)null(?:$)', Type.LIST),
-    Label(r'^\($', Type.LIST),
+    Label(r'(?:^)\'\((?:$)', Type.LIST),
+    Label(r'^\($', Type.TEMP),
     Label(r'#t|#T', Type.BOOL),
     Label(r'#f|#F', Type.BOOL),
     Label(r'(\d+)', Type.INT),
@@ -19,6 +20,8 @@ literalLibrary = [
 builtInFunctionsList = ['if', 'cons', 'first', 'rest', 'null?', '+', '-', '*', 'quotient', 'remainder','zero?',\
                         "expt","=","<=",">=","<",">","and","or","not","xor","implies","list?","int?"]
 userDefinedFunctionsList = ['fact']
+UDFdict = {"fact": {"type":Type.FUNCTION,"ins":(Type.INT,),"outtype":Type.INT,"numArgs":1}}
+
 
 def labelTree(inputTree:Node):
     # if inputTree is empty, return the empty list

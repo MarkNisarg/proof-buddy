@@ -83,6 +83,7 @@ def preProcess(inputString:str, errLog:List[str]=None, debug=False) -> Tuple[Lis
     #else:  #I don't think this is needed anymore
     #    inputString = re.sub(r'\s+', ' ', inputString).replace("(", " ( ").replace(")", " ) ").split(' ')
     #    inputString = [element for element in inputString if element != ''] 
+    inputString = inputString.replace("' (","'(") #attaches single quote to left paren.
     return inputString.split(),errLog
     
 def findMatchingParenthesis(tokenList, index)->int:

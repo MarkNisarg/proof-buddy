@@ -1,6 +1,6 @@
 import Parser, Labeler
 from typeFile import Type
-from Decorator import decorateTree, checkFunctions, typeCheck
+from Decorator import decorateTree, checkFunctions, typeCheck, remTemps
 
 def printLabeledTree(tree):
     retStr = f'Data: {tree.data}, Type: {tree.type}\n'
@@ -49,6 +49,7 @@ test_strings_typeGood=[ #all these should pass with no errors
     "((if #t + *) 3 4)", # evals to 7
     "(rest (cons 5 null))", # would eval to null
     "(first (cons 5 null))", # would eval to 5
+    "(if (= x +) (x 3 4) 7)" # would eventually eval to 7
 ]
 
 test_strings_typeBad=[ #these should all pass labeling and decorating,but fail the final function checks
@@ -64,36 +65,44 @@ test_strings_typeBad=[ #these should all pass labeling and decorating,but fail t
     "(or #t (+ 1 x))", # or must have argument#2 bool, but an int was provided (env: x=int)
     "((if #t + *) 3 4 5)", # "+/* has 2 arguments but 3 were provided"
     '(+ (+ 3 4 5) #t)', # should give two errors
-    '(+ (+ 3 4 #t) #t)', # should give only two errors and NOT 3 errors
-    '(+ (+ #t 4 #5) #t)', # should give only two errors and NOT 3 errors
+    '(+ (+ 3 4 #t) #t)', # should give only two errors and NOT 3 errors (but 3 is ok)
+    '(+ (+ #t 4 #5) #t)', # should give only two errors and NOT 3 errors (but 3 is ok)
 ]
 
-for test in test_strings_ok+test_strings_err:
+for test in test_strings_ok+test_strings_err + test_strings_typeGood + test_strings_typeBad:
     print(f"input = {test}")
     debugStatus = False
     exprList,errLog = Parser.preProcess(test,errLog=[],debug=debugStatus)
     if not errLog:
         exprTree = Parser.buildTree(exprList, debug=debugStatus)[0]
         labeledTree = Labeler.labelTree(exprTree)
-        treeStr = printLabeledTree(labeledTree)
+        decTree, errLog = decorateTree(labeledTree,errLog)
+        if not errLog:
+            errLog = remTemps(decTree, errLog)
+        treeStr = printLabeledTree(decTree)
         print(treeStr)
     else:
         print(errLog)
 
 #test = '((if #t + *) 3 4)'
 #test='(+ 3 4)'
-test = '(+ null #f ab#c 345 () 6)'
+#test = '(+ null #f ab#c 345 () 6)'
 exprList,errLog = Parser.preProcess(test,errLog=[],debug=debugStatus)
 exprTree = Parser.buildTree(exprList,debug=debugStatus)[0] # might not need to pass errLog
 labeledTree = Labeler.labelTree(exprTree)
 decTree, errLog = decorateTree(labeledTree,errLog)
-decTree, errLog = checkFunctions(labeledTree,errLog)
-
+if not errLog:
+    errLog = remTemps(decTree, errLog)
+print(printLabeledTree(decTree))
+print(errLog)
+#decTree, errLog = checkFunctions(labeledTree,errLog)
+'''
 print(isinstance(decTree,Parser.Node))
 decTree.fullDebug(True)
 print(test)
 print(labeledTree)
 print(errLog)
+'''
 
 ''' this is crashing for now, so commenting out
 for i in test_strings_typeGood + test_strings_typeBad:

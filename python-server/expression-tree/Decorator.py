@@ -4,6 +4,7 @@
 from Parser import *  # brings in Nodes etc
 from ERobj import *   # brings in ERobject whose attributes will be used to decorate the tree
 from typing import Tuple,List # used for hint annotations
+from Labeler import * # needed to handle User Defined Functions
 
 def decorateTree(inputTree:Node, errLog, debug=False) -> Tuple[Node,List[str]]:
     if inputTree==None:
@@ -15,23 +16,104 @@ def decorateTree(inputTree:Node, errLog, debug=False) -> Tuple[Node,List[str]]:
     # populate new Node attributes from the ERobjects
     inputTree.name = inputTree.data # default. will be overriden with more appropriate choices in the conditional below
     if inputTree.type == Type.FUNCTION:
-        erObj = pdict[inputTree.data]
-        inputTree.ins = erObj.ins
-        inputTree.outtype = erObj.outtype
-        inputTree.numArgs = erObj.numArgs
+        if inputTree.data in builtInFunctionsList:
+            erObj = pdict[inputTree.data]
+            inputTree.ins = erObj.ins
+            inputTree.outtype = erObj.outtype
+            inputTree.numArgs = erObj.numArgs
+        if inputTree.data in userDefinedFunctionsList:
+            inputTree.ins = UDFdict[inputTree.data]["ins"]
+            inputTree.outtype = UDFdict[inputTree.data]["outtype"]
+            inputTree.numArgs = UDFdict[inputTree.data]["numArgs"]           
     elif inputTree.type == Type.LIST:
         erObj = pdict[inputTree.data]
         inputTree.length=erObj.length
     elif inputTree.type == Type.INT:
         inputTree.name = int(inputTree.data)
     elif inputTree.type == Type.BOOL:
-        erObj = pdict[inputTree.data]
+        erObj = pdict[inputTree.data.lower()]
         inputTree.name = erObj.value
 
     for c in inputTree.children:
         decorateTree(c, errLog,debug)        
     return inputTree, errLog
 
+# TODO: write a function to scan for nested quotes and return err
+
+#utility function which moves important details from one node to another when getting rid of TEMP types
+def copyDeets(fromNode:Node, toNode:Node): #note that the .data is NOT copied, e.g. it can stay "("
+    toNode.type = fromNode.type
+    if fromNode.type == Type.FUNCTION:
+        toNode.type == Type.FUNCTION
+        toNode.ins = fromNode.ins
+        toNode.outtype = fromNode.outtype
+        toNode.numArgs = fromNode.numArgs #note we cannot pass name/value e.g. (if x + *)
+
+#this function gets rid of all temps and checks if types. internally changes tree and updated errLog
+def remTemps(inputTree:Node, errLog, debug=False) -> List[str]:
+    flexTypes = [Type.TEMP, Type.ANY, Type.PARAM] #remember, Any/Temps/vars could be functions
+    potentialFunctions = [Type.FUNCTION]+flexTypes 
+    if inputTree == None or inputTree.type!=Type.TEMP:
+        return errLog #it's either a quoted list or not a list, so nothing to check
+    #from this point on, we know the subexpression starts with an unquoted list (
+    if inputTree.children==[]:
+        errLog.append('cannot evaluate an empty list; perhaps "null" was intended')
+        return errLog # can return now and skip recursion since no children
+    operator = inputTree.children[0]
+    if operator.type not in potentialFunctions: 
+        errLog.append(f"{operator.data} is not a function that can be evaluted")
+    if operator.data=="if": #setting special check for 2nd/3rd args same and changing the if-outtype
+        #checking qty
+        amt = len(inputTree.children)-1
+        if amt!=3:
+            errLog.append(f"the if function requires 3 arguments but {amt} were provided")
+        else: #need to recurse on the rest to get their types
+            for c in inputTree.children[1:]: #skipping the "if"
+                errLog = remTemps(c,errLog) #accumulating any errs found from inside the if
+            if inputTree.children[1].type in flexTypes: #force bool type if optional
+                inputTree.children[1].type = Type.BOOL
+            if inputTree.children[1].type != Type.BOOL:
+                errLog.append("argument #1 of an if function must be Boolean")
+            typ1, typ2 = inputTree.children[2].type, inputTree.children[3].type
+            if typ1 in flexTypes and typ2 not in flexTypes: #overriding some anys/param/temps
+                copyDeets(inputTree.children[3], inputTree.children[2])
+            elif typ1 not in flexTypes and typ2 in flexTypes:
+                copyDeets(inputTree.children[2],inputTree.children[3])
+            if  typ1!=typ2:
+                errLog.append(f"final arguments of an if function must match, but {typ1} and {typ2} provided")
+            elif typ1==Type.FUNCTION:
+                if typ1.ins != typ2.ins:
+                    errLog.append("function domains must match for both if branches")
+                elif typ1.outtype != typ2.outtype: #note: range err not caught if domains don't match. but ok
+                    errLog.append("function ranges must match for both if branches")
+                else:
+                    copyDeets(typ1, inputTree) #both if branchs are functions with same ins/outs
+            else: #both if branch types are the same, but aren't functions
+                inputTree.type = typ1 #TODO: potential problem if both ANYs. for now, just propogate ANY up.     
+    elif operator.type==Type.FUNCTION: # at this point, ifs are taken care of, so after the ( it's either a Temp/Any/Param or non-if function 
+        if operator.outtype not in potentialFunctions: #NOTE: is an outtype of any/param/temp impossible?
+            inputTree.type = operator.outtype
+        if operator.outtype == Type.FUNCTION: #TODO: the type=Function needs to be bundled with in/out
+        #TODO:  example: ((addn x) y) = (x+y). so addn has type: "FUNC: int-> (int->list)"
+        #TODO: but until we make that change, we will have to approve all higher order Functions as legit
+        # this is a placeholder. really needs to be inputTree.type=Func:(operator.out.in)->(operator.out.out)
+            inputTree.type=Type.FUNCTION
+            inputTree.ins=Type.ANY
+            inputTree.outtype=Type.ANY
+            inputTree.numArgs = None #TODO: this needs to be length(operator.out.in) or look at definition window
+    if inputTree.data !="if": #since already did recursion in the special case, so avoiding repitition
+        for c in inputTree.children[1:]:
+            errLog = remTemps(c,errLog)
+    #last case is where the operater is a temp/any/param, such as (x 3 4) in "(if (x = +) (x 3 4) 7)"
+    if operator.type in potentialFunctions: #only untested case so far
+        operator.type = Type.FUNCTION
+        listIns= []
+        for c in inputTree.children[1:]:
+            listIns.append(c.type)
+        operator.ins = tuple(listIns)
+        operator.numArgs = len(listIns)
+        operator.outtype = Type.ANY # placeholder for autopassing until a better system is developed
+    return errLog     
 
 def argQty(treeNode:Node) -> str:
     func = treeNode.children[0]
