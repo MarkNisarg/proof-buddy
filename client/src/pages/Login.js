@@ -9,7 +9,7 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Alert from 'react-bootstrap/Alert';
 import MainLayout from '../layouts/MainLayout';
-import authService from '../services/AuthService';
+import authService from '../services/authService';
 import validateField from '../utils/formValidationUtils';
 import { useInputState } from '../hooks/useInputState';
 import { usePasswordVisibility } from '../hooks/usePasswordVisibility';

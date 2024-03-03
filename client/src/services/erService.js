@@ -1,20 +1,26 @@
 import axiosInstanceProof from '../utils/axiosInstanceProof';
+import { handleServiceError } from '../utils/serviceErrorHandling';
 
 const API_GATEWAY = '/api/v1/proof'
 
+/**
+ * Generate the racket for the provided rule.
+ *
+ * @param {string} rule - The proof rule.
+ * @returns {Promise<Object>} - The response data from the server.
+ */
 const racketGeneration = async (rule) => {
   try {
-    
     const response = await axiosInstanceProof.post(`${API_GATEWAY}/er-generate`, rule);
-    console.log(response.data.racket);
     return response.data;
   } catch (error) {
-    console.error('Error during generation:', error);
-    if (!error.response) {
-      console.error('Network error or server is down.');
-    }
+    handleServiceError(error, 'Error during racket generation:');
     throw error;
   }
 };
 
-export default racketGeneration;
+const erService = {
+  racketGeneration
+};
+
+export default erService;

@@ -32,9 +32,12 @@ $color-light-gray: #d0d3d4;
 
 /* Layout breakpoints variables */
 $breakpoint-xs: 480px;
+$breakpoint-sm-min: 767px;
 $breakpoint-sm: 768px;
+$breakpoint-md-min: 991px;
 $breakpoint-md: 992px;
 $breakpoint-lg: 1200px;
+$breakpoint-ex-lg: 1400px;
 
 /* Background gradients variables */
 $blue-gradient: linear-gradient(135deg, $color-drexel-blue 0, $color-muted-blue 100%);

@@ -28,7 +28,7 @@ const EquationalReasoningRacket = () => {
   const [leftHandSideProofLineList, setLeftHandSideProofLineList] = useState([{ proofLineRacket: '', proofLineRule: '' }]);
 
   const[rightHandSideProofLineList, setRightHandSideProofLineList] = useState([{ proofLineRacket: '', proofLineRule: '' }]);
-  
+
   const gradient = {
     orange_gradient: 'linear-gradient(135deg, #ffc600 0, #ff8f1c 100%)',
     orange_gradient_reverse: 'linear-gradient(135deg, #ff8f1c 0, #ffc600 100%)'
@@ -100,8 +100,8 @@ const EquationalReasoningRacket = () => {
       setCurrentRHS(rightHandSideProofLineList[rightHandSideProofLineList.length - 1].proofLineRacket);
     }
   }
-  
-  const removeProofLines = () => { //deletes lines from 
+
+  const removeProofLines = () => { //deletes lines from
     if (isLeftHandActive) {
       let target = findFirstBlankLine(leftHandSideProofLineList);
       if (confirm('Do you want to delete line number ' + target + ' and all lines after it')){
@@ -145,7 +145,7 @@ const EquationalReasoningRacket = () => {
   const handlePythonGeneration = async () => {//function wraps the logic for communicating 'Client's' 'Rule' to python-server for 'Racket' code generation
     if (isLeftHandActive) {
       if (leftHandSideProofLineList.length - 1 > 0) {
-        handlePromiseWithPythonServer(leftHandSideProofLineList); 
+        handlePromiseWithPythonServer(leftHandSideProofLineList);
       } else {
         addLine(); //we use else here to add a new line so that we do not communicate null for the first line of the proof
       }
@@ -166,9 +166,9 @@ const EquationalReasoningRacket = () => {
     } catch (error) {
       logger.error('Error in front-end client and python-server communication when retrieving racket code from user generation', error);
     }
-    
+
   }
-    
+
   return (
     <MainLayout>
       <Container fluid style={{ paddingLeft: 10 }} className='equational-reasoning-racket-container'>

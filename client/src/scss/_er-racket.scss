@@ -1,0 +1,253 @@
+@use "./variables" as *;
+
+.er-racket-container {
+  .er-racket-form {
+    margin-bottom: 10px;
+
+    .form-top-section {
+      z-index: 99;
+      background-color: $color-white;
+
+      @media (min-width: $breakpoint-md) {
+        width: 1296px;
+        height: 310px;
+        position: fixed;
+        top: 68px;
+      }
+
+      @media (min-width: $breakpoint-md) {
+        width: 936px;
+      }
+
+      @media (min-width: $breakpoint-lg) {
+        width: 1116px;
+      }
+
+      @media (min-width: $breakpoint-ex-lg) {
+        width: 1296px;
+      }
+
+      .page-header-row {
+        h1 {
+          font-size: 36px;
+          margin: 20px 0;
+          font-weight: $font-bold;
+        }
+      }
+
+      .er-current-state {
+        input {
+          pointer-events: none;
+        }
+
+        .active {
+          input {
+            border-color: $color-light-blue;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+          }
+        }
+      }
+
+      .g-5 {
+        @media (max-width: 576px) {
+          --bs-gutter-x: 1.5rem;
+        }
+
+        .er-proof-goal-lhs {
+          position: relative;
+
+          &::after {
+            content: "\003D";
+            font-size: 38px;
+            font-weight: $font-light;
+            position: absolute;
+            top: 44px;
+            left: 53.5%;
+            transform: translate(-50%, -50%);
+            rotate: -90deg;
+
+            @media (min-width: $breakpoint-sm) {
+              top: 29px;
+              left: 100%;
+              rotate: 0deg;
+            }
+          }
+        }
+
+        .er-proof-goal-rhs {
+          @media (max-width: $breakpoint-sm-min) {
+            margin-top: 2rem;
+          }
+        }
+      }
+
+      .form-separator {
+        z-index: 99;
+
+        &::after {
+          content: "";
+          border-bottom: 2px solid $color-drexel-blue;
+          position: fixed;
+          width: 100%;
+          left: 0;
+        }
+      }
+    }
+
+    .form-bottom-part {
+      margin-top: 20px;
+
+      @media (min-width: $breakpoint-md) {
+        margin-top: 325px;
+      }
+
+      .switch-btn-wrap {
+        text-align: center;
+        margin-bottom: 20px;
+
+        .switch-btn {
+          font-size: 20px;
+          padding: 9px 50px 7px;
+          border-radius: 0;
+          background-image: $blue-gradient;
+          color: $color-white;
+          font-weight: $font-medium;
+          width: 360px;
+          border-color: transparent;
+
+          &:hover {
+            color: $color-drexel-blue;
+            background-image: $orange-gradient;
+          }
+        }
+      }
+    }
+
+    .invalid-tooltip {
+      font-size: 16px;
+      padding: 7px 12px;
+      width: 100%;
+      background-color: var(--bs-form-invalid-color);
+      top: calc(100% + 2px);
+
+      &::after {
+        content: "";
+        position: absolute;
+        bottom: 100%;
+        left: 30px;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: transparent transparent var(--bs-form-invalid-color) transparent;
+      }
+    }
+
+    .proof-dropdown-btn {
+      button {
+        &.dropdown-toggle {
+          font-size: 20px;
+          line-height: 22px;
+          padding: 12px 40px 12px 21px;
+          border-radius: 0;
+          font-weight: $font-semi-bold;
+          background-image: $blue-gradient;
+          border-color: transparent;
+          position: relative;
+
+          &::after {
+            content: "";
+            border: 3px solid $color-white;
+            border-width: 0 0 3px 3px;
+            height: 10px;
+            width: 10px;
+            position: absolute;
+            transform: rotate(-45deg);
+            top: 16px;
+            right: 20px;
+          }
+
+          &.show {
+            &::after {
+              transform: rotate(135deg);
+              top: 21px;
+            }
+          }
+
+          + .dropdown-menu {
+            border: 0;
+            border-radius: 0;
+            background-image: $blue-gradient;
+            margin: 0;
+            padding: 0;
+
+            a {
+              font-size: 20px;
+              color: $color-white;
+              padding: 8px 21px;
+              border-top: 1px solid $color-white;
+              width: 181px;
+              font-weight: $font-medium;
+
+              &:hover,
+              &:focus {
+                color: $color-drexel-blue;
+                background-image: $orange-gradient;
+              }
+            }
+          }
+        }
+      }
+
+      &.proof-utilities {
+        text-align: right;
+        width: 181px;
+
+        button {
+          &.dropdown-toggle {
+            + .dropdown-menu {
+              top: -2px !important;
+            }
+          }
+        }
+      }
+
+      &.proof-operations {
+        text-align: center;
+        width: 193px;
+
+        button {
+          &.dropdown-toggle {
+            + .dropdown-menu {
+              a {
+                width: 193px;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .button-row {
+      .rules-btn-grp {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      button {
+        padding: 8px 12px;
+        font-size: 16px;
+
+        &.delete-btn {
+          color: $color-rich-red;
+          border: 2px solid $color-rich-red;
+
+          &:hover {
+            color: $color-white;
+            background: $color-rich-red;
+            border: 2px solid $color-rich-red;
+          }
+        }
+      }
+    }
+  }
+}
