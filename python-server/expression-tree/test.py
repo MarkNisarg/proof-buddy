@@ -118,12 +118,13 @@ print(labeledTree)
 print(errLog)
 '''
 
-''' this is crashing for now, so commenting out
+
 for i in test_strings_typeGood + test_strings_typeBad:
+    print('input= ',i)
     exprList,errLog = Parser.preProcess(i,errLog=[],debug=debugStatus)
     exprTree = Parser.buildTree(exprList,debug=debugStatus)[0] # might not need to pass errLog
     labeledTree = Labeler.labelTree(exprTree)
     decTree, errLog = decorateTree(labeledTree,errLog)
     decTree, errLog = checkFunctions(labeledTree,errLog)
     print(errLog)
-'''
+

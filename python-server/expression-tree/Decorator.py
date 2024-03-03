@@ -125,7 +125,7 @@ def argQty(treeNode:Node) -> str:
     if expectedCount != providedCount:
         return f"{func.name} only takes {expectedCount} arguments, but {providedCount} {'was' if providedCount==1 else 'were'} provided"
     
-    return None
+    return typeCheck(treeNode) # only typeCheck if everything passes
 
 
 def checkFunctions(inputTree:Node, errLog, debug=False) -> Tuple[Node,List[str]]:
@@ -138,12 +138,6 @@ def checkFunctions(inputTree:Node, errLog, debug=False) -> Tuple[Node,List[str]]
         if errMsg:
             errLog.append(errMsg)
 
-    if len(inputTree.children) > 0:    
-        errMsg = typeCheck(inputTree)
-        
-        if errMsg:
-            errLog.append(errMsg)
-        
     for child in inputTree.children:
         checkFunctions(child, errLog, debug)
     return inputTree, errLog
@@ -172,11 +166,11 @@ env={} #env dictionary to keep track of params, having it out here so it stays a
 
 def typeCheck(inputTree:Node, debug=False) -> str:
     func = inputTree.children[0]
-    #erObj = pdict[func.data] # commented for same reason as in argQty()
     expectedIns = func.ins
     providedIns = tuple(child.type for child in inputTree.children[1:])
     if debug:
         print(f"expectedIns {expectedIns} providedIns {providedIns}")
+    
     if len(expectedIns) != len(providedIns):
         return f"{func.name} takes in types {expectedIns}, but provided inputs were {providedIns}"  
     else:
@@ -186,18 +180,15 @@ def typeCheck(inputTree:Node, debug=False) -> str:
                 childData = inputTree.children[childIndex].data
                 if childData not in env.keys():
                     env[childData] = expectedIns[childIndex-1] # need to subtract 1 to get correct index
-                elif env[childData] != expectedIns[childIndex-1]:
+                elif (env[childData] != expectedIns[childIndex-1]) and expectedIns[childIndex-1] != Type.ANY:
                     return f"{func.name} at argument #{childIndex} takes a parameter '{childData}' expected to be type {expectedIns[childIndex-1]} but {env[childData]} was provided"
             elif childType == Type.LIST:
                 listType = inputTree.children[childIndex].outtype
-                if listType != expectedIns[childIndex-1]:
+                if (listType != expectedIns[childIndex-1]) and expectedIns[childIndex-1] != Type.ANY:
                     return f"{func.name}'s list at argument #{childIndex} expected to output type {expectedIns[childIndex-1]} but {listType} was provided"
-            elif childType != expectedIns[childIndex-1]:
+            elif (childType != expectedIns[childIndex-1]) and expectedIns[childIndex-1] != Type.ANY:
                 return f"{func.name} takes in types {expectedIns}, but provided inputs were {providedIns}"  
     return None
-    ##TODO: Handle recursive case - if list, enter list and check outtype, pass back up to see if matches respective intype
-    ##TODO: if param, check if in env dict - if in env, check if value matches type needed, if not in env add to env and set value to expected type
-    ##else do this
                
 
             
