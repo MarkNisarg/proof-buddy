@@ -21,6 +21,7 @@ import { useHighlight } from '../hooks/useHighlight';
 import ruleSet from '../components/RuleSet';
 import '../scss/_forms.scss';
 import '../scss/_er-racket.scss';
+import { useExportToLocalMachine } from '../hooks/useExportToLocalMachine';
 
 /**
  * ERRacket component facilitates the Equational Reasoning Racket.
@@ -49,7 +50,30 @@ const ERRacket = () => {
 
   const { handleSubmit } = useFormSubmit(isFormValid, setValidated, setAllTouched, handleERRacketSubmission);
   
-  /* Present list of Rules for View Rule Set Offcanvas*/
+  /**
+   * Creates JSON object of the target incoming parameter (which should be a JavaScript Object)
+   */
+  const convertToJSON = (target) => {
+    return JSON.stringify(target);
+  }
+
+  /**
+   * Returns a JSON object of the present form
+   * 
+   */
+  const convertFormToJSON = () => { 
+    // Basic Form Object in JavaScript
+    let EquationalReasoningObject = { 
+      name: formValues.proofName, // Proof Name - E.g., "name":"Test-001"
+      leftRacketsAndRules: racketRuleFields.LHS,  // Array of JavaScript Objects - E.g., "leftRacketsAndRules":[{"racket":"leftracket01","rule":"leftrule01"}]
+      rightRacketsAndRules: racketRuleFields.RHS // Array of JavaScript Objects - E.g., "rightRacketsAndRules":[{"racket":"rightracket01","rule":"rightgoal01"}]}
+    }
+    return convertToJSON(EquationalReasoningObject);
+  }
+
+  const exportJSON = useExportToLocalMachine(formValues.proofName, convertFormToJSON());
+
+  /* Present list of Rules for View Rule Set Offcanvas */
   const ruleList = ruleSet();
 
   return (
@@ -410,7 +434,7 @@ const ERRacket = () => {
                   </Dropdown.Toggle>
 
                   <Dropdown.Menu>
-                    <Dropdown.Item href="#">Download Proof</Dropdown.Item>
+                    <Dropdown.Item onClick={exportJSON}>Download Proof</Dropdown.Item>
                     <Dropdown.Item href="#">Upload Proof</Dropdown.Item>
                     <Dropdown.Item href="#">Save Proof</Dropdown.Item>
                     <Dropdown.Item href="#">Submit Proof</Dropdown.Item>

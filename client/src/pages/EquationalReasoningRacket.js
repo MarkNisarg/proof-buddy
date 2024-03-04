@@ -4,12 +4,15 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import FormLabel from 'react-bootstrap/esm/FormLabel';
 import Button from 'react-bootstrap/esm/Button';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import { Link } from 'react-router-dom';
 import racketGeneration from '../services/erService';
 import logger from '../utils/logger'
 import '../scss/_equational-reasoning.scss'
+import { useExportToLocalMachine } from '../hooks/useExportToLocalMachine';
 
 const EquationalReasoningRacket = () => {
 
@@ -84,11 +87,65 @@ const EquationalReasoningRacket = () => {
     return convertToJSON(EquationalReasoningObject);
   }
 
-  const exportFormToLocalMachine = () => {
-    //Phat, here you should call convertFormToJSON(), and use some kind of functionality to export this to a local machine.
-    let forToExport = convertFormToJSON(); // should return a JSON Object of the form
-    // 1) The first goal is to do this in JSON
-    // 2) The second goal is to do this in Latex
+  /** 
+    * Exports the created JSON Object to the user's local machine as a .json file.
+    * Runs when the User selects the "JSON" option in the download drop-down menu.
+    * - Or will run when the User selects the "Download" option if the drop-down options menu has not yet been implemented.
+    * File will be named after the proof name the user entered, if no name is detected, a default name is assigned.
+   */
+  const exportJSON = useExportToLocalMachine(proofName, convertFormToJSON());
+  
+  /**
+    * Intended to export a LaTeX file to the user's local machine
+    * However, new plans may see this functionality done through the Python Back-End
+    *  and then sent to the Front-End as this seems to be the easier solution --- TBD
+    * For the time being, this is a place holder and just exports a file with the LaTeX extension ('.tex')
+  */
+  const exportTexToLocalMachine = () => {
+    let fileName = proofName;
+    let forToExport = convertFormToJSON(); // Should return a JSON Object of the form
+    // Create the intended file for download in the browser...
+    let blob = new Blob([forToExport], { type: 'text/plain' });
+    let href = URL.createObjectURL(blob);
+    // Creates HTML with the href to a file...
+    let link = document.createElement('a');
+    link.href = href;
+    // Check if user has named their proof, if user has not, will use the default name
+    if(fileName == ''){
+      fileName = 'yourLaTeXFile';
+      link.download = fileName + '.tex';
+      link.click();
+    }
+    else{
+      link.download = fileName + '.tex';
+      link.click();
+    }
+  }
+  
+  /**
+    * Method for the "Other (.txt)" option in the Download Drop-Down Menu
+    * This should take the JSON Object and output it as a .txt file
+    * No particular reason for the .txt output, this was just a random experiment.
+   */
+  const exportTxtToLocalMachine = () => {
+    let fileName = proofName;
+    let forToExport = convertFormToJSON(); // Should return a JSON Object of the form
+    // Create the intended file for download in the browser...
+    let blob = new Blob([forToExport], { type: 'text/plain' });
+    let href = URL.createObjectURL(blob);
+    // Creates HTML with the href to a file...
+    let link = document.createElement('a');
+    link.href = href;
+    // Check if user has named their proof, if user has not, will use the default name
+    if(fileName == ''){
+      fileName = 'yourTextFile';
+      link.download = fileName + '.txt';
+      link.click();
+    }
+    else{
+      link.download = fileName + '.txt';
+      link.click();
+    }
   }
 
   const addLine = () => { //function that simply adds a new line to the list, and updates the react component accordingly
@@ -448,9 +505,11 @@ const EquationalReasoningRacket = () => {
 
           <Row className='text-center'>
             <Col md={{ span: 1, offset: 4 }}>
-              <Button>
-                Download
-              </Button>
+              <DropdownButton id="dropdown-basic-button" title="Download">
+                <Dropdown.Item onClick={exportJSON}>JSON</Dropdown.Item>
+                <Dropdown.Item onClick={exportTexToLocalMachine}>LaTeX</Dropdown.Item>
+                <Dropdown.Item onClick={exportTxtToLocalMachine}>Other (.txt)</Dropdown.Item>
+              </DropdownButton>
             </Col>
             <Col md={1}>
               <Button onClick={handleUploadPoofRequest}>
