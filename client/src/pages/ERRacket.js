@@ -17,6 +17,7 @@ import { useFormValidation } from '../hooks/useFormValidation';
 import { useRacketRuleFields } from '../hooks/useRacketRuleFields';
 import { useCurrentRacketValues } from '../hooks/useCurrentRacketValues';
 import { useFormSubmit } from '../hooks/useFormSubmit';
+import { useHighlight } from '../hooks/useHighlight';
 import ruleSet from '../components/RuleSet';
 import '../scss/_forms.scss';
 import '../scss/_er-racket.scss';
@@ -39,6 +40,8 @@ const ERRacket = () => {
   const [racketRuleFields, addFieldWithApiCheck, removeEmptyLines, handleFieldChange, validationErrors, serverError] = useRacketRuleFields();
   const [currentLHS, currentRHS] = useCurrentRacketValues(racketRuleFields);
   const [isOffcanvasActive, toggleOffcanvas] = useOffcanvas();
+
+  const handleHighlight = useHighlight();
 
   const handleERRacketSubmission = async () => {
     alert('We are stilling working on proof submission!');
@@ -283,6 +286,7 @@ const ERRacket = () => {
                             placeholder="LHS Racket"
                             value={field.racket}
                             onChange={(e) => handleFieldChange(showSide, index, 'racket', e.target.value)}
+                            onSelect={(e) => handleHighlight(e)}
                           />
                           <label htmlFor={`eRProofLHSRacket-${index}`}>LHS Racket</label>
                         </Form.Floating>
