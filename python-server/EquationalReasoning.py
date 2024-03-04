@@ -61,5 +61,5 @@ def create_proofEngine() -> ERProofEngine:
     # rList = ERTypeIdentifier.create_List('List',['any'],None)
     # erTypes = [rNumber,rBool,rError,rList]
 
-    erProofEngine = ERProofEngine(tokenIdentifiers,expressionIdentifiers)
+    erProofEngine = ERProofEngine(tokenIdentifiers,expressionIdentifiers,None,None,None)
     return erProofEngine
