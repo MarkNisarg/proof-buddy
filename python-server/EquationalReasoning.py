@@ -32,17 +32,17 @@ def identity(expr:Expression):
 def create_proofEngine() -> ERProofEngine:
 
     # modified regex patterns to be list of regex patterns
-    tOpenParens = TokenIdentifier('Open_parens',[r'\('],'(')
-    tClosedParens = TokenIdentifier('Closed_parens',[r'\)'],')')
-    tNumber = TokenIdentifier('Number',[r'(\d+)'],r'\g<1>')
-    tTrue = TokenIdentifier('True',[r'#t|#T'],'#t')
-    tFalse = TokenIdentifier('False',[r'#f|#F'],'#f')
-    #tLambda = TokenIdentifier('Lambda',[r'Lambda|λ|#L'],'λ')
+    tOpenParens = TokenIdentifier('Open_parens',r'\(','(')
+    tClosedParens = TokenIdentifier('Closed_parens',r'\)',')')
+    tNumber = TokenIdentifier('Number',r'(\d+)',r'\g<1>')
+    tTrue = TokenIdentifier('True',r'#t|#T','#t')
+    tFalse = TokenIdentifier('False',r'#f|#F','#f')
+    tLambda = TokenIdentifier('Lambda',r'Lambda|λ|#L','λ')
     #tError = TokenIdentifier('Error',r'ERROR|error',r'ERROR')
-    tName = TokenIdentifier('Name',[r'(\w+)'],r'\g<1>')
-    #tPlus = TokenIdentifier('Plus',r'\+',r'\+')
-    #tMinus = TokenIdentifier('Minus',r'\-',r'\-')
-    tokenIdentifiers = [tOpenParens,tClosedParens,tNumber,tTrue,tFalse,tName]
+    tName = TokenIdentifier('Name',r'(\w+\-?\w+\??)',r'\g<1>')
+    tPlus = TokenIdentifier('Plus',r'\+',r'\+')
+    tMinus = TokenIdentifier('Minus',r'\-',r'\-')
+    tokenIdentifiers = [tOpenParens,tClosedParens,tNumber,tTrue,tFalse,tName,tLambda]
 
     # modified structure attribute to be a list of structures to match
     eInt = ExpressionIdentifier('Int',[[tNumber]])

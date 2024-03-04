@@ -55,15 +55,25 @@ test_strings_tfl = [
 ]
 # ER isn't ready yet but should in theory be handled similarly
 test_strings_er = [
-    # '(λ (n) (if (zero? n) 1 (* n (fact (- n 1)))))',
-    '(name)', # << test string only works for a list containing one item, need to add whitespace management and case insensitivity
+    #'(λ (n) (if (zero? n) 1 (* n (fact (- n 1)))))',
+    
+    '(name?)', # << test string only works for a list containing one item, need to add whitespace management and case insensitivity
     '(#t)', # test for booleans
-    '(34)', # test for numbers
-    '()' # test for the empty list
+    '(3 4)', # test for numbers
+    '()', # test for the empty list
+    '(#t #T)',
+    '(#L)'
+    #'(+ 3 4)'
 ]
 for test in test_strings_er:
     print(f"'{test}'")
     test_expr = EREngine.parse_expression(test)
-    print(test_expr)
-    print()
+    print("test_expr: ",test_expr)
+    print("type test_expr:", type(test_expr))
+    print("components: ",test_expr.components)
+    print("type of components[1]:",type(test_expr.components[1]))
+    print("type of comp[1] id:",type(test_expr.components[1].id),"\n")
+    print(test_expr.components[0].id.name)
+    if(test_expr.components[0].id.name=="Open_parens"):
+        print("ye")
 
