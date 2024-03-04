@@ -386,6 +386,7 @@ const ERRacket = () => {
                             placeholder="RHS Racket"
                             value={field.racket}
                             onChange={(e) => handleFieldChange(showSide, index, 'racket', e.target.value)}
+                            onSelect={(e) => handleHighlight(e)}
                           />
                           <label htmlFor={`eRProofRHSRacket-${index}`}>RHS Racket</label>
                         </Form.Floating>
