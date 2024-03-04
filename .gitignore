@@ -128,3 +128,7 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# python cache
+./python-server/__pycache__
+./python-server/tests/__pycache__
