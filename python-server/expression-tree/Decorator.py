@@ -6,33 +6,27 @@ from ERobj import *   # brings in ERobject whose attributes will be used to deco
 from typing import Tuple,List # used for hint annotations
 from Labeler import * # needed to handle User Defined Functions
 
+FLEX_TYPES = [Type.FUNCTION, Type.PARAM, Type.ANY, Type.NONE]
+
 def decorateTree(inputTree:Node, errLog, debug=False) -> Tuple[Node,List[str]]:
     if inputTree==None:
         return inputTree, errLog
-    if inputTree.type == Type.PARAM and not inputTree.data.isalpha():
+    if inputTree.type[1] == Type.PARAM and not inputTree.data.isalpha():
         errLog.append(f"{inputTree.data} contains illegal characters")
-        inputTree.type = Type.ERROR
+        inputTree.type = (None, Type.ERROR)
 
     # populate new Node attributes from the ERobjects
     inputTree.name = inputTree.data # default. will be overriden with more appropriate choices in the conditional below
-    if inputTree.type == Type.FUNCTION:
-        if inputTree.data in builtInFunctionsList:
+    #print(inputTree.type, inputTree.data)
+    if inputTree.type[0] == None:         
+        if inputTree.type[1] == Type.LIST:
             erObj = pdict[inputTree.data]
-            inputTree.ins = erObj.ins
-            inputTree.outtype = erObj.outtype
-            inputTree.numArgs = erObj.numArgs
-        if inputTree.data in userDefinedFunctionsList:
-            inputTree.ins = UDFdict[inputTree.data]["ins"]
-            inputTree.outtype = UDFdict[inputTree.data]["outtype"]
-            inputTree.numArgs = UDFdict[inputTree.data]["numArgs"]           
-    elif inputTree.type == Type.LIST:
-        erObj = pdict[inputTree.data]
-        inputTree.length=erObj.length
-    elif inputTree.type == Type.INT:
-        inputTree.name = int(inputTree.data)
-    elif inputTree.type == Type.BOOL:
-        erObj = pdict[inputTree.data.lower()]
-        inputTree.name = erObj.value
+            inputTree.length=erObj.length
+        elif inputTree.type[1] == Type.INT:
+            inputTree.name = int(inputTree.data)
+        elif inputTree.type[1] == Type.BOOL:
+            erObj = pdict[inputTree.data.lower()]
+            inputTree.name = erObj.value
 
     for c in inputTree.children:
         decorateTree(c, errLog,debug)        
@@ -166,7 +160,7 @@ env={} #env dictionary to keep track of params, having it out here so it stays a
 
 def typeCheck(inputTree:Node, debug=False) -> str:
     func = inputTree.children[0]
-    expectedIns = func.ins
+    expectedIns = func.type
     providedIns = tuple(child.type for child in inputTree.children[1:])
     if debug:
         print(f"expectedIns {expectedIns} providedIns {providedIns}")
@@ -176,17 +170,17 @@ def typeCheck(inputTree:Node, debug=False) -> str:
     else:
         for childIndex, childType in enumerate(providedIns):
             childIndex = childIndex + 1 # offset childIndex by one to get actual index of child
-            if childType == Type.PARAM:
+            if childType[1] == Type.PARAM:
                 childData = inputTree.children[childIndex].data
                 if childData not in env.keys():
                     env[childData] = expectedIns[childIndex-1] # need to subtract 1 to get correct index
-                elif (env[childData] != expectedIns[childIndex-1]) and expectedIns[childIndex-1] != Type.ANY:
+                elif (env[childData] != expectedIns[childIndex-1]) and expectedIns[childIndex-1] not in FLEX_TYPES:
                     return f"{func.name} at argument #{childIndex} takes a parameter '{childData}' expected to be type {expectedIns[childIndex-1]} but {env[childData]} was provided"
-            elif childType == Type.LIST:
-                listType = inputTree.children[childIndex].outtype
-                if (listType != expectedIns[childIndex-1]) and expectedIns[childIndex-1] != Type.ANY:
+            elif childType[1] == Type.LIST:
+                listType = inputTree.children[childIndex].type[1]
+                if (listType != expectedIns[childIndex-1]) and expectedIns[childIndex-1] not in FLEX_TYPES:
                     return f"{func.name}'s list at argument #{childIndex} expected to output type {expectedIns[childIndex-1]} but {listType} was provided"
-            elif (childType != expectedIns[childIndex-1]) and expectedIns[childIndex-1] != Type.ANY:
+            elif (childType != expectedIns[childIndex-1]) and expectedIns[childIndex-1] not in FLEX_TYPES:
                 return f"{func.name} takes in types {expectedIns}, but provided inputs were {providedIns}"  
     return None
                

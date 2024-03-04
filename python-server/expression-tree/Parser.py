@@ -9,7 +9,7 @@ closeGroupSymb = [")","]","}"] # possibly cond might be implemented one day with
 specialChars = ["#","?","\u03BB","'"] #hashtag for bools,? for pred suffix,unicode is for λ (currently not in language),final item is single quote
 AllowedChars = list(string.ascii_letters) + list(string.digits) + whitespace + arithSymbols + openGroupSymb + closeGroupSymb + specialChars
 class Node:
-    def __init__(self, children=[], parent=None, data='', name=None, tokenType=None, debug=False, ins=None, outType=None, numArgs=None, length=None):
+    def __init__(self, children=[], parent=None, data='', tokenType=None, name=None, debug=False, ins=None, outType=None, numArgs=None, length=None):
         self.children = children # possibly we might later refactor children[0] as the "operator"
         self.parent = parent
         self.data = data # this is the string name to be displayed (what used to be called "name" in the old PB)
@@ -22,6 +22,13 @@ class Node:
         self.length = length # for lists, it's the length 
         self.position = -1
 
+    @property
+    def type(self):
+        return self._type
+    
+    @type.setter
+    def type(self, newType):
+        self._type = newType
 
     def __str__(self):
         # will print stuff if there is missing label or type information
