@@ -86,45 +86,67 @@ def remTemps(inputTree:Node, errLog, debug=False) -> list[str]:
             if not inputTree.children[1].type.isType("BOOL"):
                 errLog.append("argument #1 of an if function must be Boolean")
             
-            
+            # get both the True and False branches of the "if"
             n1, n2 = inputTree.children[2], inputTree.children[3]
             typ1, typ2 = n1.type.getType(), n2.type.getType()
-            if typ1 in FLEX_TYPES and typ2 not in FLEX_TYPES: #overriding some anys/param/temps
+
+            # override any flex types in either branch
+            if typ1 in FLEX_TYPES and typ2 not in FLEX_TYPES: 
                 copyDetails(n2, n1)
             elif typ1 not in FLEX_TYPES and typ2 in FLEX_TYPES:
                 copyDetails(n1,n2)
+            
+            # check type of the branches
             if  typ1!=typ2:
                 errLog.append(f"final arguments of an if function must match, but {typ1} and {typ2} provided")
+
+            # both branches are functions, check for matching domains and ranges   
             elif typ1 == Type.FUNCTION:
                 if n1.type.getDomain() != n2.type.getDomain():
                     errLog.append("function domains must match for both if branches")
-                elif n1.getRange() != n2.getRange(): #note: range err not caught if domains don't match. but ok
+                elif n1.getRange() != n2.getRange(): # note: range err not caught if domains don't match. but ok
                     errLog.append("function ranges must match for both if branches")
                 else:
-                    copyDetails(n1, inputTree) #both if branchs are functions with same ins/outs
+                    copyDetails(n1, inputTree) # both if branchs are functions with same ins/outs
             else: #both if branch types are the same, but aren't functions
-                inputTree.type = n1.getType() #TODO: potential problem if both ANYs. for now, just propogate ANY up.     
-    elif operator.getDomain() != None: # at this point, ifs are taken care of, so after the ( it's either a Temp/Any/Param or non-if function 
-        if operator.getRange() not in FLEX_TYPES: #NOTE: is an outtype of any/param/temp impossible?
-            inputTree.type = (operator.getDomain(), operator.getRange())
-        if operator.getRange() == Type.FUNCTION: #TODO: the type=Function needs to be bundled with in/out
+                inputTree.type = n1.getType() #TODO: potential problem if both ANYs. for now, just propogate ANY up. 
+
+    # at this point, ifs are taken care of, so after the ( it's either a Temp/Any/Param or non-if function    
+    elif not operator.type.isType("FUNCTION"):
+
+        # pass up the type of the operator to its parent Node
+        inputTree.type = RacType((operator.type.getDomain(), operator.type.getRange()))
+        '''
+        if operator.type.getType() not in FLEX_TYPES: #NOTE: is an outtype of any/param/temp impossible?
+            
+        
+        # operator is a function
+        if operator.type.getType() == Type.FUNCTION: #TODO: the type=Function needs to be bundled with in/out
         #TODO:  example: ((addn x) y) = (x+y). so addn has type: "FUNC: int-> (int->list)"
         #TODO: but until we make that change, we will have to approve all higher order Functions as legit
         # this is a placeholder. really needs to be inputTree.type=Func:(operator.out.in)->(operator.out.out)
             inputTree.type=([Type.ANY], Type.ANY)
-            inputTree.numArgs = None #TODO: this needs to be length(operator.out.in) or look at definition window
+            inputTree.numArgs = None #TODO: this needs to be length(operator.out.in) or look at definition window'''
+    
+    # continue removing Type.TEMPs from the children of the Node
     if inputTree.data !="if": #since already did recursion in the special case, so avoiding repitition
         for c in inputTree.children[1:]:
             errLog = remTemps(c,errLog)
-    #last case is where the operater is a temp/any/param, such as (x 3 4) in "(if (x = +) (x 3 4) 7)"
+
+    # @Steve not particularly sure how to refactor this last case to work with the new type specification 
+    '''
+    # last case is where the operator is a temp/any/param, such as (x 3 4) in "(if (x = +) (x 3 4) 7)"
     if operator.getRange() in FLEX_TYPES: #only untested case so far
         listIns= []
         for c in inputTree.children[1:]:
             listIns.append(c.type)
         operator.type = (listIns, Type.ANY)
-        operator.numArgs = len(listIns)
+        operator.numArgs = len(listIns)'''
+    
+    # return any errors
     return errLog     
 
+# function to check correct number of provided arguments for functions
 def argQty(treeNode:Node) -> str:
     func = treeNode.children[0]
     expectedCount = func.numArgs
@@ -133,21 +155,26 @@ def argQty(treeNode:Node) -> str:
     if expectedCount != providedCount:
         return f"{func.name} only takes {expectedCount} arguments, but {providedCount} {'was' if providedCount==1 else 'were'} provided"
     
-    return typeCheck(treeNode) # only typeCheck if everything passes
+    # only typeCheck if everything passes
+    return typeCheck(treeNode) 
 
-
+# check functions meet number of arguments and type checking restrictions
 def checkFunctions(inputTree:Node, errLog, debug=False) -> tuple[Node,list[str]]:
     if inputTree == None:
         return inputTree, errLog
     
-    if len(inputTree.children) > 0 and (inputTree.getRange() == Type.LIST and inputTree.children[0].getDomain() != None):
+    # only check if the function has children
+    if len(inputTree.children) > 0 and inputTree.type.isType("FUNCTION"):
         errMsg = argQty(inputTree)
         
         if errMsg:
             errLog.append(errMsg)
 
-    for child in inputTree.children:
-        checkFunctions(child, errLog, debug)
+        # continue check for the children of the Node
+        for child in inputTree.children:
+            checkFunctions(child, errLog, debug)
+    
+    # return any errors
     return inputTree, errLog
 
 
