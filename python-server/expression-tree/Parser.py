@@ -1,6 +1,6 @@
 import string #no longer using re
 from typing import List, Tuple #used to create a type hint for a list of strings
-
+from typeFile import Type
 #perhaps in future allow square brackets and braces. 
 whitespace = ["\n","\t","\r"," "] #permits linebreak and indents for conditionals. all become \s in pre-processing step
 arithSymbols = ["+","*","-","=",">","<"] # other math uses ascii, such as expt, quotient, remainder. Note: "/" not permitted
@@ -55,6 +55,19 @@ class Node:
             for c in self.children:
                 c.fullDebug(sett)
         return
+    
+    def getType(self):
+        return self.type
+
+    def getDomain(self):
+        if self.getType()[0] == None:
+            return [Type.ERROR]
+        return self.type[0]
+
+    def getRange(self):
+        if self.getType()[0] == None:
+            return Type.ERROR
+        return self.type[1]
         
 #errLog is a list of strings of error msgs that will be passed at each step of the tree-building process
 def preProcess(inputString:str, errLog:List[str]=None, debug=False) -> Tuple[List[str],List[str]]: #None will generate a warning since it's not a list of strings

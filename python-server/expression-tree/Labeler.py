@@ -21,7 +21,7 @@ literalLibrary = [
 builtInFunctionsList = ['if', 'cons', 'first', 'rest', 'null?', '+', '-', '*', 'quotient', 'remainder','zero?',\
                         "expt","=","<=",">=","<",">","and","or","not","xor","implies","list?","int?"]
 userDefinedFunctionsList = ['fact']
-UDFdict = {"fact": {"type":(Type.INT, Type.INT), "numArgs":1}}
+UDFdict = {"fact": {"type":([Type.INT], Type.INT), "numArgs":1}}
 
 
 def labelTree(inputTree:Node):
@@ -33,7 +33,7 @@ def labelTree(inputTree:Node):
     data = root.data
     if inputTree.data in builtInFunctionsList:
         erObj = pdict[inputTree.data]
-        inputTree.type = (erObj.ins, erObj.outtype)
+        inputTree.type = (list(erObj.ins), erObj.outtype)
         inputTree.numArgs = erObj.numArgs
     elif inputTree.data in userDefinedFunctionsList:
         inputTree.type = UDFdict[inputTree.data]["type"]
