@@ -85,7 +85,7 @@ for test in test_strings_ok+test_strings_err + test_strings_typeGood + test_stri
         print(errLog)
 
 test = '((if #t + *) 3 4)'
-#test = '(if #t + *)'
+test = '(if #t + *)'
 #test='(+ 3 4)'
 #test = '(+ null #f ab#c 345 () 6)'
 print("START " + test)
@@ -101,12 +101,14 @@ nt=decTree
 n0 = decTree.children[0]
 def checknode(x):
     print(f"data={x.data} type={x.type} ins={x.ins} out={x.outtype} num={x.numArgs}")
+
+def fullcheck(x):
+    checknode(x)
+    for c in x.children:
+        checknode(c)
+
 print(nt)
-checknode(n0)
-for c in n0.children:
-    checknode(c)
-for d in nt.children[1:]:
-    checknode(d)
+fullcheck(nt)
 
 
 #decTree, errLog = checkFunctions(labeledTree,errLog)
