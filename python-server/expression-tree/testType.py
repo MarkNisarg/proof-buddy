@@ -2,7 +2,7 @@ from typing import Union, Tuple, List
 from enum import Enum
 import Parser
 
-class coreType(Enum):
+class Type(Enum):
     TEMP = 'TEMP'
     BOOL = 'BOOL'
     INT = 'INT'
@@ -16,7 +16,13 @@ class coreType(Enum):
     def __str__(self):
         return self.value
 
-RacType = Union[Tuple[None, coreType], Tuple[Tuple['RacType', ...], coreType]]
+RacType = Union[Tuple[None, Type], Tuple[Tuple['RacType', ...], Type]]
+
+class TypeList:
+    def __init__(self, value:list[RacType]):
+        self.value = value
+    def __str__(self):
+        return '[' + ', '.join(str(x) for x in self.value) + ']'
 
 # pretty print recursive function (commas between domain elements, with > separating out range)
 def helpPrint(items):
@@ -31,7 +37,7 @@ def helpPrint(items):
     return str(items)
 
 class RacType:
-    def __init__(self, value: RacType):
+    def __init__(self, value):
         self.value = value
 
     def __str__(self):
@@ -39,53 +45,46 @@ class RacType:
     
     def __eq__(self,other):
         return self.value == other.value
-class TypeList:
-    def __init__(self,value:List[RacType]):
-        self.value = value
-    def __str__(self):
-        return '[' + ', '.join(str(x) for x in self.value) + ']'
     
-def getType(T:RacType)->RacType:
-    if T.value[0]==None:
-        return RacType((None, T.value[1]))
-    return RacType(coreType.FUNCTION)
+    def getType(self) -> RacType:
+        if self.value[0]==None:
+            return self.value[1]
+        return Type.FUNCTION
 
-def getDomain(T:RacType)->TypeList:
-    if getType(T)!=RacType(coreType.FUNCTION):
-        return TypeList([RacType(coreType.ERROR)])
-    return TypeList([RacType(x) for x in T.value[0]])
+    def getDomain(self):
+        if self.getType() != Type.FUNCTION:
+            return None
+        return TypeList([RacType(x) for x in self.value[0]])
 
-def getRange(T:RacType)->RacType:
-    if getType(T)!=RacType(coreType.FUNCTION):
-        return RacType(coreType.ERROR)
-    return RacType(T.value[1])
+    def getRange(self) -> RacType:
+        return RacType(self.value[1])
 
-def isType(T:RacType,val)->bool:
-    return str(getType(T))==val
-
+    def isType(self, typeStr)->bool:
+        return str(self.getType()) == typeStr
+    
 # this will not work for function, just for the coretypes
 def setType(n:Parser.Node, strg:str):
     if strg != "FUNCTION":
-        n.type=RacType((None,coreType.__members__.get(strg)))
+        n.type=RacType((None,Type.__members__.get(strg)))
     else:
-        n.type=RacType(coreType.ERROR)
+        n.type=RacType(Type.ERROR)
         #TODO: handle string parsing
     return
 
 
 # unit tests
-tests = [RacType((None, coreType.INT)), RacType((((((None, coreType.LIST), (None, coreType.BOOL)), \
-        coreType.INT), (((None, coreType.INT), (None, coreType.LIST)), (None, coreType.BOOL))), (None, coreType.LIST)))]
+tests = [RacType((None, Type.INT)), RacType((((((None, Type.LIST), (None, Type.BOOL)), \
+        Type.INT), (((None, Type.INT), (None, Type.LIST)), (None, Type.BOOL))), (None, Type.LIST)))]
 
 for t in tests:
-    print(f"expr is type {getType(t)}, domainList = {getDomain(t)}, range = {getRange(t)}")
+    print(f"expr is type {t.getType()}, domainList = {t.getDomain()}, range = {t.getRange()}")
 
 testNode = Parser.Node()
-t2 = RacType((None, coreType.BOOL))
-t3= RacType((None, coreType.INT))
-t4 = RacType((((None,coreType.INT),),(None,coreType.BOOL)))
+t2 = RacType((None, Type.BOOL))
+t3= RacType((None, Type.INT))
+t4 = RacType((((None,Type.INT),),(None,Type.BOOL)))
 
-print(isType(t3, "INT"), isType(t4,"FUNCTION"))
+print(t3.isType("INT"), t4.isType("FUNCTION"))
 setType(testNode,"FUNCTION")
 print(str(testNode.type))
 
