@@ -43,7 +43,10 @@ class RacType:
         return helpPrint(self.value)
     
     def __eq__(self,other):
-        return self.value == other.value
+        if other == None:
+            return False
+        else:
+            return self.value == other.value
     
     def getType(self) -> RacType:
         if self.value[0]==None:
@@ -60,16 +63,6 @@ class RacType:
 
     def isType(self, typeStr)->bool:
         return str(self.getType()) == typeStr
-    
-# this will not work for function, just for the coretypes
-def setType(n:Parser.Node, strg:str):
-    if strg != "FUNCTION":
-        n.type=RacType((None,Type.__members__.get(strg)))
-    else:
-        n.type=RacType(Type.ERROR)
-        #TODO: handle string parsing
-    return
-
 
 # unit tests
 tests = [RacType((None, Type.INT)), RacType((((((None, Type.LIST), (None, Type.BOOL)), \
@@ -78,14 +71,7 @@ tests = [RacType((None, Type.INT)), RacType((((((None, Type.LIST), (None, Type.B
 for t in tests:
     print(f"expr is type {t.getType()}, domainList = {t.getDomain()}, range = {t.getRange()}")
 
-testNode = Parser.Node()
-t2 = RacType((None, Type.BOOL))
-t3= RacType((None, Type.INT))
-t4 = RacType((((None,Type.INT),),(None,Type.BOOL)))
 
-print(t3.isType("INT"), t4.isType("FUNCTION"))
-setType(testNode,"FUNCTION")
-print(str(testNode.type))
 
 
 

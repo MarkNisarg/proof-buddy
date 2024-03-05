@@ -1,5 +1,5 @@
 import Parser, Labeler
-from typeFile import Type
+from testType import *
 from Decorator import decorateTree, checkFunctions, typeCheck, remTemps
 
 def printLabeledTree(tree):
@@ -100,7 +100,7 @@ print(errLog)
 nt=decTree
 n0 = decTree.children[0]
 def checknode(x):
-    print(f"data={x.data} type={x.type} ins={x.ins} out={x.outtype} num={x.numArgs}")
+    print(f"data={x.data} type={x.type.getType()} num={x.numArgs}")
 
 def fullcheck(x):
     checknode(x)
@@ -119,8 +119,15 @@ print(test)
 print(labeledTree)
 print(errLog)
 '''
+testNode = Parser.Node()
+t2 = RacType((None, Type.BOOL))
+t3= RacType((None, Type.INT))
+t4 = RacType((((None,Type.INT),),(None,Type.BOOL)))
 
-
+print(t3.isType("INT"), t4.isType("FUNCTION"))
+testNode.setType("FUNCTION")
+print(str(testNode.type))
+'''
 for i in test_strings_typeGood + test_strings_typeBad:
     print('input= ',i)
     exprList,errLog = Parser.preProcess(i,errLog=[],debug=debugStatus)
@@ -128,5 +135,6 @@ for i in test_strings_typeGood + test_strings_typeBad:
     labeledTree = Labeler.labelTree(exprTree)
     decTree, errLog = decorateTree(labeledTree,errLog)
     decTree, errLog = checkFunctions(labeledTree,errLog)
-    print(errLog)
+    print(errLog)'''
+
 

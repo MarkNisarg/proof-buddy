@@ -1,7 +1,7 @@
 # This file parses an input Racket string and converts it to an equivalent expression tree representation (called an AST)
 
 import string # for string helper functions
-from testType import RacType # import RacType for type hints
+from testType import * # import RacType for type hints
 
 # SYMBOLS: perhaps in future allow square brackets and braces. 
 WHITESPACE = ["\n","\t","\r"," "] # permits linebreak and indents for conditionals. all become \s in pre-processing step
@@ -13,7 +13,7 @@ AllowedChars = list(string.ascii_letters) + list(string.digits) + WHITESPACE + A
 
 # Node object used to compose the AST
 class Node:
-    def __init__(self, children=[], parent=None, data:str='', tokenType:RacType=None, name=None, debug:bool=False, ins=None, outType=None, numArgs:int=None, length:int=None):
+    def __init__(self, children=[], parent=None, data:str='', tokenType:RacType=RacType((None,None)), name=None, debug:bool=False, ins=None, outType=None, numArgs:int=None, length:int=None):
         self.children = children # by specification, children[0] is the "operator" for functions
         self.parent = parent # reference to the Node's parent (will be None for the root Node)
         self.data = data # this is the string name to be displayed (what used to be called "name" in the old PB)
@@ -67,18 +67,13 @@ class Node:
                 c.fullDebug(setting)
         return
     
-    def getType(self):
-        return self.type
-
-    def getDomain(self):
-        if self.getType()[0] == None:
-            return [Type.ERROR]
-        return self.type[0]
-
-    def getRange(self):
-        if self.getType()[0] == None:
-            return Type.ERROR
-        return self.type[1]
+    def setType(self, strg:str):
+        if strg != "FUNCTION":
+            self.type=RacType((None,Type.__members__.get(strg)))
+        else:
+            self.type=RacType(Type.ERROR)
+            #TODO: handle string parsing
+        return
         
 # errLog is a list of strings of error messages that will be passed at each step of the tree-building process
 def preProcess(inputString:str, errLog:list[str]=None, debug=False) -> tuple[list[str],list[str]]: # None will generate a warning since it's not a list of strings

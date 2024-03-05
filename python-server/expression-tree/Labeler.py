@@ -62,11 +62,11 @@ def labelTree(inputTree:Node) -> Node:
         for label in LABEL_LIBRARY:
             matcher = re.compile(label.regex)
             if matcher.match(root.data) != None:
-                root.type = (None,label.dataType)
+                root.type = RacType((None,label.dataType))
                 break
     
     # if the Node is still unlabeled, default its type to be Type.PARAM
-    if root.type == None:
+    if root.type.getType() == None:
         root.type = RacType((None,Type.PARAM)) 
 
     # label the children of the root Node
