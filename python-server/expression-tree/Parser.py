@@ -1,7 +1,7 @@
 # This file parses an input Racket string and converts it to an equivalent expression tree representation (called an AST)
 
 import string # for string helper functions
-from testType import * # import RacType for type hints
+from typeFile import * # import RacType for type hints
 
 # SYMBOLS: perhaps in future allow square brackets and braces. 
 WHITESPACE = ["\n","\t","\r"," "] # permits linebreak and indents for conditionals. all become \s in pre-processing step

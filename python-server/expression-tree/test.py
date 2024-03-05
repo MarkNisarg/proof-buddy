@@ -1,5 +1,5 @@
 import Parser, Labeler
-from testType import *
+from typeFile import *
 from Decorator import decorateTree, checkFunctions, typeCheck, remTemps
 
 def printLabeledTree(tree):

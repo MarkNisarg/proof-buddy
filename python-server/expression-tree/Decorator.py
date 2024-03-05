@@ -2,7 +2,7 @@
 
 from Parser import * # brings in Nodes etc
 from ERobj import pdict # brings in ERobject whose attributes will be used to decorate the tree
-from testType import * # bring in type specification
+from typeFile import * # bring in type specification
 
 # types to be potentially replaced
 FLEX_TYPES = [Type.FUNCTION, Type.TEMP, Type.ANY, Type.PARAM, Type.NONE]
