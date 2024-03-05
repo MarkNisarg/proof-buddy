@@ -127,14 +127,15 @@ t4 = RacType((((None,Type.INT),),(None,Type.BOOL)))
 print(t3.isType("INT"), t4.isType("FUNCTION"))
 testNode.setType("FUNCTION")
 print(str(testNode.type))
-'''
+
+debugStatus = False
 for i in test_strings_typeGood + test_strings_typeBad:
     print('input= ',i)
     exprList,errLog = Parser.preProcess(i,errLog=[],debug=debugStatus)
     exprTree = Parser.buildTree(exprList,debug=debugStatus)[0] # might not need to pass errLog
     labeledTree = Labeler.labelTree(exprTree)
     decTree, errLog = decorateTree(labeledTree,errLog)
-    decTree, errLog = checkFunctions(labeledTree,errLog)
-    print(errLog)'''
-
-
+    errLog = remTemps(decTree, errLog)
+    decTree, errLog = checkFunctions(decTree,errLog)
+    print(decTree)
+    print(errLog)

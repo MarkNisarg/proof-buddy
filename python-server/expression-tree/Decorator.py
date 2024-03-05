@@ -7,6 +7,7 @@ from typeFile import * # bring in type specification
 # types to be potentially replaced
 FLEX_TYPES = [Type.FUNCTION, Type.TEMP, Type.ANY, Type.PARAM, Type.NONE]
 
+# decorate non-function type Nodes in the AST
 def decorateTree(inputTree:Node, errLog, debug=False) -> tuple[Node,list[str]]:
     # just return if there is not AST to decorate
     if inputTree==None:
@@ -20,7 +21,7 @@ def decorateTree(inputTree:Node, errLog, debug=False) -> tuple[Node,list[str]]:
     # populate new Node attributes from the ERobjects, default Node.name is set to the Node.data attribute
     inputTree.name = inputTree.data
     
-    # decorate non-function type Node objects
+    # decorate the Node objects
     if not inputTree.type.isType("FUNCTION"):         
         if inputTree.type.isType("LIST"):
             erObj = pdict[inputTree.data]
@@ -48,7 +49,7 @@ def copyDetails(fromNode:Node, toNode:Node): # note that the .data is NOT copied
 
 # this function gets rid of all Type.TEMPs and does type checking for 'if' functions. can internally change the AST and update the errLog
 def remTemps(inputTree:Node, errLog, debug=False) -> list[str]:
-    if inputTree == None or inputTree.type.isType("TEMP"):
+    if inputTree == None or not inputTree.type.isType("TEMP"):
         return errLog # it's either a quoted list or not a list, so nothing to check
     
     # from this point on, we know the subexpression starts with an unquoted list, a "(" token
@@ -104,12 +105,12 @@ def remTemps(inputTree:Node, errLog, debug=False) -> list[str]:
             elif typ1 == Type.FUNCTION:
                 if n1.type.getDomain() != n2.type.getDomain():
                     errLog.append("function domains must match for both if branches")
-                elif n1.getRange() != n2.getRange(): # note: range err not caught if domains don't match. but ok
+                elif n1.type.getRange() != n2.type.getRange(): # note: range err not caught if domains don't match. but ok
                     errLog.append("function ranges must match for both if branches")
                 else:
                     copyDetails(n1, inputTree) # both if branchs are functions with same ins/outs
             else: #both if branch types are the same, but aren't functions
-                inputTree.type = n1.getType() #TODO: potential problem if both ANYs. for now, just propogate ANY up. 
+                inputTree.type = n1.type #TODO: potential problem if both ANYs. for now, just propogate ANY up. 
 
     # at this point, ifs are taken care of, so after the ( it's either a Temp/Any/Param or non-if function    
     elif not operator.type.isType("FUNCTION"):
@@ -118,8 +119,6 @@ def remTemps(inputTree:Node, errLog, debug=False) -> list[str]:
         inputTree.type = RacType((operator.type.getDomain(), operator.type.getRange()))
         '''
         if operator.type.getType() not in FLEX_TYPES: #NOTE: is an outtype of any/param/temp impossible?
-            
-        
         # operator is a function
         if operator.type.getType() == Type.FUNCTION: #TODO: the type=Function needs to be bundled with in/out
         #TODO:  example: ((addn x) y) = (x+y). so addn has type: "FUNC: int-> (int->list)"
@@ -164,7 +163,7 @@ def checkFunctions(inputTree:Node, errLog, debug=False) -> tuple[Node,list[str]]
         return inputTree, errLog
     
     # only check if the function has children
-    if len(inputTree.children) > 0 and inputTree.type.isType("FUNCTION"):
+    if len(inputTree.children) > 0 and inputTree.type.getType() in FLEX_TYPES:
         errMsg = argQty(inputTree)
         
         if errMsg:
@@ -201,26 +200,45 @@ env={} #env dictionary to keep track of params, having it out here so it stays a
 #TODO: fix function with new type implementation
 def typeCheck(inputTree:Node, debug=False) -> str:
     func = inputTree.children[0]
-    expectedIns = func.type
-    providedIns = tuple(child.type for child in inputTree.children[1:])
+
+    # get the expected and provided domains
+    expectedIns = func.type.getDomain()
+    providedIns = [RacType((child.type.getDomain(), child.type.getRange())) for child in inputTree.children[1:]]
     if debug:
-        print(f"expectedIns {expectedIns} providedIns {providedIns}")
+        print(f"expectedIns {TypeList(expectedIns)} providedIns {TypeList(providedIns)}")
     
+    # sanity check that number of arguments are the same
     if len(expectedIns) != len(providedIns):
-        return f"{func.name} takes in types {expectedIns}, but provided inputs were {providedIns}"  
+        return f"{func.name} takes in types {TypeList(expectedIns)}, but provided inputs were {TypeList(providedIns)}"  
     else:
+        
+        # iterate through each child RacType
         for childIndex, childType in enumerate(providedIns):
             childIndex = childIndex + 1 # offset childIndex by one to get actual index of child
-            if childType[1] == Type.PARAM:
+            if childType.getType() == Type.PARAM:
+
+                # get the child's actual data
                 childData = inputTree.children[childIndex].data
+
+                # check if the parameter is in the (global) environment
                 if childData not in env.keys():
+
+                    # add reference to the environment
                     env[childData] = expectedIns[childIndex-1] # need to subtract 1 to get correct index
-                elif (env[childData] != expectedIns[childIndex-1]) and expectedIns[childIndex-1] not in FLEX_TYPES:
-                    return f"{func.name} at argument #{childIndex} takes a parameter '{childData}' expected to be type {expectedIns[childIndex-1]} but {env[childData]} was provided"
-            elif childType[1] == Type.LIST:
-                listType = inputTree.children[childIndex].type[1]
-                if (listType != expectedIns[childIndex-1]) and expectedIns[childIndex-1] not in FLEX_TYPES:
-                    return f"{func.name}'s list at argument #{childIndex} expected to output type {expectedIns[childIndex-1]} but {listType} was provided"
-            elif (childType != expectedIns[childIndex-1]) and expectedIns[childIndex-1] not in FLEX_TYPES:
-                return f"{func.name} takes in types {expectedIns}, but provided inputs were {providedIns}"  
+                
+                # lookup parameter in the environment and see if it matches the expected
+                elif (env[childData] != expectedIns[childIndex-1]) and expectedIns[childIndex-1].getType() not in FLEX_TYPES:
+                    return f"{func.name} at argument #{childIndex} takes a parameter '{childData}' expected to be type {expectedIns[childIndex-1].getType()} but {env[childData].getType()} was provided"
+            
+            elif (childType != expectedIns[childIndex-1]) and expectedIns[childIndex-1].getType() not in FLEX_TYPES:
+                
+                # handle type checking for lists
+                if childType.getType() == Type.LIST:
+                    return f"{func.name}'s list at argument #{childIndex} expected to output type {expectedIns[childIndex-1].getType()} but {childType.getType()} was provided"
+                
+                # general catch-all for non-matching domains
+                else:        
+                    return f"{func.name} takes in types {TypeList(expectedIns)}, but provided inputs were {TypeList(providedIns)}" 
+    
+    # don't return anything if the function has no errors  
     return None

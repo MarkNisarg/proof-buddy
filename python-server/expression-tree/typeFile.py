@@ -21,7 +21,10 @@ class TypeList:
     def __init__(self, value:list[RacType]):
         self.value = value
     def __str__(self):
-        return '[' + ', '.join(str(x) for x in self.value) + ']'
+        if self.value == None:
+            return '[None]'
+        else:
+            return '[' + ', '.join(str(x) for x in self.value) + ']'
 
 # pretty print recursive function (commas between domain elements, with > separating out range)
 def helpPrint(items):
@@ -56,22 +59,18 @@ class RacType:
     def getDomain(self):
         if self.getType() != Type.FUNCTION:
             return None
-        return TypeList([RacType(x) for x in self.value[0]])
+        return [RacType(x) for x in self.value[0]]
 
     def getRange(self) -> RacType:
         return RacType(self.value[1])
 
     def isType(self, typeStr)->bool:
         return str(self.getType()) == typeStr
-
+'''
 # unit tests
 tests = [RacType((None, Type.INT)), RacType((((((None, Type.LIST), (None, Type.BOOL)), \
         Type.INT), (((None, Type.INT), (None, Type.LIST)), (None, Type.BOOL))), (None, Type.LIST)))]
 
 for t in tests:
-    print(f"expr is type {t.getType()}, domainList = {t.getDomain()}, range = {t.getRange()}")
-
-
-
-
-
+    print(f"expr is type {t.getType()}, domainList = {TypeList(t.getDomain())}, range = {t.getRange()}")
+'''
