@@ -1,5 +1,6 @@
 from typing import Union, Tuple, List
 from enum import Enum
+import Parser
 
 class coreType(Enum):
     TEMP = 'TEMP'
@@ -35,30 +36,58 @@ class RacType:
 
     def __str__(self):
         return helpPrint(self.value)
+    
+    def __eq__(self,other):
+        return self.value == other.value
 class TypeList:
     def __init__(self,value:List[RacType]):
         self.value = value
     def __str__(self):
         return '[' + ', '.join(str(x) for x in self.value) + ']'
     
-def getType(T:RacType)->coreType:
+def getType(T:RacType)->RacType:
     if T.value[0]==None:
-        return T.value[1]
-    return coreType.FUNCTION
+        return RacType((None, T.value[1]))
+    return RacType(coreType.FUNCTION)
 
 def getDomain(T:RacType)->TypeList:
-    if getType(T)!=coreType.FUNCTION:
+    if getType(T)!=RacType(coreType.FUNCTION):
         return TypeList([RacType(coreType.ERROR)])
     return TypeList([RacType(x) for x in T.value[0]])
 
 def getRange(T:RacType)->RacType:
-    if getType(T)!=coreType.FUNCTION:
+    if getType(T)!=RacType(coreType.FUNCTION):
         return RacType(coreType.ERROR)
     return RacType(T.value[1])
 
+def isType(T:RacType,val)->bool:
+    return str(getType(T))==val
+
+# this will not work for function, just for the coretypes
+def setType(n:Parser.Node, strg:str):
+    if strg != "FUNCTION":
+        n.type=RacType((None,coreType.__members__.get(strg)))
+    else:
+        n.type=RacType(coreType.ERROR)
+        #TODO: handle string parsing
+    return
+
+
 # unit tests
 tests = [RacType((None, coreType.INT)), RacType((((((None, coreType.LIST), (None, coreType.BOOL)), \
-        coreType.INT), (((None, coreType.INT), (None, coreType.LIST)), coreType.BOOL)), coreType.LIST))]
+        coreType.INT), (((None, coreType.INT), (None, coreType.LIST)), (None, coreType.BOOL))), (None, coreType.LIST)))]
 
 for t in tests:
-    print(f"this expression has type {getType(t)} with domainList = {getDomain(t)} and range = {getRange(t)}")
+    print(f"expr is type {getType(t)}, domainList = {getDomain(t)}, range = {getRange(t)}")
+
+testNode = Parser.Node()
+t2 = RacType((None, coreType.BOOL))
+t3= RacType((None, coreType.INT))
+t4 = RacType((((None,coreType.INT),),(None,coreType.BOOL)))
+
+print(isType(t3, "INT"), isType(t4,"FUNCTION"))
+setType(testNode,"FUNCTION")
+print(str(testNode.type))
+
+
+
