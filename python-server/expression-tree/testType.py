@@ -41,17 +41,17 @@ class TypeList:
     def __str__(self):
         return '[' + ', '.join(str(x) for x in self.value) + ']'
     
-def getType(T:RacType):
+def getType(T:RacType)->coreType:
     if T.value[0]==None:
         return T.value[1]
     return coreType.FUNCTION
 
-def getDomain(T:RacType):
+def getDomain(T:RacType)->TypeList:
     if getType(T)!=coreType.FUNCTION:
         return TypeList([RacType(coreType.ERROR)])
     return TypeList([RacType(x) for x in T.value[0]])
 
-def getRange(T:RacType):
+def getRange(T:RacType)->RacType:
     if getType(T)!=coreType.FUNCTION:
         return RacType(coreType.ERROR)
     return RacType(T.value[1])
