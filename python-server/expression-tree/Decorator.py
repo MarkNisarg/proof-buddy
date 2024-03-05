@@ -169,12 +169,9 @@ def typeCheck(inputTree:Node, debug=False) -> str:
                 elif (env[childData] != expectedIns[childIndex-1]) and expectedIns[childIndex-1] not in FLEX_TYPES:
                     return f"{func.name} at argument #{childIndex} takes a parameter '{childData}' expected to be type {expectedIns[childIndex-1]} but {env[childData]} was provided"
             elif childType[1] == Type.LIST:
-                listType = inputTree.children[childIndex].getRange()
+                listType = inputTree.children[childIndex].type[1]
                 if (listType != expectedIns[childIndex-1]) and expectedIns[childIndex-1] not in FLEX_TYPES:
                     return f"{func.name}'s list at argument #{childIndex} expected to output type {expectedIns[childIndex-1]} but {listType} was provided"
             elif (childType != expectedIns[childIndex-1]) and expectedIns[childIndex-1] not in FLEX_TYPES:
                 return f"{func.name} takes in types {expectedIns}, but provided inputs were {providedIns}"  
     return None
-               
-
-            

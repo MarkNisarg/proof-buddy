@@ -33,7 +33,7 @@ def labelTree(inputTree:Node):
     data = root.data
     if inputTree.data in builtInFunctionsList:
         erObj = pdict[inputTree.data]
-        inputTree.type = (list(erObj.ins), erObj.outtype)
+        inputTree.type = ([inType for inType in erObj.ins], erObj.outtype)
         inputTree.numArgs = erObj.numArgs
     elif inputTree.data in userDefinedFunctionsList:
         inputTree.type = UDFdict[inputTree.data]["type"]
