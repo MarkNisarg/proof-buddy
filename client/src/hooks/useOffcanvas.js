@@ -6,7 +6,6 @@ const useOffcanvas = (initialState=false) => {
 
   const toggleOffcanvas = () => {
     setIsOffCanvasActive(previousState => previousState === false ? true : false);
-    console.log(isOffcanvasActive);
   };
 
   return [

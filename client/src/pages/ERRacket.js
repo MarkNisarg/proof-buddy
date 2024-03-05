@@ -8,8 +8,7 @@ import Row from 'react-bootstrap/Row';
 import Alert from 'react-bootstrap/Alert';
 import MainLayout from '../layouts/MainLayout';
 import validateField from '../utils/eRFormValidationUtils';
-import OffCanvas from 'react-bootstrap/Offcanvas'
-import Table from 'react-bootstrap/Table'
+import OffcanvasRuleSet from '../components/OffcanvasRuleSet';
 import { useToggleSide } from '../hooks/useToggleSide';
 import { useOffcanvas } from '../hooks/useOffcanvas';
 import { useInputState } from '../hooks/useInputState';
@@ -18,7 +17,6 @@ import { useRacketRuleFields } from '../hooks/useRacketRuleFields';
 import { useCurrentRacketValues } from '../hooks/useCurrentRacketValues';
 import { useFormSubmit } from '../hooks/useFormSubmit';
 import { useHighlight } from '../hooks/useHighlight';
-import ruleSet from '../components/RuleSet';
 import '../scss/_forms.scss';
 import '../scss/_er-racket.scss';
 import { useExportToLocalMachine } from '../hooks/useExportToLocalMachine';
@@ -73,54 +71,12 @@ const ERRacket = () => {
 
   const exportJSON = useExportToLocalMachine(formValues.proofName, convertFormToJSON());
 
-  /* Present list of Rules for View Rule Set Offcanvas */
-  const ruleList = ruleSet();
-
   return (
     <MainLayout>
       <Container className='er-racket-container'>
-        <OffCanvas className='OffCanvas' id='rule-set' show={isOffcanvasActive} onHide={toggleOffcanvas}  scroll='true' placement='bottom'>
-          <OffCanvas.Body>
-            <Table striped bordered hover>
-              <thead>
-                <tr>
-                  <th>
-                    To/From
-                  </th>
-                  <th>
-                    From/To
-                  </th>
-                  <th>
-                    Name
-                  </th>
-                  <th>
-                    Tag
-                  </th>
-                </tr> 
-              </thead>
-              <tbody>
-                {
-                  ruleList.map((rule, index) => (
-                    <tr key={index}>
-                      <td>
-                        { rule.toFrom }
-                      </td>
-                      <td>
-                        { rule.fromTo }
-                      </td>
-                      <td>
-                        { rule.name }
-                      </td>
-                      <td>
-                        { rule.tags }
-                      </td>
-                    </tr>
-                  ))
-                }
-              </tbody>
-            </Table>
-          </OffCanvas.Body>
-        </OffCanvas>
+
+        <OffcanvasRuleSet isActive={isOffcanvasActive} toggleFunction={toggleOffcanvas}></OffcanvasRuleSet>
+        
         <Form noValidate validated={validated} className='er-racket-form' onSubmit={handleSubmit}>
           <div className='form-top-section'>
             <Row className='page-header-row'>
