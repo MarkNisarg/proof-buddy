@@ -1,6 +1,5 @@
 from typing import Union, Tuple, List
 from enum import Enum
-import Parser
 
 class Type(Enum):
     TEMP = 'TEMP'

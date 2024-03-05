@@ -66,6 +66,19 @@ class Node:
             for c in self.children:
                 c.fullDebug(setting)
         return
+    
+    def getType(self):
+        return self.type
+
+    def getDomain(self):
+        if self.getType()[0] == None:
+            return [Type.ERROR]
+        return self.type[0]
+
+    def getRange(self):
+        if self.getType()[0] == None:
+            return Type.ERROR
+        return self.type[1]
         
 # errLog is a list of strings of error messages that will be passed at each step of the tree-building process
 def preProcess(inputString:str, errLog:list[str]=None, debug=False) -> tuple[list[str],list[str]]: # None will generate a warning since it's not a list of strings
