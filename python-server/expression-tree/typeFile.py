@@ -49,7 +49,7 @@ class RacType:
         if other == None:
             return False
         else:
-            return self.value == other.value
+            return str(self) == str(other)
     
     def getType(self) -> RacType:
         if self.value[0]==None:

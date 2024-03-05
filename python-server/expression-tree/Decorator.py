@@ -214,31 +214,31 @@ def typeCheck(inputTree:Node, debug=False) -> str:
         
         # iterate through each child RacType
         for childIndex, childType in enumerate(providedIns):
-            childIndex = childIndex + 1 # offset childIndex by one to get actual index of child
-            if childType.getType() == Type.PARAM:
+            if childType.getType() not in FLEX_TYPES:
+                childIndex = childIndex + 1 # offset childIndex by one to get actual index of child
+                if childType.getType() == Type.PARAM:
 
-                # get the child's actual data
-                childData = inputTree.children[childIndex].data
+                    # get the child's actual data
+                    childData = inputTree.children[childIndex].data
 
-                # check if the parameter is in the (global) environment
-                if childData not in env.keys():
+                    # check if the parameter is in the (global) environment
+                    if childData not in env.keys():
 
-                    # add reference to the environment
-                    env[childData] = expectedIns[childIndex-1] # need to subtract 1 to get correct index
+                        # add reference to the environment
+                        env[childData] = expectedIns[childIndex-1] # need to subtract 1 to get correct index
+                    
+                    # lookup parameter in the environment and see if it matches the expected
+                    elif (env[childData] != expectedIns[childIndex-1]) and expectedIns[childIndex-1].getType() not in FLEX_TYPES:
+                        return f"{func.name} at argument #{childIndex} takes a parameter '{childData}' expected to be type {expectedIns[childIndex-1].getType()} but {env[childData].getType()} was provided"
                 
-                # lookup parameter in the environment and see if it matches the expected
-                elif (env[childData] != expectedIns[childIndex-1]) and expectedIns[childIndex-1].getType() not in FLEX_TYPES:
-                    return f"{func.name} at argument #{childIndex} takes a parameter '{childData}' expected to be type {expectedIns[childIndex-1].getType()} but {env[childData].getType()} was provided"
-            
-            elif (childType != expectedIns[childIndex-1]) and expectedIns[childIndex-1].getType() not in FLEX_TYPES:
-                
-                # handle type checking for lists
-                if childType.getType() == Type.LIST:
-                    return f"{func.name}'s list at argument #{childIndex} expected to output type {expectedIns[childIndex-1].getType()} but {childType.getType()} was provided"
-                
-                # general catch-all for non-matching domains
-                else:        
-                    return f"{func.name} takes in types {TypeList(expectedIns)}, but provided inputs were {TypeList(providedIns)}" 
+                elif (childType != expectedIns[childIndex-1]) and expectedIns[childIndex-1].getType() not in FLEX_TYPES:
+                    # handle type checking for lists
+                    if childType.getType() == Type.LIST:
+                        return f"{func.name}'s list at argument #{childIndex} expected to output type {expectedIns[childIndex-1].getType()} but {childType.getType()} was provided"
+                    
+                    # general catch-all for non-matching domains
+                    else:        
+                        return f"{func.name} takes in types {TypeList(expectedIns)}, but provided inputs were {TypeList(providedIns)}" 
     
     # don't return anything if the function has no errors  
     return None
