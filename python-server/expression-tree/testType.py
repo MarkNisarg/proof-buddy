@@ -61,4 +61,4 @@ tests = [RacType((None, coreType.INT)), RacType((((((None, coreType.LIST), (None
         coreType.INT), (((None, coreType.INT), (None, coreType.LIST)), coreType.BOOL)), coreType.LIST))]
 
 for t in tests:
-    print(f"this expression has type {getType(t)} with domainList = {getDomain(t)} and range = {getRange(t)}")
+    print(f"expr is type {getType(t)}, domainList = {getDomain(t)}, range = {getRange(t)}")
