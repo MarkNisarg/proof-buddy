@@ -1,6 +1,7 @@
 from Parser import Node
 import re
 from typeFile import Type
+from ERobj import *
 
 class Label:
     def __init__(self, regex, dataType):
@@ -20,7 +21,7 @@ literalLibrary = [
 builtInFunctionsList = ['if', 'cons', 'first', 'rest', 'null?', '+', '-', '*', 'quotient', 'remainder','zero?',\
                         "expt","=","<=",">=","<",">","and","or","not","xor","implies","list?","int?"]
 userDefinedFunctionsList = ['fact']
-UDFdict = {"fact": {"type":Type.FUNCTION,"ins":(Type.INT,),"outtype":Type.INT,"numArgs":1}}
+UDFdict = {"fact": {"type":(Type.INT, Type.INT), "numArgs":1}}
 
 
 def labelTree(inputTree:Node):
@@ -30,17 +31,22 @@ def labelTree(inputTree:Node):
     
     root = inputTree
     data = root.data
-    if data in builtInFunctionsList or data in userDefinedFunctionsList:
-        root.type = Type.FUNCTION
+    if inputTree.data in builtInFunctionsList:
+        erObj = pdict[inputTree.data]
+        inputTree.type = (erObj.ins, erObj.outtype)
+        inputTree.numArgs = erObj.numArgs
+    elif inputTree.data in userDefinedFunctionsList:
+        inputTree.type = UDFdict[inputTree.data]["type"]
+        inputTree.numArgs = UDFdict[inputTree.data]["numArgs"] 
     else:
         for label in literalLibrary:
             matcher = re.compile(label.regex)
             if matcher.match(root.data) != None:
-                root.type = label.dataType
+                root.type = (None,label.dataType)
                 break
 
     if root.type == None:
-        root.type = Type.PARAM
+        root.type = (None,Type.PARAM)
 
     for child in root.children:
         labelTree(child)
