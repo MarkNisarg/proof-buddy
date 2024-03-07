@@ -9,3 +9,6 @@ class ProofEngine():
 
     def generateRacketFromRule(self, rule:str):
         return rule + '-x'
+
+    def checkGoal(self, goal:str):
+        return False

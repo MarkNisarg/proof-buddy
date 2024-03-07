@@ -8,8 +8,9 @@ import MainLayout from '../layouts/MainLayout';
 import { Link } from 'react-router-dom';
 import dragon from '../images/drexel-dragon.svg'
 import Form from 'react-bootstrap/Form';
-import '../scss/_home.scss';
 import Button from 'react-bootstrap/esm/Button';
+import FloatingLabel from 'react-bootstrap/FloatingLabel';
+import '../scss/_home.scss';
 
 /**
  * The Home component serves as the landing page of the application.
@@ -17,7 +18,7 @@ import Button from 'react-bootstrap/esm/Button';
 const Home = () => {
   // Accessing the current user's information from the AuthContext.
   const { user } = useAuth();
-  const [proofType, setProofType] = useState('/EquationalReasoningRacket');
+  const [proofType, setProofType] = useState('/er-racket');
 
   return (
     <MainLayout>
@@ -33,55 +34,26 @@ const Home = () => {
                 <p>Welcome, {user.username} to your {user.is_student === true ? 'student' : 'instructor'} account!</p>
                 <p>Let's begin working on some proofs!</p>
                 <br></br>
-                <Col>
-                  <Form>
-                    <Form.Group>
-                      <Form.Floating>
-                        <Col md={3}>
-                          <Form.Label>
-                            Type of Proof:
-                          </Form.Label>
-                        </Col>
-                        <Col md={6}>
-                          <Form.Select
-                            id='proofType'
-                            type='select'
-                            onChange={e => {
-                              setProofType(e.target.value);
-                            }}
-                          >
-                            <option
-                              id='EquationalReasoningRacket'
-                              value='/EquationalReasoningRacket'>
-                                Equational Reasoning: Racket
-                            </option>
-                            <option
-                              id='NaturalDeductionPropositionalLogic'
-                              value='/NaturalDeductionPropositionalLogic'>
-                                Natural Deduction: Propositional Logic
-                            </option>
-                            <option
-                              id='NaturalDeductionFirstOrderLogic'
-                              value='/NaturalDeductionFirstOrderLogic'>
-                                Natural Deduction: First Order Logic
-                            </option>
+                <Form>
+                  <Form.Group>
+                    <Form.Floating>
+                      <FloatingLabel controlId="proofType" label="Type of Proof">
+                        <Form.Select
+                          aria-label="Floating label proof type select"
+                          id='proofType'
+                          onChange={e => { setProofType(e.target.value); }}>
+                          <option value='/er-racket'>Equational Reasoning: Racket</option>
+                          <option value='/NaturalDeductionPropositionalLogic'>Natural Deduction: Propositional Logic</option>
+                          <option value='/NaturalDeductionFirstOrderLogic'>Natural Deduction: First Order Logic</option>
+                        </Form.Select>
+                      </FloatingLabel>
+                    </Form.Floating>
+                  </Form.Group>
 
-                          </Form.Select>
-
-                        </Col>
-
-                      </Form.Floating>
-                    </Form.Group>
-                  </Form>
-
-                </Col>
-
-                <Link to={proofType}>
-                  <Button>
-                    Lets Begin
-                  </Button>
-                </Link>
-
+                  <div className='button-wrap'>
+                    <Button as={Link} className='orange-btn' to={proofType}>Let's Begin</Button>
+                  </div>
+                </Form>
               </>
             ) : (
               <>
