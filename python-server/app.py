@@ -23,5 +23,12 @@ def get_repositories():
         racket = proofEngine.generateRacketFromRule(json_data['rule'])
         return jsonify({"racket": racket}), 200
 
-if __name__ == '__main__': 
+@app.route('/api/v1/proof/check-goal', methods=['POST'])
+def check_goal():
+    with app.app_context():
+        json_data = request.get_json()
+        isValid = proofEngine.checkGoal(json_data['goal'])
+        return jsonify({'isValid': isValid})
+
+if __name__ == '__main__':
     app.run(host='localhost', port=9095, debug=True)

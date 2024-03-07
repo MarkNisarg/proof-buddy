@@ -1,6 +1,5 @@
 @use "./variables" as *;
 
-
 :root {
   --selectBGColor: rgb(255, 230, 0);
 }
@@ -133,6 +132,16 @@
             color: $color-drexel-blue;
             background-image: $orange-gradient;
           }
+        }
+      }
+
+      .goal-btn-wrap {
+        justify-content: center;
+        margin-bottom: 20px;
+
+        .orange-btn {
+          font-size: 22px;
+          width: 360px;
         }
       }
     }

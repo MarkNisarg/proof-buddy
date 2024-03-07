@@ -13,6 +13,7 @@ import { useToggleSide } from '../hooks/useToggleSide';
 import { useOffcanvas } from '../hooks/useOffcanvas';
 import { useInputState } from '../hooks/useInputState';
 import { useFormValidation } from '../hooks/useFormValidation';
+import { useGoalCheck } from '../hooks/useGoalCheck';
 import { useRacketRuleFields } from '../hooks/useRacketRuleFields';
 import { useCurrentRacketValues } from '../hooks/useCurrentRacketValues';
 import { useFormSubmit } from '../hooks/useFormSubmit';
@@ -36,6 +37,7 @@ const ERRacket = () => {
   const [formValues, handleChange] = useInputState(initialValues);
   const [validationMessages, handleBlur, setAllTouched, isFormValid] = useFormValidation(formValues, validateField);
   const [validated, setValidated] = useState(false);
+  const [isGoalChecked, checkGoal, goalValidationMessage, enhancedHandleChange] = useGoalCheck(handleChange);
   const [racketRuleFields, addFieldWithApiCheck, removeEmptyLines, handleFieldChange, validationErrors, serverError] = useRacketRuleFields();
   const [currentLHS, currentRHS] = useCurrentRacketValues(racketRuleFields);
   const [isOffcanvasActive, toggleOffcanvas] = useOffcanvas();
@@ -47,7 +49,7 @@ const ERRacket = () => {
   };
 
   const { handleSubmit } = useFormSubmit(isFormValid, setValidated, setAllTouched, handleERRacketSubmission);
-  
+
   /**
    * Creates JSON object of the target incoming parameter (which should be a JavaScript Object)
    */
@@ -58,13 +60,13 @@ const ERRacket = () => {
   /**
    * Returns a JSON object of the present form
    */
-  const convertFormToJSON = () => { 
-    // Basic Form Object in JavaScript
-    let EquationalReasoningObject = { 
-      name: formValues.proofName, // Proof Name - E.g., "name":"Test-001"
-      leftRacketsAndRules: racketRuleFields.LHS,  // Array of JavaScript Objects - E.g., "leftRacketsAndRules":[{"racket":"leftracket01","rule":"leftrule01"}]
-      rightRacketsAndRules: racketRuleFields.RHS // Array of JavaScript Objects - E.g., "rightRacketsAndRules":[{"racket":"rightracket01","rule":"rightgoal01"}]}
+  const convertFormToJSON = () => {
+    let EquationalReasoningObject = {
+      name: formValues.proofName,
+      leftRacketsAndRules: racketRuleFields.LHS,
+      rightRacketsAndRules: racketRuleFields.RHS
     }
+
     return convertToJSON(EquationalReasoningObject);
   }
 
@@ -73,9 +75,7 @@ const ERRacket = () => {
   return (
     <MainLayout>
       <Container className='er-racket-container'>
-
         <OffcanvasRuleSet isActive={isOffcanvasActive} toggleFunction={toggleOffcanvas}></OffcanvasRuleSet>
-        
         <Form noValidate validated={validated} className='er-racket-form' onSubmit={handleSubmit}>
           <div className='form-top-section'>
             <Row className='page-header-row'>
@@ -141,13 +141,13 @@ const ERRacket = () => {
                     placeholder="LHS Goal"
                     value={formValues.lHSGoal}
                     onBlur={() => handleBlur('lHSGoal')}
-                    onChange={handleChange}
-                    isInvalid={!!validationMessages.lHSGoal}
+                    onChange={enhancedHandleChange}
+                    isInvalid={!!validationMessages.lHSGoal || !!goalValidationMessage.LHS}
                     required
                   />
                   <label htmlFor="eRProofLHSGoal">LHS Goal</label>
                   <Form.Control.Feedback type="invalid" tooltip>
-                    {validationMessages.lHSGoal}
+                    {validationMessages.lHSGoal || goalValidationMessage.LHS}
                   </Form.Control.Feedback>
                 </Form.Floating>
               </Form.Group>
@@ -161,13 +161,13 @@ const ERRacket = () => {
                     placeholder="RHS Goal"
                     value={formValues.rHSGoal}
                     onBlur={() => handleBlur('rHSGoal')}
-                    onChange={handleChange}
-                    isInvalid={!!validationMessages.rHSGoal}
+                    onChange={enhancedHandleChange}
+                    isInvalid={!!validationMessages.rHSGoal || !!goalValidationMessage.RHS}
                     required
                   />
                   <label htmlFor="eRProofRHSGoal">RHS Goal</label>
                   <Form.Control.Feedback type="invalid" tooltip>
-                    {validationMessages.rHSGoal}
+                    {validationMessages.rHSGoal || goalValidationMessage.RHS}
                   </Form.Control.Feedback>
                 </Form.Floating>
               </Form.Group>
@@ -215,189 +215,203 @@ const ERRacket = () => {
               </Col>
             </Row>
 
-            <div className="racket-rule-wrap" id="racket-rule">
-              {serverError && <Alert variant={'danger'}>{serverError}</Alert>}
-
-              {showSide === 'LHS' && (
-                <div className="racket-rule-lhs" id="racket-rule-lhs">
-                  {/* Static Row Always Present */}
-                  <Row className="racket-rule-row">
-                    <Form.Group as={Col} md="8" className='er-proof-current-goal'>
-                      <Form.Floating className="mb-3">
-                        <Form.Control
-                          id="eRProofCurrentLHSGoal"
-                          name="proofCurrentLHSGoal"
-                          type="text"
-                          value={formValues.lHSGoal}
-                          placeholder="Current Goal"
-                          onChange={handleChange}
-                          readOnly
-                        />
-                        <label htmlFor="eRProofCurrentLHSGoal">LHS Goal</label>
-                      </Form.Floating>
-                    </Form.Group>
-
-                    <Form.Group as={Col} md="4" className='er-proof-premise'>
-                      <Form.Floating className="mb-3">
-                        <Form.Control
-                          id="eRProofLHSPremise"
-                          name="proofeRProofLHSPremise"
-                          type="text"
-                          value="Premise"
-                          placeholder="LHS Premise"
-                          onChange={handleChange}
-                          readOnly
-                        />
-                        <label htmlFor="eRProofLHSPremise">LHS Premise</label>
-                      </Form.Floating>
-                    </Form.Group>
-                  </Row>
-
-                  {/* Dynamically Added Racket and Rule Fields */}
-                  {racketRuleFields.LHS.map((field, index) => (
-                    <Row className="racket-rule-row" key={`LHS-field-${index}`}>
-                      <Form.Group as={Col} md="8" className='er-proof-racket'>
-                        <Form.Floating className="mb-3">
-                          <Form.Control
-                            id={`eRProofLHSRacket-${index}`}
-                            name={`eRProofLHSRacket_${index}`}
-                            type="text"
-                            placeholder="LHS Racket"
-                            value={field.racket}
-                            onChange={(e) => handleFieldChange(showSide, index, 'racket', e.target.value)}
-                            onSelect={(e) => handleHighlight(e)}
-                          />
-                          <label htmlFor={`eRProofLHSRacket-${index}`}>LHS Racket</label>
-                        </Form.Floating>
-                      </Form.Group>
-
-                      <Form.Group as={Col} md="4" className='er-proof-rule'>
-                        <Form.Floating className="mb-3">
-                          <Form.Control
-                            id={`eRProofLHSRule-${index}`}
-                            name={`eRProofLHSRule_${index}`}
-                            type="text"
-                            placeholder="LHS Rule"
-                            value={field.rule}
-                            onChange={(e) => handleFieldChange(showSide, index, 'rule', e.target.value)}
-                            isInvalid={!!validationErrors.LHS[index]}
-                            required
-                          />
-                          <label htmlFor={`eRProofLHSRule-${index}`}>LHS Rule</label>
-                          <Form.Control.Feedback type="invalid" tooltip>
-                            {validationErrors.LHS[index]}
-                          </Form.Control.Feedback>
-                        </Form.Floating>
-                      </Form.Group>
-                    </Row>
-                  ))}
-                </div>
-              )}
-
-              {showSide === 'RHS' && (
-                <div className="racket-rule-rhs" id="racket-rule-rhs">
-                  {/* Static Row Always Present */}
-                  <Row className="racket-rule-row">
-                    <Form.Group as={Col} md="8" className='er-proof-current-goal'>
-                      <Form.Floating className="mb-3">
-                        <Form.Control
-                          id="eRProofCurrentRHSGoal"
-                          name="proofCurrentRHSGoal"
-                          type="text"
-                          value={formValues.rHSGoal}
-                          placeholder="Current Goal"
-                          onChange={handleChange}
-                          readOnly
-                        />
-                        <label htmlFor="eRProofCurrentRHSGoal">RHS Goal</label>
-                      </Form.Floating>
-                    </Form.Group>
-
-                    <Form.Group as={Col} md="4" className='er-proof-premise'>
-                      <Form.Floating className="mb-3">
-                        <Form.Control
-                          id="eRProofRHSPremise"
-                          name="proofeRProofRHSPremise"
-                          type="text"
-                          value="Premise"
-                          placeholder="RHS Premise"
-                          onChange={handleChange}
-                          readOnly
-                        />
-                        <label htmlFor="eRProofRHSPremise">RHS Premise</label>
-                      </Form.Floating>
-                    </Form.Group>
-                  </Row>
-
-                  {/* Dynamically Added Racket and Rule Fields */}
-                  {racketRuleFields.RHS.map((field, index) => (
-                    <Row className="racket-rule-row" key={`RHS-field-${index}`}>
-                      <Form.Group as={Col} md="8" className='er-proof-racket'>
-                        <Form.Floating className="mb-3">
-                          <Form.Control
-                            id={`eRProofRHSRacket-${index}`}
-                            name={`eRProofRHSRacket_${index}`}
-                            type="text"
-                            placeholder="RHS Racket"
-                            value={field.racket}
-                            onChange={(e) => handleFieldChange(showSide, index, 'racket', e.target.value)}
-                            onSelect={(e) => handleHighlight(e)}
-                          />
-                          <label htmlFor={`eRProofRHSRacket-${index}`}>RHS Racket</label>
-                        </Form.Floating>
-                      </Form.Group>
-
-                      <Form.Group as={Col} md="4" className='er-proof-rule'>
-                        <Form.Floating className="mb-3">
-                          <Form.Control
-                            id={`eRProofRHSRule-${index}`}
-                            name={`eRProofRHSRule_${index}`}
-                            type="text"
-                            placeholder="RHS Rule"
-                            value={field.rule}
-                            onChange={(e) => handleFieldChange(showSide, index, 'rule', e.target.value)}
-                            isInvalid={!!validationErrors.RHS[index]}
-                            required
-                          />
-                          <label htmlFor={`eRProofRHSRule-${index}`}>RHS Rule</label>
-                          <Form.Control.Feedback type="invalid" tooltip>
-                            {validationErrors.RHS[index]}
-                          </Form.Control.Feedback>
-                        </Form.Floating>
-                      </Form.Group>
-                    </Row>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <div className='button-row-wrap'>
-              <Row className="button-row">
-                <Col md="8">
-                  <Button className='orange-btn delete-btn' onClick={() => removeEmptyLines(showSide)}>Delete Line</Button>
-                </Col>
-                <Col md="4" className="rules-btn-grp">
-                  <Button className='orange-btn green-btn' onClick={() => addFieldWithApiCheck(showSide)}>Generate & Check</Button>
-                  <Button className='orange-btn green-btn'>Substitution</Button>
-                </Col>
-              </Row></div>
-
-            <div className="proof-opr-wrap">
-              <Row className='proof-oprs'>
-                <Dropdown as={Col} className="d-inline proof-dropdown-btn proof-operations">
-                  <Dropdown.Toggle id="dropdown-autoclose-true">
-                    File Operations
-                  </Dropdown.Toggle>
-
-                  <Dropdown.Menu>
-                    <Dropdown.Item onClick={exportJSON}>Download Proof</Dropdown.Item>
-                    <Dropdown.Item href="#">Upload Proof</Dropdown.Item>
-                    <Dropdown.Item href="#">Save Proof</Dropdown.Item>
-                    <Dropdown.Item href="#">Submit Proof</Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
+            {!isGoalChecked[showSide] && (
+              <Row className='goal-btn-wrap'>
+                <Button className='orange-btn'
+                  onClick={() => checkGoal(showSide, formValues[`${showSide[0].toLowerCase()}HSGoal`])}>
+                  Check {showSide} Goal
+                </Button>
               </Row>
-            </div>
+            )}
+
+            {isGoalChecked[showSide] && (
+              <div className='racket-rule-container-wrap'>
+                <div className="racket-rule-wrap" id="racket-rule">
+                  {serverError && <Alert variant={'danger'}>{serverError}</Alert>}
+
+                  {showSide === 'LHS' && (
+                    <div className="racket-rule-lhs" id="racket-rule-lhs">
+                      {/* Static Row Always Present */}
+                      <Row className="racket-rule-row">
+                        <Form.Group as={Col} md="8" className='er-proof-current-goal'>
+                          <Form.Floating className="mb-3">
+                            <Form.Control
+                              id="eRProofCurrentLHSGoal"
+                              name="proofCurrentLHSGoal"
+                              type="text"
+                              value={formValues.lHSGoal}
+                              placeholder="Current Goal"
+                              onChange={handleChange}
+                              readOnly
+                            />
+                            <label htmlFor="eRProofCurrentLHSGoal">LHS Goal</label>
+                          </Form.Floating>
+                        </Form.Group>
+
+                        <Form.Group as={Col} md="4" className='er-proof-premise'>
+                          <Form.Floating className="mb-3">
+                            <Form.Control
+                              id="eRProofLHSPremise"
+                              name="proofeRProofLHSPremise"
+                              type="text"
+                              value="Premise"
+                              placeholder="LHS Premise"
+                              onChange={handleChange}
+                              readOnly
+                            />
+                            <label htmlFor="eRProofLHSPremise">LHS Premise</label>
+                          </Form.Floating>
+                        </Form.Group>
+                      </Row>
+
+                      {/* Dynamically Added Racket and Rule Fields */}
+                      {racketRuleFields.LHS.map((field, index) => (
+                        <Row className="racket-rule-row" key={`LHS-field-${index}`}>
+                          <Form.Group as={Col} md="8" className='er-proof-racket'>
+                            <Form.Floating className="mb-3">
+                              <Form.Control
+                                id={`eRProofLHSRacket-${index}`}
+                                name={`eRProofLHSRacket_${index}`}
+                                type="text"
+                                placeholder="LHS Racket"
+                                value={field.racket}
+                                onChange={(e) => handleFieldChange(showSide, index, 'racket', e.target.value)}
+                                onSelect={(e) => handleHighlight(e)}
+                              />
+                              <label htmlFor={`eRProofLHSRacket-${index}`}>LHS Racket</label>
+                            </Form.Floating>
+                          </Form.Group>
+
+                          <Form.Group as={Col} md="4" className='er-proof-rule'>
+                            <Form.Floating className="mb-3">
+                              <Form.Control
+                                id={`eRProofLHSRule-${index}`}
+                                name={`eRProofLHSRule_${index}`}
+                                type="text"
+                                placeholder="LHS Rule"
+                                value={field.rule}
+                                onChange={(e) => handleFieldChange(showSide, index, 'rule', e.target.value)}
+                                isInvalid={!!validationErrors.LHS[index]}
+                                required
+                              />
+                              <label htmlFor={`eRProofLHSRule-${index}`}>LHS Rule</label>
+                              <Form.Control.Feedback type="invalid" tooltip>
+                                {validationErrors.LHS[index]}
+                              </Form.Control.Feedback>
+                            </Form.Floating>
+                          </Form.Group>
+                        </Row>
+                      ))}
+                    </div>
+                  )}
+
+                  {showSide === 'RHS' && (
+                    <div className="racket-rule-rhs" id="racket-rule-rhs">
+                      {/* Static Row Always Present */}
+                      <Row className="racket-rule-row">
+                        <Form.Group as={Col} md="8" className='er-proof-current-goal'>
+                          <Form.Floating className="mb-3">
+                            <Form.Control
+                              id="eRProofCurrentRHSGoal"
+                              name="proofCurrentRHSGoal"
+                              type="text"
+                              value={formValues.rHSGoal}
+                              placeholder="Current Goal"
+                              onChange={handleChange}
+                              readOnly
+                            />
+                            <label htmlFor="eRProofCurrentRHSGoal">RHS Goal</label>
+                          </Form.Floating>
+                        </Form.Group>
+
+                        <Form.Group as={Col} md="4" className='er-proof-premise'>
+                          <Form.Floating className="mb-3">
+                            <Form.Control
+                              id="eRProofRHSPremise"
+                              name="proofeRProofRHSPremise"
+                              type="text"
+                              value="Premise"
+                              placeholder="RHS Premise"
+                              onChange={handleChange}
+                              readOnly
+                            />
+                            <label htmlFor="eRProofRHSPremise">RHS Premise</label>
+                          </Form.Floating>
+                        </Form.Group>
+                      </Row>
+
+                      {/* Dynamically Added Racket and Rule Fields */}
+                      {racketRuleFields.RHS.map((field, index) => (
+                        <Row className="racket-rule-row" key={`RHS-field-${index}`}>
+                          <Form.Group as={Col} md="8" className='er-proof-racket'>
+                            <Form.Floating className="mb-3">
+                              <Form.Control
+                                id={`eRProofRHSRacket-${index}`}
+                                name={`eRProofRHSRacket_${index}`}
+                                type="text"
+                                placeholder="RHS Racket"
+                                value={field.racket}
+                                onChange={(e) => handleFieldChange(showSide, index, 'racket', e.target.value)}
+                                onSelect={(e) => handleHighlight(e)}
+                              />
+                              <label htmlFor={`eRProofRHSRacket-${index}`}>RHS Racket</label>
+                            </Form.Floating>
+                          </Form.Group>
+
+                          <Form.Group as={Col} md="4" className='er-proof-rule'>
+                            <Form.Floating className="mb-3">
+                              <Form.Control
+                                id={`eRProofRHSRule-${index}`}
+                                name={`eRProofRHSRule_${index}`}
+                                type="text"
+                                placeholder="RHS Rule"
+                                value={field.rule}
+                                onChange={(e) => handleFieldChange(showSide, index, 'rule', e.target.value)}
+                                isInvalid={!!validationErrors.RHS[index]}
+                                required
+                              />
+                              <label htmlFor={`eRProofRHSRule-${index}`}>RHS Rule</label>
+                              <Form.Control.Feedback type="invalid" tooltip>
+                                {validationErrors.RHS[index]}
+                              </Form.Control.Feedback>
+                            </Form.Floating>
+                          </Form.Group>
+                        </Row>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className='button-row-wrap'>
+                  <Row className="button-row">
+                    <Col md="8">
+                      <Button className='orange-btn delete-btn' onClick={() => removeEmptyLines(showSide)}>Delete Line</Button>
+                    </Col>
+                    <Col md="4" className="rules-btn-grp">
+                      <Button className='orange-btn green-btn' onClick={() => addFieldWithApiCheck(showSide)}>Generate & Check</Button>
+                      <Button className='orange-btn green-btn'>Substitution</Button>
+                    </Col>
+                  </Row>
+                </div>
+
+                <div className="proof-opr-wrap">
+                  <Row className='proof-oprs'>
+                    <Dropdown as={Col} className="d-inline proof-dropdown-btn proof-operations">
+                      <Dropdown.Toggle id="dropdown-autoclose-true">
+                    File Operations
+                      </Dropdown.Toggle>
+
+                      <Dropdown.Menu>
+                        <Dropdown.Item onClick={exportJSON}>Download Proof</Dropdown.Item>
+                        <Dropdown.Item href="#">Upload Proof</Dropdown.Item>
+                        <Dropdown.Item href="#">Save Proof</Dropdown.Item>
+                        <Dropdown.Item href="#">Submit Proof</Dropdown.Item>
+                      </Dropdown.Menu>
+                    </Dropdown>
+                  </Row>
+                </div>
+              </div>
+            )}
           </div>
         </Form>
       </Container>

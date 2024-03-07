@@ -3,30 +3,15 @@
  */
 
 /**
- * Validates a proof name.
+ * Validates a proof field.
  *
- * @param {string} proofName - The proof name to validate.
+ * @param {string} value - The proof field value.
  * @returns {string} An empty string if the proof name is valid, otherwise an error message.
  */
-const validateProofName = (proofName) => {
+const validateProofField = (value, message) => {
   let errorMessage = '';
-  if (!proofName) {
-    errorMessage = 'Please provide a proof name.';
-  }
-
-  return errorMessage;
-};
-
-/**
- * Validates a proof goal.
- *
- * @param {string} goal - The proof goal to validate.
- * @returns {string} An empty string if the proof goal is valid, otherwise an error message.
- */
-const validateGoal = (goal) => {
-  let errorMessage = '';
-  if (!goal) {
-    errorMessage = 'Please provide a proof goal.';
+  if (!value) {
+    errorMessage = message;
   }
 
   return errorMessage;
@@ -40,15 +25,17 @@ const validateGoal = (goal) => {
  * @returns {string} An empty string if the field is valid, otherwise an error message.
  */
 const validateField = (fieldName, value) => {
-  switch (fieldName) {
-    case 'proofName':
-      return validateProofName(value);
-    case 'lHSGoal':
-      return validateGoal(value);
-    case 'rHSGoal':
-      return validateGoal(value);
-    default:
-      return '';
+  if (fieldName === 'proofName') {
+    return validateProofField(value, 'Please provide a proof name.');
+  }
+  else if (fieldName === 'lHSGoal') {
+    return validateProofField(value, 'Please provide a LHS goal.');
+  }
+  else if (fieldName === 'rHSGoal') {
+    return validateProofField(value, 'Please provide a RHS goal.');
+  }
+  else {
+    return '';
   }
 };
 
