@@ -69,6 +69,17 @@ test_strings_typeBad=[ #these should all pass labeling and decorating,but fail t
     '(+ (+ #t 4 #5) #t)', # should give only two errors and NOT 3 errors (but 3 is ok)
 ]
 
+test_strings_applyRule=[
+    "(+ 3 4)", #expected 7
+    "(or #t #f)", #expected True
+    "(and #t #f)", #expected False
+    "(< 2 9)", #expected True
+    "(if #t 1 2)", #expected 1
+    "(first 1 2 3 4)", #expected 1
+    "(rest 1 2 3 4)", #expected [2, 3, 4]
+    "(int? 1)", #expected True
+]
+
 for test in test_strings_ok+test_strings_err + test_strings_typeGood + test_strings_typeBad:
     print(f"input = {test}")
     debugStatus = False
@@ -139,3 +150,16 @@ for i in test_strings_typeGood + test_strings_typeBad:
     decTree, errLog = checkFunctions(decTree,errLog)
     print(decTree)
     print(errLog)
+
+
+print("\n\t applyRule testing: \t\n")
+for i in test_strings_applyRule:
+    print("input =", i)
+    exprList,errLog = Parser.preProcess(i,errLog=[],debug=debugStatus)
+    exprTree = Parser.buildTree(exprList,debug=debugStatus)[0] # might not need to pass errLog
+    labeledTree = Labeler.labelTree(exprTree)
+    decTree, errLog = decorateTree(labeledTree,errLog)
+    errLog = remTemps(decTree, errLog)
+    decTree, errLog = checkFunctions(decTree,errLog)
+    #print(decTree)
+    print(decTree.applyRule())

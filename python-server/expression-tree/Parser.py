@@ -2,6 +2,7 @@
 
 import string # for string helper functions
 from typeFile import * # import RacType for type hints
+from ERobj import *  # for accessing pdict and ERObj declarations in applyRule
 
 # SYMBOLS: perhaps in future allow square brackets and braces. 
 WHITESPACE = ["\n","\t","\r"," "] # permits linebreak and indents for conditionals. all become \s in pre-processing step
@@ -74,6 +75,36 @@ class Node:
             self.type=RacType(Type.ERROR)
             #TODO: handle string parsing
         return
+    
+    def applyRule(self):
+        if (self.children[0].data in pdict): #for pre-defined functions TODO: user-defined funcs support - which dict will user-def funcs go in
+            operator = self.children[0].data
+            erObj = pdict[operator]
+            inputs = []
+            for child in self.children[1:]: #converting to bools or ints so calculation can be done
+                if child.data == '#t':
+                    inputs.append(True)
+                elif child.data == '#f':
+                    inputs.append(False)
+                elif child.type == Type.PARAM:
+                    inputs.append(child.data)
+                else:
+                    inputs.append(int(child.data)) #any other type - any missing?
+            if erObj.value: #if operation is defined in the ERobj, eg for arithmetic or boolean operations
+                output = erObj.value(*inputs)
+                return output
+            else: #if, cons, first, rest, null, lambda
+                if operator == 'first':
+                    return inputs[0]
+                if operator == 'rest':
+                    return inputs[1:] #list of the remaining inputs
+                if operator == 'if':
+                    if inputs[0]:
+                        return inputs[1]
+                    else:
+                        return inputs[2]
+                
+
         
 # errLog is a list of strings of error messages that will be passed at each step of the tree-building process
 def preProcess(inputString:str, errLog:list[str]=None, debug=False) -> tuple[list[str],list[str]]: # None will generate a warning since it's not a list of strings
