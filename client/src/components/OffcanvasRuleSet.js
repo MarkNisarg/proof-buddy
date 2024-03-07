@@ -12,6 +12,7 @@ const OffcanvasRuleSet = ({ isActive, toggleFunction }) => {
   
   /* Present list of Rules for View Rule Set Offcanvas */
   const rules = ruleSet();
+  
   return (
     <OffCanvas className='Offcanvas' id='rule-set' show={isActive} onHide={toggleFunction}  scroll='true' placement='bottom'>
       <OffCanvas.Body>

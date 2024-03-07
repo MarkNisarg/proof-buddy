@@ -57,7 +57,6 @@ const ERRacket = () => {
 
   /**
    * Returns a JSON object of the present form
-   * 
    */
   const convertFormToJSON = () => { 
     // Basic Form Object in JavaScript
