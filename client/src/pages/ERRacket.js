@@ -61,6 +61,8 @@ const ERRacket = () => {
    * Returns a JSON object of the present form
    */
   const convertFormToJSON = () => {
+    //This is a Front End Proof Object placeholder
+    //In the future we will be using a Proof Object sent from the python-server
     let EquationalReasoningObject = {
       name: formValues.proofName,
       leftRacketsAndRules: racketRuleFields.LHS,

@@ -11,4 +11,5 @@ class ProofEngine():
         return rule + '-x'
 
     def checkGoal(self, goal:str):
+        print(goal)
         return False

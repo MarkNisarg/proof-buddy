@@ -28,7 +28,8 @@ def check_goal():
     with app.app_context():
         json_data = request.get_json()
         isValid = proofEngine.checkGoal(json_data['goal'])
-        return jsonify({'isValid': isValid})
+        errLog = ['error1', 'error2']
+        return jsonify({'isValid': isValid, 'errors': errLog }), 200
 
 if __name__ == '__main__':
     app.run(host='localhost', port=9095, debug=True)
