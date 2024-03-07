@@ -75,9 +75,11 @@ test_strings_applyRule=[
     "(and #t #f)", #expected False
     "(< 2 9)", #expected True
     "(if #t 1 2)", #expected 1
-    "(first 1 2 3 4)", #expected 1
-    "(rest 1 2 3 4)", #expected [2, 3, 4]
+    "(first 1 2 3 4)", #expected 1.  this SHOULD fail, since not a list
+    "(rest 1 2 3 4)", #expected [2, 3, 4]. this SHOULD fail, since not a list
     "(int? 1)", #expected True
+    #"(+ 1 2 3)", #this fails applyRule, since errLog not checked
+    #"(+ (+ 1 2) 5)" #this fails applyRule, since not recursive
 ]
 
 for test in test_strings_ok+test_strings_err + test_strings_typeGood + test_strings_typeBad:
@@ -163,3 +165,19 @@ for i in test_strings_applyRule:
     decTree, errLog = checkFunctions(decTree,errLog)
     #print(decTree)
     print(decTree.applyRule())
+
+# unit testing for types
+tests = [RacType((None, Type.INT)), RacType((((((None, Type.LIST), (None, Type.BOOL)), \
+        Type.INT), (((None, Type.INT), (None, Type.LIST)), (None, Type.BOOL))), (None, Type.LIST))),\
+        RacType((((((None,Type.INT),),(None,Type.LIST)),),(None,Type.BOOL)))]
+
+for t in tests:
+    print(f"expr is type {t.getType()}, domainList = {TypeList(t.getDomain())}, range = {t.getRange()}")
+
+ttype = RacType((((((None,Type.INT),),(None,Type.LIST)),),(None,Type.BOOL)))
+testNode.setType("( (LIST,BOOL)>INT, LIST  ) > (INT, (BOOL,LIST)>INT, LIST)>BOOL")
+testNode.setType("BOOL")
+testNode.setType("BOOL>INT")
+testNode.setType("(BOOL)>INT")
+testNode.setType("(BOOL(>INT")
+# (LIST, BOOL) > INT, (INT, LIST) > BOOL

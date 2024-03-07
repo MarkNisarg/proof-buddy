@@ -69,13 +69,17 @@ class Node:
         return
     
     def setType(self, strg:str):
-        if strg != "FUNCTION":
+        if ">" not in strg:
             self.type=RacType((None,Type.__members__.get(strg)))
         else:
-            self.type=RacType(Type.ERROR)
-            #TODO: handle string parsing
+            # make a "token list"
+            slist = strg.upper().replace("(", " ( ").replace(">", " > ").replace(",", " , ").replace(")", " ) ").strip().split()
+            if (ind:=findArrow(slist)) == -1:
+                self.type=RacType(Type.ERROR) # e.g. mismatched parens
+            else:
+                print(ind)
         return
-    
+     
     def applyRule(self):
         if (self.children[0].data in pdict): #for pre-defined functions TODO: user-defined funcs support - which dict will user-def funcs go in
             operator = self.children[0].data
@@ -104,7 +108,16 @@ class Node:
                     else:
                         return inputs[2]
                 
-
+# a helper function for setType that returns the position in the list of the root >
+def findArrow(tlist:list)->int:
+    if tlist[0]!="(": #it was just a single parameter function and so user didn't use parens
+        return 1
+    counter=0 #checking for when parens first become balanced
+    for i in range(len(tlist)): #must use range since index matters
+        counter += 1 if tlist[i]=="(" else -1 if tlist[i]==")" else 0
+        if counter == 0:
+            return i+1
+    return -1 # this should never happen unless the string had unbalanced parens
         
 # errLog is a list of strings of error messages that will be passed at each step of the tree-building process
 def preProcess(inputString:str, errLog:list[str]=None, debug=False) -> tuple[list[str],list[str]]: # None will generate a warning since it's not a list of strings
