@@ -20,9 +20,9 @@ class ExpressionTestInstance(NamedTuple):
 class ExpressionTests(unittest.TestCase):
     def setUp(self):    
         tTrue = TokenIdentifier('True',r'#t','#t')
-        tokenTrue = tTrue.parse('#t')
+        tokenTrue = tTrue.match('#t')
         tSymbol = TokenIdentifier('Symbol',r'([A-Z])',r'\g<1>')
-        tokenSymbol = tSymbol.parse('A')
+        tokenSymbol = tSymbol.match('A')
         eTerminal = ExpressionIdentifier('Terminal',[tSymbol])
         eBoolean = ExpressionIdentifier('Boolean',[tTrue])
         self.expressionTypeList = list[ExpressionTestInstance]()
@@ -43,28 +43,28 @@ class ExpressionTests(unittest.TestCase):
         for ti in self.expressionTypeList:
             with self.subTest(ti.expressionType.name):
                 for s in ti.valid_unparsed:
-                    expression = ti.expressionType.match(s)
+                    expression, _ = ti.expressionType.match(s)
                     self.assertIsNotNone(expression)
     
     def test_expressiontype_parse_invalid_list_of_tokens(self):
          for ti in self.expressionTypeList:
             with self.subTest(ti.expressionType.name):
                 for s in ti.invalid_unparsed:
-                    expression = ti.expressionType.match(s)
+                    expression, _ = ti.expressionType.match(s)
                     self.assertIsNone(expression)
 
     def test_expression_print_valid(self):
         for ti in self.expressionTypeList:
             with self.subTest(ti.expressionType.name):
                 for j in range(len(ti.valid_unparsed)):
-                    expression = ti.expressionType.match(ti.valid_unparsed[j])
+                    expression, _ = ti.expressionType.match(ti.valid_unparsed[j])
                     self.assertEqual(f'{ti.valid_parsed[j]}', f'{expression}')
     
     def test_expression_tree_valid(self):
         for ti in self.expressionTypeList:
             with self.subTest(ti.expressionType.name):
                 for j in range(len(ti.valid_unparsed)):
-                    expression = ti.expressionType.match(ti.valid_unparsed[j])
+                    expression, _ = ti.expressionType.match(ti.valid_unparsed[j])
                     expression2 = ti.valid_parsed[j]
                     self.assertEqual(expression, expression2)
 

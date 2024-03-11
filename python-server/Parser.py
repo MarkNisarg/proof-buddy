@@ -1,7 +1,7 @@
 from Token import Token, TokenIdentifier
 from Expression import Expression, ExpressionIdentifier
 import re
-
+from copy import deepcopy
 
 class Parser:
 
@@ -9,45 +9,55 @@ class Parser:
         self.tokenIdentifiers = tokenIdentifiers
         self.expressionTypes = expressionTypes
 
-    def tokenize(self, inputLine:str) -> list[Token]:
-        tokens = list[Token]
+    def tokenize(self, inputLine:str, debug:bool) -> list[Token]:
+        tokens = list[Token]()
         cursor = 0
         while cursor < len(inputLine):
             for t in self.tokenIdentifiers:
+                # join all the regex patterns into one pattern for matching
                 regex = re.compile(t.recognizeRegex)
                 match = regex.match(inputLine, cursor)
                 if match != None:
                     cursor += len(match.group(0))
-                    tokens.append(Token(t,match))
+                    # create Token to hold raw list of strings instead of needing to work with Match objects
+                    tokens.append(Token(t,match,t.printRegex))
         return tokens
 
     def parse(self, inputLine:str, debug:bool=False) -> Expression:
         # tokenize str->list[Token]
         # Match list[Token] to list[ExpressionType] (recursively) to create Expression tree
-        tokenList = list(self.tokenize(inputLine))
+        inputLine = inputLine.replace(' ','')
+        tokenList = self.tokenize(inputLine, debug)
+        #print('tokens: ', tokenList) # print tokenized input string
         for t_i, t in enumerate(tokenList):
             if t.isTerminal:
                 if debug:
-                    print(f'{t.tokenIdentifier.name}: {t}')
+                    print(f'{t.id.name}: {t}')
                     print()
-                tokenList[t_i] = Expression(ExpressionIdentifier(t.tokenIdentifier.name, [t.tokenIdentifier]), f'{t}')
-        while len(tokenList) > 1:
-            for e in self.expressionTypes:
-                found, index = e.match(tokenList)
-                if found:
-                    if debug:
-                        print(f'{e.name}: {tokenList[index:index+len(e.structure)]!s}')
-                    new_expr = Expression(e, tokenList[index:index+len(e.structure)])
-                    # I couldn't figure out how to pass a slice to __delitem__ for some reason
-                    # It should support it
-                    for i in range(len(e.structure)):
-                        tokenList.__delitem__(index)
-                    tokenList.insert(index, new_expr)
-                    break
-        return tokenList[0]
+                tokenList[t_i] = Expression(ExpressionIdentifier(t.id.name, [[t.id]]), [f'{t}'])
+        return self.getExpressions(tokenList)[0]
 
     def addTokenIdentifier(self, tokenIdentifier:TokenIdentifier):
         self.tokenIdentifiers.append(tokenIdentifier)
 
     def addExpressionType(self, name:str, structure:list[TokenIdentifier]):
         self.expressionTypes.append(structure)
+
+    def getExpressions(self, tokenList):
+        if len(tokenList) == 0:
+            return [Expression(None, [])]
+        while len(tokenList) > 1:
+            # make a single pass through all the different identifiers
+            for e in self.expressionTypes:
+                # match() returns a list or a single expression now
+                if e.name == 'List' and str(tokenList[0]) == '(':
+                    innerExp = self.getExpressions(tokenList[1:-1])
+                    tokenList = e.match([tokenList[0]] + innerExp + [tokenList[-1]])
+                else:
+                    tokenList = e.match(tokenList)
+                while sum(1 for t in tokenList if isinstance(t, Expression)) > 1:
+                    for i in range(len(tokenList)-1):
+                        if isinstance(tokenList[i], Expression) and isinstance(tokenList[i+1], Expression):
+                            tokenList = tokenList[0:i] + [Expression(None, tokenList[i].components + tokenList[i+1].components)] + tokenList[i+2:len(tokenList)]
+                            break
+        return tokenList
