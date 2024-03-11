@@ -1,6 +1,6 @@
 # This file conducts an initial pass over the input AST to populate a type for each Node object
 
-from Parser import Node # import Node objects
+from recParser import Node # import Node objects
 from typeFile import * # import RacType objects and Type Enum
 from ERobj import pdict # import dictionary of ERobj objects
 import re # for regex usage

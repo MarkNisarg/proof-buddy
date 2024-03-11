@@ -1,4 +1,4 @@
-from Parser import Parser
+from RecParser import RecParser
 import EquationalReasoning as ER
 
 # This should probably be removed from the git repo later, but is used as a scratch pad for

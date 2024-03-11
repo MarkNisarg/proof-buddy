@@ -9,7 +9,7 @@ parent = os.path.dirname(current)
 sys.path.append(parent)
 from Token import Token, TokenType
 from Expression import Expression, ExpressionIdentifier
-import Parser
+import RecParser
 
 # class ParserTestInstance(NamedTuple):
 #     expressionType: ExpressionType
@@ -43,7 +43,7 @@ def defineER():
 class ParserTests(unittest.TestCase):
     def setUp(self):
         tokenList, expressionList = defineER()
-        self.paser = Parser(tokenList, expressionList)
+        self.paser = RecParser(tokenList, expressionList)
     #     tTrue = TokenType('True',r'#t','#t')
     #     tokenTrue = tTrue.parse('#t')
     #     tSymbol = TokenType('Symbol',r'([A-Z])',r'\g<1>')

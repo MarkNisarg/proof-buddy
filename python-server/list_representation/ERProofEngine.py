@@ -2,7 +2,7 @@ from ProofEngine import ProofEngine
 from Expression import Expression, ExpressionIdentifier
 from Token import Token, TokenIdentifier
 # from ERType import ERType
-from Parser import Parser
+from RecParser import RecParser
 
 
 class ERProofEngine(ProofEngine):
@@ -12,7 +12,7 @@ class ERProofEngine(ProofEngine):
         self.tokenIdentifiers = tokenIdentifiers
         self.expressionTypes = expressionIdentifiers
         # self.erTypes = erTypes
-        self.parser = Parser(self.tokenIdentifiers,self.expressionTypes)
+        self.parser = RecParser(self.tokenIdentifiers,self.expressionTypes)
     
     # def evaluate_subexpression(self,subexpression:ERType) -> ERType:
     #     pass

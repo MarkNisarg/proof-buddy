@@ -1,6 +1,6 @@
-import Parser, Labeler
-from typeFile import *
-from Decorator import decorateTree, checkFunctions, typeCheck, remTemps
+from expression_tree import recParser, Labeler, typeFile, Decorator
+#from typeFile import *
+#from Decorator import decorateTree, checkFunctions, typeCheck, remTemps
 
 def printLabeledTree(tree):
     retStr = f'Data: {tree.data}, Type: {tree.type}\n'
@@ -85,9 +85,9 @@ test_strings_applyRule=[
 for test in test_strings_ok+test_strings_err + test_strings_typeGood + test_strings_typeBad:
     print(f"input = {test}")
     debugStatus = False
-    exprList,errLog = Parser.preProcess(test,errLog=[],debug=debugStatus)
+    exprList,errLog = recParser.preProcess(test,errLog=[],debug=debugStatus)
     if not errLog:
-        exprTree = Parser.buildTree(exprList, debug=debugStatus)[0]
+        exprTree = recParser.buildTree(exprList, debug=debugStatus)[0]
         labeledTree = Labeler.labelTree(exprTree)
         decTree, errLog = decorateTree(labeledTree,errLog)
         if not errLog:
@@ -102,8 +102,8 @@ test = '(if #t + *)'
 #test='(+ 3 4)'
 #test = '(+ null #f ab#c 345 () 6)'
 print("START " + test)
-exprList,errLog = Parser.preProcess(test,errLog=[],debug=debugStatus)
-exprTree = Parser.buildTree(exprList,debug=debugStatus)[0] # might not need to pass errLog
+exprList,errLog = recParser.preProcess(test,errLog=[],debug=debugStatus)
+exprTree = recParser.buildTree(exprList,debug=debugStatus)[0] # might not need to pass errLog
 labeledTree = Labeler.labelTree(exprTree)
 decTree, errLog = decorateTree(labeledTree,errLog)
 if not errLog:
@@ -126,13 +126,13 @@ fullcheck(nt)
 
 #decTree, errLog = checkFunctions(labeledTree,errLog)
 '''
-print(isinstance(decTree,Parser.Node))
+print(isinstance(decTree,RecParser.Node))
 decTree.fullDebug(True)
 print(test)
 print(labeledTree)
 print(errLog)
 '''
-testNode = Parser.Node()
+testNode = recParser.Node()
 t2 = RacType((None, Type.BOOL))
 t3= RacType((None, Type.INT))
 t4 = RacType((((None,Type.INT),),(None,Type.BOOL)))
@@ -144,8 +144,8 @@ print(str(testNode.type))
 debugStatus = False
 for i in test_strings_typeGood + test_strings_typeBad:
     print('input= ',i)
-    exprList,errLog = Parser.preProcess(i,errLog=[],debug=debugStatus)
-    exprTree = Parser.buildTree(exprList,debug=debugStatus)[0] # might not need to pass errLog
+    exprList,errLog = recParser.preProcess(i,errLog=[],debug=debugStatus)
+    exprTree = recParser.buildTree(exprList,debug=debugStatus)[0] # might not need to pass errLog
     labeledTree = Labeler.labelTree(exprTree)
     decTree, errLog = decorateTree(labeledTree,errLog)
     errLog = remTemps(decTree, errLog)
@@ -157,14 +157,14 @@ for i in test_strings_typeGood + test_strings_typeBad:
 print("\n\t applyRule testing: \t\n")
 for i in test_strings_applyRule:
     print("input =", i)
-    exprList,errLog = Parser.preProcess(i,errLog=[],debug=debugStatus)
-    exprTree = Parser.buildTree(exprList,debug=debugStatus)[0] # might not need to pass errLog
+    exprList,errLog = recParser.preProcess(i,errLog=[],debug=debugStatus)
+    exprTree = recParser.buildTree(exprList,debug=debugStatus)[0] # might not need to pass errLog
     labeledTree = Labeler.labelTree(exprTree)
     decTree, errLog = decorateTree(labeledTree,errLog)
     errLog = remTemps(decTree, errLog)
     decTree, errLog = checkFunctions(decTree,errLog)
     #print(decTree)
-    print(decTree.applyRule())
+    #print(decTree.applyRule())
 
 # unit testing for types
 tests = [RacType((None, Type.INT)), RacType((((((None, Type.LIST), (None, Type.BOOL)), \

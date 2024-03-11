@@ -3,7 +3,7 @@ from Expression import Expression, ExpressionIdentifier
 import re
 from copy import deepcopy
 
-class Parser:
+class RecParser:
 
     def __init__(self, tokenIdentifiers: list[TokenIdentifier], expressionTypes: list[ExpressionIdentifier]):
         self.tokenIdentifiers = tokenIdentifiers

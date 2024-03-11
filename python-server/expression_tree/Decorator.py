@@ -1,6 +1,6 @@
 # This file is intended to complete the AST creation process and find some more errors through restrictions like type checking, and adding other details
 
-from Parser import * # brings in Nodes etc
+from recParser import Node as Node # brings in Nodes etc
 from ERobj import pdict # brings in ERobject whose attributes will be used to decorate the tree
 from typeFile import * # bring in type specification
 
