@@ -36,6 +36,8 @@ def check_goal():
             exprTree = recParser.buildTree(exprList,debug=debugStatus)[0] # might not need to pass errLog
             labeledTree = Labeler.labelTree(exprTree)
             decTree, errLog = Decorator.decorateTree(labeledTree,errLog)
+            decTree, errLog = Decorator.checkFunctions(decTree,errLog)
+            print(errLog)
         #if not errLog:
         #    errLog = Decorator.remTemps(decTree, errLog)
         isValid = (errLog==[])
