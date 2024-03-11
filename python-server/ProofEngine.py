@@ -12,4 +12,4 @@ class ProofEngine():
 
     def checkGoal(self, goal:str):
         print(goal)
-        return False
+        return True
