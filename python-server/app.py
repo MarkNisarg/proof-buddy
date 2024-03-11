@@ -1,7 +1,11 @@
+import sys
+sys.path.append('./expression_tree')
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 #from ProofEngine import ProofEngine
-
+import recParser
+import Labeler
+import decorator
 #Instantiate the app
 app = Flask(__name__)
 app.config.from_object(__name__)
