@@ -47,21 +47,21 @@ class TokenTests(unittest.TestCase):
         for ti in self.tokenIdentifierList:
             with self.subTest(ti.tokenIdentifier.name):
                 for s in ti.valid_unparsed:
-                    token = ti.tokenIdentifier.parse(s)
+                    token = ti.tokenIdentifier.match(s)
                     self.assertIsNotNone(token)
 
     def test_token_print_valid_list_of_strings(self):
         for ti in self.tokenIdentifierList:
             with self.subTest(ti.tokenIdentifier.name):
                 for j, s in enumerate(ti.valid_unparsed):
-                    token = ti.tokenIdentifier.parse(s)
+                    token = ti.tokenIdentifier.match(s)
                     self.assertEqual(ti.valid_parsed[j], f'{token}')
 
     def test_tokenidentifier_parse_invalid_list_of_strings(self):
         for ti in self.tokenIdentifierList:
             with self.subTest(ti.tokenIdentifier.name):
                 for s in ti.invalid_unparsed:
-                    token = ti.tokenIdentifier.parse(s)
+                    token = ti.tokenIdentifier.match(s)
                     self.assertIsNone(token)
 
 if __name__ == '__main__':
