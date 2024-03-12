@@ -80,33 +80,75 @@ class Node:
                 print(ind)
         return
      
-    def applyRule(self):
-        if (self.children[0].data in pdict): #for pre-defined functions TODO: user-defined funcs support - which dict will user-def funcs go in
-            operator = self.children[0].data
-            erObj = pdict[operator]
-            inputs = []
-            for child in self.children[1:]: #converting to bools or ints so calculation can be done
-                if child.data == '#t':
-                    inputs.append(True)
-                elif child.data == '#f':
-                    inputs.append(False)
-                elif child.type == Type.PARAM:
-                    inputs.append(child.data)
-                else:
-                    inputs.append(int(child.data)) #any other type - any missing?
-            if erObj.value: #if operation is defined in the ERobj, eg for arithmetic or boolean operations
-                output = erObj.value(*inputs)
-                return output
-            else: #if, cons, first, rest, null, lambda
-                if operator == 'first':
-                    return inputs[0]
-                if operator == 'rest':
-                    return inputs[1:] #list of the remaining inputs
-                if operator == 'if':
-                    if inputs[0]:
-                        return inputs[1]
-                    else:
-                        return inputs[2]
+    def applyRule(self, ruleID:str): #TODO: replace with dictionary
+        if ruleID == "if":
+            self.ruleIf()
+        if ruleID == "cons":
+            pass #self.ruleCons()
+        if ruleID == "first":
+            pass #self.ruleFirst()
+        if ruleID == "rest":
+            pass #self.ruleRest()
+
+    def ruleIf(self, debug=False):
+        if (len(self.children) != 0 and self.children[0].data != 'if') or len(self.children) != 4:
+            print("Invalid if expression!")
+            if debug:
+                if len(self.children) != 0:
+                    print("child[0] data:",self.children[0].data)
+                print("length of children: ",len(self.children))
+        else:
+            condition = self.children[1]
+            xNode = self.children[2]
+            yNode = self.children[3]
+            if condition.data == '#t':
+                self.replaceNode(xNode)
+            elif condition.data == '#f':
+                self.replaceNode(yNode)
+            elif isMatch(xNode, yNode): 
+                self.replaceNode(xNode)
+
+    def replaceNode(self, newNode): #is there a better way to do this?
+        self.data = newNode.data
+        self.name = newNode.name
+        self.type = newNode.type
+        self.numArgs = newNode.numArgs
+        self.length = newNode.length
+        self.children = newNode.children
+        self.debug = newNode.debug 
+        #do NOT change self.parent, to maintain place in tree
+
+
+    
+    #Old expression evaluation func, mistakenly called applyRule before - very incomplete
+    #def evalExpression(self):
+        # if (self.children[0].data in pdict): #for pre-defined functions
+        #     operator = self.children[0].data
+        #     erObj = pdict[operator]
+        #     inputs = []
+        #     for child in self.children[1:]: #converting to bools or ints so calculation can be done
+        #         if child.data == '#t':
+        #             inputs.append(True)
+        #         elif child.data == '#f':
+        #             inputs.append(False)
+        #         elif child.type == Type.PARAM:
+        #             inputs.append(child.data)
+        #         else:
+        #             inputs.append(int(child.data)) #any other type - any missing?
+        #     if erObj.value: #if operation is defined in the ERobj, eg for arithmetic or boolean operations
+        #         output = erObj.value(*inputs)
+        #         return output
+        #     else: #if, cons, first, rest, null, lambda
+        #         if operator == 'first':
+        #             return inputs[0]
+        #         if operator == 'rest':
+        #             return inputs[1:] #list of the remaining inputs
+        #         if operator == 'if':
+        #             if inputs[0]:
+        #                 return inputs[1]
+        #             else:
+        #                 return inputs[2]
+
                 
 # a helper function for setType that returns the position in the list of the root >
 def findArrow(tlist:list)->int:
@@ -229,3 +271,22 @@ def buildTree(inputList:list[str], debug=False) -> list:
 
     # continue processing the rest of input
     return [node] + buildTree(inputList[matchIndex+1:len(inputList)], debug)
+
+def isMatch(xNode:Node, yNode:Node)->bool: #recursively check if two nodes are identical #TODO: replace elif chain with something prettier
+    if xNode.data != yNode.data:
+        return False
+    elif xNode.name != yNode.name:
+        return False
+    elif xNode.numArgs != yNode.numArgs:
+        return False
+    elif xNode.length != yNode.length:
+        return False
+    elif xNode.type != yNode.type:
+        return False
+    elif len(xNode.children) != len(yNode.children):
+        return False
+    elif len(xNode.children) != 0:
+        for i in range(len(xNode.children)):
+            return isMatch(xNode.children[i], yNode.children[i])
+    else:
+        return True #if everything else passed
