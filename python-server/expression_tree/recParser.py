@@ -286,7 +286,11 @@ def isMatch(xNode:Node, yNode:Node)->bool: #recursively check if two nodes are i
     elif len(xNode.children) != len(yNode.children):
         return False
     elif len(xNode.children) != 0:
+        checker = True
         for i in range(len(xNode.children)):
-            return isMatch(xNode.children[i], yNode.children[i])
+            if not isMatch(xNode.children[i], yNode.children[i]):
+                checker = False
+        if checker:
+            return True
     else:
         return True #if everything else passed
