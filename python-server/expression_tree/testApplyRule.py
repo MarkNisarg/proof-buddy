@@ -9,6 +9,7 @@ test_strings_ruleIf= [
     "(if #t (a b)(a))", #expected (a b)
     "(if #t (if #f x y) (z))", #expected (if #f x y)
     "(if a b c)", #expected (if a b c) no valid change to make based on rules
+    "(if a (+ x (y (z z))) (+ x (y (z z))))", #expected (+ x (y (z)))
     "(fi #t x y)", #expected invalid
     "if #t x y", #expected invalid - should it give x? without () there are no child nodes so it doesnt read as a valid tree, is it supposed to?
     "()", #expected invalid
