@@ -251,7 +251,7 @@ def preProcess(inputString:str, errLog:list[str]=None, debug=False) -> tuple[lis
 def findMatchingParenthesis(tokenList, index) -> int:
     count = 1
     for i in range(index+1, len(tokenList)):
-        if tokenList[i] == '(':
+        if tokenList[i] == '(' or tokenList[i] == "'(":
             count += 1
         elif tokenList[i] == ')':
             count -= 1     
@@ -269,7 +269,7 @@ def buildTree(inputList:list[str], debug=False) -> list:
     node.data = inputList[0] # fill out the data with the symbol
 
     # if the first token is not '(', it is a single literal (ex. boolean, int, parameter)
-    if inputList[0] != '(' and inputList[0]!="'()": #changed to accomodate quoted lists
+    if inputList[0] != '(' and inputList[0]!="'(": #changed to accomodate quoted lists
 
         # create Node where Node.data is the literal and continue processing the rest of input
         return [node] + buildTree(inputList[1:len(inputList)], debug)

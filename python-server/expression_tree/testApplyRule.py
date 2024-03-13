@@ -29,4 +29,3 @@ for i in test_strings_ruleIf:
     decTree, errLog = Decorator.checkFunctions(decTree,errLog)
     decTree.applyRule('if')
     print("after rule =", decTree)
-
