@@ -7,7 +7,7 @@ from ERobj import *  # for accessing pdict and ERObj declarations in applyRule
 # SYMBOLS: perhaps in future allow square brackets and braces. 
 WHITESPACE = ["\n","\t","\r"," "] # permits linebreak and indents for conditionals. all become \s in pre-processing step
 ARITHMETIC = ["+","*","-","=",">","<"] # any other math uses ascii, such as expt, quotient, remainder. Note: "/" not permitted
-OPEN_GROUP = ["(","[","{"] # needed to separate open from closed for more precision with error messaging
+OPEN_GROUP = ["(","[","{","'"] # needed to separate open from closed for more precision with error messaging. note ' should be '( but preproc uses char
 CLOSE_GROUP = [")","]","}"] # possibly cond might be implemented one day with square brackets. presently, all these replaced by parens in pre-processing
 SPECIAL_CHARS = ["#","?","\u03BB","'"] # hashtag for bools,? for pred suffix, unicode is for λ (currently not in language), single quote for quoted lists
 AllowedChars = list(string.ascii_letters) + list(string.digits) + WHITESPACE + ARITHMETIC + OPEN_GROUP + CLOSE_GROUP + SPECIAL_CHARS
@@ -67,10 +67,9 @@ class Node:
             for c in self.children:
                 c.fullDebug(setting)
         return
-    
 
-
-    def setType(self, strg:str):
+    # a node's setter method which takes in a string and sets the type of the node based on the string
+    def setType(self, strg:str)->None:
         if ">" not in strg:
             self.type=RacType((None,Type.__members__.get(strg)))
         else:
@@ -228,7 +227,8 @@ def preProcess(inputString:str, errLog:list[str]=None, debug=False) -> tuple[lis
 
         # the following conditionals refer to the general lists of chars in case later developers decide not to the the replacements:
         # parentheses balanced in the interior of the string    
-        if char in OPEN_GROUP and parenPairing==1 and 0<ind<len(inputString)-1:
+        if char in OPEN_GROUP[:-1] and parenPairing==1 and 0<ind<len(inputString)-1 \
+            and ind-2>=0 and inputString[ind-2]!="'": #ommitting ' from open group and making sure the ( isn't a '(
             errLog.append("contains multiple independent subexpressions") #"(stuff)(stuff)".  need )( check to insure "34" doesn't trigger an error
         
         # separate values not wrapped in a list
