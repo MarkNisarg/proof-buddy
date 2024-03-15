@@ -15,7 +15,7 @@ import logger from '../utils/logger';
  * @example
  * const { racketRuleFields, addField, handleFieldChange, serverError } = useRacketRuleFields();
  */
-const useRacketRuleFields = () => {
+const useRacketRuleFields = (startPosition) => {
   const [serverError, handleServerError] = useServerError();
   const [racketRuleFields, setRacketRuleFields] = useState({ LHS: [], RHS: [] });
   const [validationErrors, setValidationErrors] = useState({ LHS: [], RHS: [] });
@@ -28,15 +28,20 @@ const useRacketRuleFields = () => {
    * @returns {Promise<string|undefined>} A promise that resolves to the racket value or undefined if an error occurs.
    */
   const fetchRacketValue = useCallback(async (ruleValue) => {
+    const payLoad = {
+      rule: ruleValue,
+      startPosition: startPosition
+    };
+
     try {
-      const response = await erService.racketGeneration({ rule: ruleValue });
+      const response = await erService.racketGeneration(payLoad);
       if (response && response.racket) {
         return response.racket;
       }
     } catch (error) {
       handleServerError(error);
     }
-  }, [handleServerError]);
+  }, [handleServerError, startPosition]);
 
   /**
    * A callback function to add a new field to either the LHS or RHS side.

@@ -38,11 +38,10 @@ const ERRacket = () => {
   const [validationMessages, handleBlur, setAllTouched, isFormValid] = useFormValidation(formValues, validateField);
   const [validated, setValidated] = useState(false);
   const [isGoalChecked, checkGoal, goalValidationMessage, enhancedHandleChange] = useGoalCheck(handleChange);
-  const [racketRuleFields, addFieldWithApiCheck, removeEmptyLines, handleFieldChange, validationErrors, serverError] = useRacketRuleFields();
+  const [handleHighlight, startPosition] = useHighlight();
+  const [racketRuleFields, addFieldWithApiCheck, removeEmptyLines, handleFieldChange, validationErrors, serverError] = useRacketRuleFields(startPosition);
   const [currentLHS, currentRHS] = useCurrentRacketValues(racketRuleFields);
   const [isOffcanvasActive, toggleOffcanvas] = useOffcanvas();
-
-  const handleHighlight = useHighlight();
 
   const handleERRacketSubmission = async () => {
     alert('We are stilling working on proof submission!');

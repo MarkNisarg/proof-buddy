@@ -1,11 +1,13 @@
+import { useState } from 'react';
+
 const useHighlight = () => {    
+  const [start, setStart] = useState(0);
   const handleHighlight = (element) => {
     var fullText= element.target.value;
     var selectedText = (element.target.value).substring(element.target.selectionStart, element.target.selectionEnd);
-    var caretPosition = element.target.selectionStart;
-    
+    var caretPosition = element.target.selectionStart;     
     const keywords = ['length', 'rest', 'append', 'null?', 'null', 'if', 'first']; //d
-    
+  
     var keyword = '';
     var sub = '';
     var selectStart = 0;
@@ -21,13 +23,15 @@ const useHighlight = () => {
           element.target.setSelectionRange(selectStart, selectEnd);
           element.target.style.setProperty('--selectBGColor', '#ffe600');
           break;
-        }
+        } 
       }
       if (selectEnd != 0){
         break;
       }
     } 
-        
+     
+    setStart(selectStart);
+
     if(selectedText.toString() == ''){
       var rightCharacter = (fullText.substring(caretPosition, caretPosition + 1));
       var intermediate = 0;
@@ -72,7 +76,7 @@ const useHighlight = () => {
       }
     }
   }
-  return handleHighlight;
+  return [handleHighlight, start];
 }
 
 export { useHighlight }

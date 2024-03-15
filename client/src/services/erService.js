@@ -22,12 +22,13 @@ const checkGoal = async (goal) => {
 /**
  * Generate the racket for the provided rule.
  *
- * @param {Object} rule - The object contains proof rule.
+ * @param {Object} payLoad - The object contains proof rule & start position of highlight.
  * @returns {Promise<Object>} - The response data from the server.
  */
-const racketGeneration = async (rule) => {
+const racketGeneration = async (payLoad) => {
   try {
-    const response = await axiosInstanceProof.post(`${API_GATEWAY}/er-generate`, rule);
+    const response = await axiosInstanceProof.post(`${API_GATEWAY}/er-generate`, payLoad);
+    console.log(payLoad);
     return response.data;
   } catch (error) {
     handleServiceError(error, 'Error during racket generation:');
