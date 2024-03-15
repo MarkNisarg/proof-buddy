@@ -89,8 +89,10 @@ class Node:
         return rules[ruleID](errLog)
 
     def ruleIf(self, errLog, debug=False):
-        if (len(self.children) != 0 and self.children[0].data != 'if') or len(self.children) != 4:
-            print("Invalid if expression!")
+        if (len(self.children) != 0 and self.children[0].data != 'if'):
+            errLog.append(f'Cannot apply if rule to {self.children[0].data}')
+        elif (len(self.children) != 4):
+            errLog.append(f'If rule expects 4 arguments, but received {len(self.children)}')
             if debug:
                 if len(self.children) != 0:
                     print("child[0] data:",self.children[0].data)
@@ -105,6 +107,7 @@ class Node:
                 self.replaceNode(yNode)
             elif isMatch(xNode, yNode): 
                 self.replaceNode(xNode)
+        return errLog
 
     def replaceNode(self, newNode): #is there a better way to do this?
         self.data = newNode.data
