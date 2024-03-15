@@ -21,6 +21,7 @@ import { useHighlight } from '../hooks/useHighlight';
 import '../scss/_forms.scss';
 import '../scss/_er-racket.scss';
 import { useExportToLocalMachine } from '../hooks/useExportToLocalMachine';
+import { useDoubleClick } from '../hooks/useDoubleClick';
 
 /**
  * ERRacket component facilitates the Equational Reasoning Racket.
@@ -42,6 +43,8 @@ const ERRacket = () => {
   const [racketRuleFields, addFieldWithApiCheck, removeEmptyLines, handleFieldChange, validationErrors, serverError] = useRacketRuleFields(startPosition);
   const [currentLHS, currentRHS] = useCurrentRacketValues(racketRuleFields);
   const [isOffcanvasActive, toggleOffcanvas] = useOffcanvas();
+  
+  const handleDoubleClick = useDoubleClick();
 
   const handleERRacketSubmission = async () => {
     alert('We are stilling working on proof submission!');
@@ -278,6 +281,7 @@ const ERRacket = () => {
                                 value={field.racket}
                                 onChange={(e) => handleFieldChange(showSide, index, 'racket', e.target.value)}
                                 onSelect={(e) => handleHighlight(e)}
+                                onDoubleClick={(e) => handleDoubleClick(e)}
                               />
                               <label htmlFor={`eRProofLHSRacket-${index}`}>LHS Racket</label>
                             </Form.Floating>
