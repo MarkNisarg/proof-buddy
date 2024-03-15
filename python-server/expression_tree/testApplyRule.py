@@ -1,6 +1,9 @@
 import recParser, Labeler, typeFile, Decorator
 
 test_strings_ruleIf= [
+    "(cons (first '(1 2 3)) (rest '(1 2 3)))",
+    "(first (cons 3 '(1 2)))",
+    "(rest (cons 3 '(1 2)))",
     "(if #t 4 5)", #expected 4
     "(if #f x y)", #expected y
     "(if asd a a)", #expected a
@@ -27,5 +30,5 @@ for i in test_strings_ruleIf:
     decTree, errLog = Decorator.decorateTree(labeledTree,errLog)
     errLog = Decorator.remTemps(decTree, errLog)
     decTree, errLog = Decorator.checkFunctions(decTree,errLog)
-    decTree.applyRule('if')
+    errLog = decTree.applyRule('cons', errLog)
     print("after rule =", decTree)

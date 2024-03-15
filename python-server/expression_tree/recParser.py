@@ -84,17 +84,11 @@ class Node:
                 domsTup = list2Tup(domsList) # 
         return
      
-    def applyRule(self, ruleID:str): #TODO: replace with dictionary
-        if ruleID == "if":
-            self.ruleIf()
-        if ruleID == "cons":
-            pass #self.ruleCons()
-        if ruleID == "first":
-            pass #self.ruleFirst()
-        if ruleID == "rest":
-            pass #self.ruleRest()
+    def applyRule(self, ruleID:str, errLog): #TODO: replace with dictionary
+        rules = {'if':self.ruleIf, 'cons':self.ruleCons, 'first':self.ruleFirst, 'rest':self.ruleRest}
+        return rules[ruleID](errLog)
 
-    def ruleIf(self, debug=False):
+    def ruleIf(self, errLog, debug=False):
         if (len(self.children) != 0 and self.children[0].data != 'if') or len(self.children) != 4:
             print("Invalid if expression!")
             if debug:
@@ -121,6 +115,38 @@ class Node:
         self.children = newNode.children
         self.debug = newNode.debug 
         #do NOT change self.parent, to maintain place in tree
+
+    def ruleCons(self, errLog, debug=False):
+        if self.children[0].data != 'cons':
+            errLog.append(f'Cannot apply cons rule to {self.children[0].data}')
+        elif self.children[1].children[0].data != 'first' and self.children[2].children[0].data != 'rest':
+            errLog.append(f'Can only apply the cons rule to first and rest')
+        elif not isMatch(self.children[1].children[1], self.children[2].children[1]):
+            errLog.append(f'Cannot apply cons rule on two different lists')
+        else:
+            lNode = self.children[1].children[1]
+            self.replaceNode(lNode)
+        return errLog
+
+    def ruleFirst(self, errLog, debug=False):
+        if self.children[0].data != 'first':
+            errLog.append(f'Cannot apply first rule to {self.children[0].data}')
+        elif self.children[1].children[0].data != 'cons':
+            errLog.append(f'first can only be applied to the cons rule')
+        else:
+            xNode = self.children[1].children[1]
+            self.replaceNode(xNode)
+        return errLog
+
+    def ruleRest(self, errLog, debug=False):
+        if self.children[0].data != 'rest':
+            errLog.append(f'Cannot apply rest rule to {self.children[0].data}')
+        elif self.children[1].children[0].data != 'cons':
+            errLog.append(f'rest can only be applied to the cons rule')
+        else:
+            lNode = self.children[1].children[2]
+            self.replaceNode(lNode)
+        return errLog
 
 
     
