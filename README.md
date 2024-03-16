@@ -4,8 +4,9 @@ A web application for verifying mathematical proofs using Truth-Functional Logic
 ## Table of Contents
 - [Prerequisites](#prerequisites)
 - [Local Installation](#Local-Installation)
-- [Setting up the Project](#setting-up-the-project)
+- [Env File Setup](#Env-File-Setup)
 - [Running the Application](#running-the-application)
+- [API Reference](#api-reference)
 ## Prerequisites
 
 Before starting with the installation process, ensure you have the following installed:
@@ -29,9 +30,9 @@ For how to create a /.env file on your local machine, please view: documentation
 
 ## Running the Application
 
-For instructions for running the application, please view: documentation\user_documentation\local_installation\documentation\readme_resources\3_first_time_running_application.md
+For instructions for running the application, please view: documentation\user_documentation\local_installation\documentation\readme_resources\3_running_application.md
 
-[Running the application](documentation\user_documentation\local_installation\documentation\readme_resources\3_first_time_running_application.md)
+[Running the application](documentation\user_documentation\local_installation\documentation\readme_resources\3_running_application.md)
 
 ## API Reference
 
