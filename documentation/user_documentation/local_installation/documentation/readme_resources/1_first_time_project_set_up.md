@@ -17,6 +17,11 @@ node -v
 npm -v
 ```
 
+### Python installation
+1. You may have to install python, if not already installed. 
+2. Go to [Python 3.12 Release](https://www.python.org/downloads/release/python-3122/)
+3. Run the installer and follow the installation process.
+
 ### MySQL
 
 Please view this link for a tutorial on MySQL Workbench: https://www.w3resource.com/mysql/administration-tools/mysql-workbench-tutorial.php
@@ -86,10 +91,10 @@ git clone https://github.com/MarkNisarg/proof-buddy.git
 cd proof-buddy
 ```
 
-3. Checkout to develop branch:
+3. Checkout to stage branch:
 
 ```bash
-git checkout develop
+git checkout stage
 ```
 
 4. Install the required dependencies for the server:
@@ -105,4 +110,12 @@ npm install
 cd ..
 cd client
 npm install
+```
+
+6. Intstall the required dependencies for python-server:
+```bash
+cd ..
+cd python-server/expression_tree
+pip install flask
+pip install flask_cors
 ```
