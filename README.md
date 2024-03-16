@@ -24,15 +24,15 @@ For first time project set up instruction on your local machine, please view: do
 
 ## Env File Setup
 
-For how to create a /.env file on your local machine, please view: documentation\user_documentation\local_installation\documentation\readme_resources\2_env_file_first_set_up.md
+For how to create a /.env file on your local machine, please view: documentation/user_documentation/local_installation/documentation/readme_resources/2_env_file_first_set_up.md
 
-[First /.env Setup](documentation\user_documentation\local_installation\documentation\readme_resources\2_env_file_first_set_up.md)
+[First /.env Setup](documentation/user_documentation/local_installation/documentation/readme_resources/2_env_file_first_set_up.md)
 
 ## Running the Application
 
-For instructions for running the application, please view: documentation\user_documentation\local_installation\documentation\readme_resources\3_running_application.md
+For instructions for running the application, please view: documentation/user_documentation/local_installation/documentation/readme_resources/3_running_application.md
 
-[Running the application](documentation\user_documentation\local_installation\documentation\readme_resources\3_running_application.md)
+[Running the application](documentation/user_documentation/local_installation/documentation/readme_resources/3_running_application.md)
 
 ## API Reference
 
