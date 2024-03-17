@@ -9,6 +9,8 @@ import logger from '../utils/logger';
  * and handling changes to existing fields. Additionally, it integrates error handling
  * through a custom hook for server errors.
  *
+ * @param {string} startPosition - Start position for the highlighted keyword.
+ *
  * @returns {Object} An object containing the racket rule fields state, functions to manipulate these fields,
  * and any server error encountered during operations.
  *
