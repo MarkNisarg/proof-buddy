@@ -10,8 +10,8 @@
 7. Make sure JWT_SECRET equals a secret key that you will not share on GitHub
 8. JWT_EXPIRATION equals "86400"
 9. GMAIL_USERNAME equals to the current proof buddy email: (proofbuddy.drexel@gmail.com)
-10. GMAIL_CLIENT_ID equals: (your Client ID OR the current Client ID from the stakeholders)
-11. GMAIL_CLIENT_SECRET equals: (your Client Secret Key OR the current Client Secret Key from the stakeholders)
+10. GMAIL_CLIENT_ID equals: (your generated Client ID OR the current Client ID from the stakeholders)
+11. GMAIL_CLIENT_SECRET equals: (your generated Client Secret Key OR the current Client Secret Key from the stakeholders)
 12. GMAIL_REFRESH_TOKEN equals: (your generated refresh token OR the most current Refresh Token from the stakeholders)
 11. Final note: Never push your .env file to Github or share it on any public forum. This will cause a security risk for yourself. Presently, the .gitignore is set up to ignore these files.
 
