@@ -85,7 +85,7 @@ class Node:
         return
      
     def applyRule(self, ruleID:str, errLog): #TODO: replace with dictionary
-        rules = {'if':self.ruleIf, 'cons':self.ruleCons, 'first':self.ruleFirst, 'rest':self.ruleRest}
+        rules = {'if':self.ruleIf, 'cons':self.ruleCons, 'first':self.ruleFirst, 'rest':self.ruleRest, 'null':self.ruleNull, 'cons?':self.ruleConsQ, 'zero':self.ruleZero}
         return rules[ruleID](errLog)
 
     def ruleIf(self, errLog, debug=False):
@@ -150,6 +150,43 @@ class Node:
             lNode = self.children[1].children[2]
             self.replaceNode(lNode)
         return errLog
+    
+    def ruleNull(self, errLog, debug=False):
+        if self.children[0].data != 'null?':
+            errLog.append(f'Cannot apply null rule to {self.children[0].data}')
+        elif self.children[1].children[0].data != 'cons':
+            errLog.append(f'null can only be applied to the cons rule')
+        else:
+            falseNode = Node(data='#f', tokenType=RacType((None, Type.BOOL)), name=False)
+            self.replaceNode(falseNode)
+        return errLog
+    
+    def ruleConsQ(self, errLog, debug=False):
+        if self.children[0].data != 'cons?':
+            errLog.append(f'Cannot apply cons? rule to {self.children[0].data}')
+        elif self.children[1].children[0].data != 'cons':
+            errLog.append(f'cons? can only be applied to the cons rule')
+        else:
+            trueNode = Node(data='#t', tokenType=RacType((None, Type.BOOL)), name=True)
+            self.replaceNode(trueNode)
+        return errLog
+    
+    def ruleZero(self, errLog, debug=False):
+        if self.children[0].data != 'zero?':
+            errLog.append(f'Cannot apply zero rule to {self.children[0].data}')
+        elif self.children[1].children[0].data != '+':
+            errLog.append(f'zero? can only be applied to addition rule')
+        else:
+            try:
+                argOne = int(self.children[1].children[1].data)
+                argTwo = int(self.children[1].children[2].data)
+                if (argOne >=0 and argTwo >= 0) and (argOne > 0 or argTwo > 0):
+                    falseNode = Node(data='#f', tokenType=RacType((None, Type.BOOL)), name=False)
+                    self.replaceNode(falseNode)
+            except:
+                errLog.append("ValueError in ruleZero - argument for + not a valid int")
+        return errLog
+
 
 
     

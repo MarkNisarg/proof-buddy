@@ -19,6 +19,11 @@ test_strings_ruleIf= [
     ("if", "()"), #expected invalid
     ("if", "(if )"), #expected invalid
     ("if", "(if #t b c d e)"), #expected invalid
+    ("null", "(null? (cons x (a b c)))"), #expected #f
+    ("cons?", "(cons? (cons x a))"), #expected #t
+    ('zero', '(zero? (+ 0 1))'), #expected #f
+    ('zero', '(zero? (+ 0 0))'), #expected no change
+    ('zero', '(zero? (+ a 1))'), #expected no change
 ]
 
 print("\napplyRule testing:\n")
