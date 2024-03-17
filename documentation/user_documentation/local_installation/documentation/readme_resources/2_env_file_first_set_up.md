@@ -9,7 +9,7 @@
 6. Make sure DB_DIALECT equals "mysql", which is the dialect the server will communicate with the database.
 7. Make sure JWT_SECRET equals a secret key that you will not share on GitHub
 8. JWT_EXPIRATION equals "86400"
-9. GMAIL_USERNAME equals to the current proof buddy email: (proofbuddy.drexel@gmail.com)
+9. GMAIL_USERNAME equals to the current proof buddy email: (see stakeholders for the current ProofBuddy E-Mail)
 10. GMAIL_CLIENT_ID equals: (your generated Client ID OR the current Client ID from the stakeholders)
 11. GMAIL_CLIENT_SECRET equals: (your generated Client Secret Key OR the current Client Secret Key from the stakeholders)
 12. GMAIL_REFRESH_TOKEN equals: (your generated refresh token OR the most current Refresh Token from the stakeholders)
@@ -28,7 +28,7 @@ JWT_SECRET=mysecretkey
 JWT_EXPIRATION=86400
 
 # Email configurations.
-GMAIL_USERNAME=proofbuddy.drexel@gmail.com
+GMAIL_USERNAME="Current ProofBuddy E-Mail"
 GMAIL_CLIENT_ID="Your Client ID"
 GMAIL_CLIENT_SECRET="Your Client Secret Key"
 GMAIL_REFRESH_TOKEN="Current Refresh Token"
