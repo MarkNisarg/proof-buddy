@@ -1,6 +1,7 @@
 import recParser, Labeler, typeFile, Decorator
 
 test_strings_ruleIf= [
+    ("cons", "(cons (if #t (if #f 3 4) 5) null)"),
     ("cons", "(cons (first '(1 2 3)) (rest '(1 2 3)))"),
     ("first", "(first (cons 3 '(1 2)))"),
     ("rest", "(rest (cons 3 '(1 2)))"),

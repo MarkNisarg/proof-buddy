@@ -125,7 +125,8 @@ class Node:
     def ruleCons(self, errLog, debug=False):
         if self.children[0].data != 'cons':
             errLog.append(f'Cannot apply cons rule to {self.children[0].data}')
-        elif self.children[1].children[0].data != 'first' and self.children[2].children[0].data != 'rest':
+        elif len(self.children[1].children) == 0 or len(self.children[2].children) or\
+        self.children[1].children[0].data != 'first' or self.children[2].children[0].data != 'rest':
             errLog.append(f'Can only apply the cons rule to first and rest')
         elif not isMatch(self.children[1].children[1], self.children[2].children[1]):
             errLog.append(f'Cannot apply cons rule on two different lists')
