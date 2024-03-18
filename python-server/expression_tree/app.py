@@ -1,6 +1,9 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-import Decorator, ERobj, Labeler, recParser, test, typeFile
+import Decorator, Labeler, recParser
+
+EXPRESSION_TREE = None
+ERROR_LOG = None
 #Instantiate the app
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -19,8 +22,9 @@ def get_repositories():
     with app.app_context():
         json_data = request.get_json()
         print(json_data)
-        racket=""
-        #racket = proofEngine.generateRacketFromRule(json_data['rule'])
+        racket =""
+        #ERROR_LOG = EXPRESSION_TREE.generateRacketFromRule(json_data['startPosition'], json_data['rule'], ERROR_LOG)
+        #racket = str(EXPRESSION_TREE) if ERROR_LOG == [] else ERROR_LOG
         return jsonify({"racket": racket}), 200
 
 @app.route('/api/v1/proof/check-goal', methods=['POST'])
@@ -35,14 +39,17 @@ def check_goal():
         if errLog==[]:
             exprTree = recParser.buildTree(exprList,debug=debugStatus)[0] # might not need to pass errLog
             labeledTree = Labeler.labelTree(exprTree)
+            labeledTree, charCount = Labeler.fillPositions(labeledTree)
             decTree, errLog = Decorator.decorateTree(labeledTree,errLog)
             decTree, errLog = Decorator.checkFunctions(decTree,errLog)
-            print(errLog)
+            EXPRESSION_TREE = decTree
+            ERROR_LOG = errLog
+            print(ERROR_LOG)
         #if not errLog:
         #    errLog = Decorator.remTemps(decTree, errLog)
-        isValid = (errLog==[])
+        isValid = (ERROR_LOG==[])
         #print(errLog) #prints to python console in VSC
-        return jsonify({'isValid': isValid, 'errors': errLog }), 200
+        return jsonify({'isValid': isValid, 'errors': ERROR_LOG }), 200
 
 if __name__ == '__main__':
     app.run(host='localhost', port=9095, debug=True)

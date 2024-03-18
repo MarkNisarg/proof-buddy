@@ -14,17 +14,16 @@ AllowedChars = list(string.ascii_letters) + list(string.digits) + WHITESPACE + A
 
 # Node object used to compose the AST
 class Node:
-    def __init__(self, children=[], parent=None, data:str='', tokenType:RacType=RacType((None,None)), name=None, debug:bool=False, ins=None, outType=None, numArgs:int=None, length:int=None):
+    def __init__(self, children=[], parent=None, data:str='', tokenType:RacType=RacType((None,None)), name=None, debug:bool=False, numArgs:int=None, length:int=None, startPosition=None):
         self.children = children # by specification, children[0] is the "operator" for functions
         self.parent = parent # reference to the Node's parent (will be None for the root Node)
         self.data = data # this is the string name to be displayed (what used to be called "name" in the old PB)
         self.name = name # this is what used to be called "value" in the old PB
         self.type = tokenType # type of the node, (ex. boolean, int, function, etc.), specification described in typeFile
         self.debug = debug # False = standard execution, True = print info useful when debugging the pipeline
-        #self.ins = ins # [OBSOLETE WITH NEW TYPE SPEC] for functions, it's the tuple of input types
-        #self.outtype = outType # [OBSOLETE WITH NEW TYPE SPEC] for functions, it's the output type
         self.numArgs = numArgs # for functions, it's the number of inputs
-        self.length = length # for lists, it's the length 
+        self.length = length # for lists, it's the length
+        self.startPosition = startPosition # starting position index of Node.data in the preprocessed string
 
     # Node.type attribute getter
     @property
@@ -46,7 +45,7 @@ class Node:
 
         # print value and type of each Node object, and a whitespace character for readability
         if self.debug:
-            ans = f'{self.name},{self.type} '
+            ans = f'{self.name},{self.type},{self.startPosition} '
         else:
             ans = self.data # print standardized syntax
         
@@ -116,7 +115,7 @@ class Node:
         self.numArgs = newNode.numArgs
         self.length = newNode.length
         self.children = newNode.children
-        self.debug = newNode.debug 
+        self.debug = newNode.debug
         #do NOT change self.parent, to maintain place in tree
 
     def ruleCons(self, errLog, debug=False):
@@ -186,9 +185,16 @@ class Node:
             except:
                 errLog.append("ValueError in ruleZero - argument for + not a valid int")
         return errLog
-
-
-
+    
+    def generateRacketFromRule(self, startPos, rule, errLog):
+        if self.startPosition == startPos:
+            return self.applyRule(rule)
+        
+        for child in self.children:
+            return child.generateRacketFromRule(startPos, rule, errLog)
+        
+        errLog.append(f'Could not find Token with starting index {startPos}')
+        return errLog
     
     #Old expression evaluation func, mistakenly called applyRule before - very incomplete
     #def evalExpression(self):

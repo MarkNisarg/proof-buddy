@@ -75,3 +75,14 @@ def labelTree(inputTree:Node) -> Node:
 
     # return the tree
     return root
+
+def fillPositions(inputTree:Node, count:int=0) -> tuple[Node, int]:
+    inputTree.startPosition = count
+    count += len(inputTree.data)
+
+    if len(inputTree.children) > 0:
+        for childIndex, child in enumerate(inputTree.children):
+            newChild, newCount = fillPositions(child, count)
+            inputTree.children[childIndex] = newChild
+            count = newCount + 1
+    return inputTree, count
