@@ -2,6 +2,12 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import Decorator, Labeler, recParser
 
+# as a temp measure for MVP, we are storing in a global variable a list of all the trees we pass to front end
+# in reality, frontend should be passing to the backend the entire string (or better yet, exprtree) of wherever the highlighting occurred
+# starting arbitrarily with 1+2 as the initial tree, which should get immediately followed by a LHS/RHS goal
+#  NOTE:  this kludge will FAIL if the user switches sides more than once.
+PREV_RACKETS = [Decorator.decorateTree(Labeler.labelTree(recParser.buildTree(recParser.preProcess("(+ 1 2)",errLog=[])[0], debug=False)[0]),errLog=[])[0]]
+
 EXPRESSION_TREE = None
 ERROR_LOG = None
 #Instantiate the app
@@ -22,10 +28,14 @@ def get_repositories():
     with app.app_context():
         json_data = request.get_json()
         print(json_data)
-        racket =""
-        #ERROR_LOG = EXPRESSION_TREE.generateRacketFromRule(json_data['startPosition'], json_data['rule'], ERROR_LOG)
-        #racket = str(EXPRESSION_TREE) if ERROR_LOG == [] else ERROR_LOG
-        return jsonify({"racket": racket}), 200
+        EXPRESSION_TREE =PREV_RACKETS[-1] # really this should be passed from the front end
+        ERROR_LOG = EXPRESSION_TREE.generateRacketFromRule(json_data['startPosition'], json_data['rule'], errLog=[])
+        if isValid := (ERROR_LOG==[]):
+            racketStr = str(EXPRESSION_TREE)
+            PREV_RACKETS.append(EXPRESSION_TREE) #storing tree of most recently passed Racket
+        else:
+            racketStr = "Error generating racket"
+        return jsonify({'isValid': isValid, 'racket': racketStr, 'errors': ERROR_LOG }), 200
 
 @app.route('/api/v1/proof/check-goal', methods=['POST'])
 def check_goal():
@@ -49,6 +59,8 @@ def check_goal():
         #    errLog = Decorator.remTemps(decTree, errLog)
         isValid = (ERROR_LOG==[])
         #print(errLog) #prints to python console in VSC
+        if isValid:
+            PREV_RACKETS.append(EXPRESSION_TREE) #storing most recently passed Racket
         return jsonify({'isValid': isValid, 'errors': ERROR_LOG }), 200
 
 if __name__ == '__main__':

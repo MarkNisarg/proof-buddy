@@ -14,8 +14,10 @@ AllowedChars = list(string.ascii_letters) + list(string.digits) + WHITESPACE + A
 
 # Node object used to compose the AST
 class Node:
-    def __init__(self, children=[], parent=None, data:str='', tokenType:RacType=RacType((None,None)), name=None, debug:bool=False, numArgs:int=None, length:int=None, startPosition=None):
+    def __init__(self, children=None, parent=None, data:str='', tokenType:RacType=RacType((None,None)), name=None, debug:bool=False, numArgs:int=None, length:int=None, startPosition=None):
         self.children = children # by specification, children[0] is the "operator" for functions
+        if children == None:
+            self.children = []
         self.parent = parent # reference to the Node's parent (will be None for the root Node)
         self.data = data # this is the string name to be displayed (what used to be called "name" in the old PB)
         self.name = name # this is what used to be called "value" in the old PB
@@ -83,7 +85,9 @@ class Node:
                 domsTup = list2Tup(domsList) # 
         return
      
-    def applyRule(self, ruleID:str, errLog): #TODO: replace with dictionary
+    def applyRule(self, ruleID:str, errLog=None): #TODO: replace with dictionary
+        if errLog==None:
+            errLog=[]
         rules = {'if':self.ruleIf, 'cons':self.ruleCons, 'first':self.ruleFirst, 'rest':self.ruleRest, 'null':self.ruleNull, 'cons?':self.ruleConsQ, 'zero':self.ruleZero}
         return rules[ruleID](errLog)
 
@@ -249,7 +253,10 @@ def list2Type(slist:list[str])->RacType:
 # this takes in a list of parenthesized string tokens and splits it into ans[0]= token list of first element, ans[1]=token list of parenthesized rest
 # example: "(INT,LIST,BOOL)" would be [INT, (LIST,BOOL)], all tokenized.  also [((INT,BOOL)>LIST, BOOL)] would be [(INT,BOOL)>LIST, (BOOL)]
 def sepFirst(slist:list[str])->list:
-    return [] #TODO complete this
+    ind = findDelim(",",slist[1:-1]) #need to ignore out parens
+    #if ind == -1:
+     #   return [slist[1:-1],["(",")"]] #note this does not convert slist to a type with list2Type yet, it just removes the parens
+    return [slist[1:ind],["("]+([")"] if ind==-1 else slist[ind+1:])]
 
 def list2Tup(slist:list[str])->tuple:
     return () #TODO complete this
