@@ -138,7 +138,7 @@ class Node:
     def ruleFirst(self, errLog, debug=False):
         if self.children[0].data != 'first':
             errLog.append(f'Cannot apply first rule to {self.children[0].data}')
-        elif self.children[1].children[0].data != 'cons':
+        elif len(self.children[1].children[0]) == 0 or self.children[1].children[0].data != 'cons':
             errLog.append(f'first can only be applied to the cons rule')
         else:
             xNode = self.children[1].children[1]
@@ -148,7 +148,7 @@ class Node:
     def ruleRest(self, errLog, debug=False):
         if self.children[0].data != 'rest':
             errLog.append(f'Cannot apply rest rule to {self.children[0].data}')
-        elif self.children[1].children[0].data != 'cons':
+        elif len(self.children[1].children[0]) == 0 or self.children[1].children[0].data != 'cons':
             errLog.append(f'rest can only be applied to the cons rule')
         else:
             lNode = self.children[1].children[2]
