@@ -28,9 +28,14 @@ def get_repositories():
     with app.app_context():
         json_data = request.get_json()
         EXPRESSION_TREE =PREV_RACKETS[-1] # really this should be passed from the front end
+        EXPRESSION_TREE.fullDebug(False)
+        print(str(EXPRESSION_TREE))
         ERROR_LOG = EXPRESSION_TREE.generateRacketFromRule(json_data['startPosition'], json_data['rule'], errLog=[])
+
+        print(f"tree={EXPRESSION_TREE} errs={ERROR_LOG}")
         if isValid := (ERROR_LOG==[]):
             racketStr = str(EXPRESSION_TREE)
+            EXPRESSION_TREE=Labeler.fillPositions(EXPRESSION_TREE) [0]
             PREV_RACKETS.append(EXPRESSION_TREE) #storing tree of most recently passed Racket
         else:
             racketStr = "Error generating racket"

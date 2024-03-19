@@ -89,7 +89,7 @@ class Node:
         if errLog==None:
             errLog=[]
         rules = {'if':self.ruleIf, 'cons':self.ruleCons, 'first':self.ruleFirst, 'rest':self.ruleRest, \
-                 'null?':self.ruleNull, 'cons?':self.ruleConsQ, 'zero':self.ruleZero, 'consList':self.ruleConsList}
+                 'null?':self.ruleNull, 'cons?':self.ruleConsQ, 'zero?':self.ruleZero, 'consList':self.ruleConsList}
         return rules[ruleID](errLog)
 
     def ruleIf(self, errLog, debug=False):
@@ -234,6 +234,16 @@ class Node:
     def ruleZero(self, errLog, debug=False):
         if self.children[0].data != 'zero?':
             errLog.append(f'Cannot apply zero rule to {self.children[0].data}')
+        elif self.children[1].children==[]:
+            if self.children[1].type.getType() != Type.INT:
+                errLog.append(f'zero? can only be applied to int type')
+            else:
+                if self.children[1].data == '0':
+                    trueNode = Node(data='#t', tokenType=RacType((None, Type.BOOL)), name=True)
+                    self.replaceNode(trueNode)
+                else:
+                    falseNode = Node(data='#f', tokenType=RacType((None, Type.BOOL)), name=False)
+                    self.replaceNode(falseNode)
         elif self.children[1].children[0].data != '+':
             errLog.append(f'zero? can only be applied to addition rule')
         else:
@@ -249,8 +259,8 @@ class Node:
     
     def generateRacketFromRule(self, startPos, rule, errLog):
         targetNode = findNode(self, startPos, errLog)
-        if targetNode is not None:
-            return targetNode.applyRule(rule, errLog)
+        if targetNode is not None and targetNode!=[]:
+            return targetNode[0].applyRule(rule, errLog)
         else:
             errLog.append(f'Could not find Token with starting index {startPos}')
             return errLog
@@ -433,11 +443,12 @@ def isMatch(xNode:Node, yNode:Node)->bool: #recursively check if two nodes are i
         return True #if everything else passed
 
 def findNode(tree:Node, target:int,errLog:list[str],found=None)->Node:
+    if found==None:
+        found =[]
+    print(f"tree={tree.data} start={tree.startPosition}")
     if tree.startPosition == target:
-        return tree
+        found.append(tree)    
     for child in tree.children:
-        if found==None:
-            found = findNode(child, target, errLog,found)
-        else:
-            return found
-    return None
+        if not found:
+            findNode(child, target, errLog,found)
+    return found

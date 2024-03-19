@@ -1,6 +1,7 @@
 from typing import Union, Tuple, List
 from enum import Enum
 
+
 class Type(Enum):
     TEMP = 'TEMP'
     BOOL = 'BOOL'
