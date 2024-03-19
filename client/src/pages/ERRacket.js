@@ -246,7 +246,9 @@ const ERRacket = () => {
                               value={formValues.lHSGoal}
                               placeholder="Current Goal"
                               onChange={handleChange}
-                              readOnly
+                              onSelect={(e) => handleHighlight(e)}
+                              onDoubleClick={(e) => handleDoubleClick(e)}
+                              //readOnly
                             />
                             <label htmlFor="eRProofCurrentLHSGoal">LHS Goal</label>
                           </Form.Floating>

@@ -27,7 +27,6 @@ def  get_er_proof_data():
 def get_repositories():
     with app.app_context():
         json_data = request.get_json()
-        print(json_data)
         EXPRESSION_TREE =PREV_RACKETS[-1] # really this should be passed from the front end
         ERROR_LOG = EXPRESSION_TREE.generateRacketFromRule(json_data['startPosition'], json_data['rule'], errLog=[])
         if isValid := (ERROR_LOG==[]):
@@ -41,10 +40,7 @@ def get_repositories():
 def check_goal():
     with app.app_context():
         json_data = request.get_json()
-        #isValid = proofEngine.checkGoal(json_data['goal'])
-        errLog = ['error1', 'error2']
         debugStatus=False #get rid of this later
-        print(json_data['goal'])
         exprList,errLog = recParser.preProcess(json_data['goal'],errLog=[],debug=debugStatus)
         if errLog==[]:
             exprTree = recParser.buildTree(exprList,debug=debugStatus)[0] # might not need to pass errLog
@@ -53,12 +49,8 @@ def check_goal():
             decTree, errLog = Decorator.decorateTree(labeledTree,errLog)
             decTree, errLog = Decorator.checkFunctions(decTree,errLog)
             EXPRESSION_TREE = decTree
-            ERROR_LOG = errLog
-            print(ERROR_LOG)
-        #if not errLog:
-        #    errLog = Decorator.remTemps(decTree, errLog)
+        ERROR_LOG = errLog
         isValid = (ERROR_LOG==[])
-        #print(errLog) #prints to python console in VSC
         if isValid:
             PREV_RACKETS.append(EXPRESSION_TREE) #storing most recently passed Racket
         return jsonify({'isValid': isValid, 'errors': ERROR_LOG }), 200
